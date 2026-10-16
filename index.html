@@ -1917,14 +1917,15 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       if (vari) { const p = Math.round(P[i + 2] * 100); q.push(p - pp); pp = p; }
     }
     let out = s.k + '|' + s.c + '|' + (+s.w.toFixed(2)) + '|' + q.join(',');
-    const tail = [s.ds || '', s.fl || '', s.ly || '', s.cv || '', s.fp || '', s.fb || '', s.fs ? String(s.fs) : '', s.fw ? String(s.fw) : '', s.gp || '']; while (tail.length && !tail[tail.length - 1]) tail.pop(); if (tail.length) out += '|' + tail.join('|');
+    const cvs = s.cv === 'n' && Array.isArray(s.cp) ? 'n;' + s.cp.map(q => (+q[0].toFixed(1)) + ',' + (+q[1].toFixed(1))).join(';') + (s.ca ? ';a' : '') : s.cv || '';
+    const tail = [s.ds || '', s.fl || '', s.ly || '', cvs, s.fp || '', s.fb || '', s.fs ? String(s.fs) : '', s.fw ? String(s.fw) : '', s.gp || '']; while (tail.length && !tail[tail.length - 1]) tail.pop(); if (tail.length) out += '|' + tail.join('|');
     return out;
   }
   function dec(str) {
     const [k, c, w, d, ds, fl, ly, cv, fp, fb, fsc, fwd, gp] = str.split('|'); const vari = VARI.includes(k) || k === 'g', st = vari ? 3 : 2;
     const n = d ? d.split(',').map(Number) : []; const pts = []; let x = 0, y = 0, p = 0;
     for (let i = 0; i + st - 1 < n.length; i += st) { x += n[i]; y += n[i + 1]; if (vari) p += n[i + 2]; pts.push(x / 2, y / 2, vari ? p / 100 : 0.5); }
-    const s = { k, c, w: +w, pts }; if (ds) s.ds = ds; if (fl) s.fl = fl; if (ly) s.ly = ly; if (cv) s.cv = cv; if (fp) s.fp = fp; if (fb) s.fb = fb; if (fsc) s.fs = +fsc; if (fwd) s.fw = +fwd; if (gp) s.gp = gp; return s;
+    const s = { k, c, w: +w, pts }; if (ds) s.ds = ds; if (fl) s.fl = fl; if (ly) s.ly = ly; if (cv) { if (cv.startsWith('n;')) { const parts = cv.split(';').slice(1); s.cv = 'n'; s.cp = parts.filter(q => q !== 'a').map(q => q.split(',').map(Number)); if (parts.includes('a')) s.ca = 1; } else s.cv = cv; } if (fp) s.fp = fp; if (fb) s.fb = fb; if (fsc) s.fs = +fsc; if (fwd) s.fw = +fwd; if (gp) s.gp = gp; return s;
   }
   const encodePage = p => { const o = { v: 2, paper: p.paper, bg: p.bg, w: p.w, h: p.h, s: p.strokes.map(enc), it: p.items }; if (p.dv) o.dv = p.dv; if (p.pc) o.pc = p.pc; if (p.tt) o.tt = p.tt; if (p.tc) o.tc = p.tc; if (p.layers && p.layers.length > 1) { o.ly = p.layers; o.al = p.al || ''; } return o; };
   const decodePage = (id, d) => { const p = { id, paper: d.paper || 'blank', bg: d.bg || 'white', w: d.w || 1200, h: d.h || 1600, strokes: (d.s || []).map(dec), items: d.it || [], loaded: true }; if (d.dv) p.dv = d.dv; if (d.pc) p.pc = d.pc; if (d.tt) p.tt = d.tt; if (d.tc) p.tc = d.tc; if (Array.isArray(d.ly) && d.ly.length) { p.layers = d.ly; p.al = d.al || ''; } return p; };
@@ -3122,6 +3123,22 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   function pageColors(p) { const set = new Set(); if (p) { p.strokes.forEach(o => colorsOf(o).forEach(c => set.add(c))); p.items.forEach(o => o.t === 's3' && colorsOf(o).forEach(c => set.add(c))); } return [...set].filter(c => /^#[0-9a-f]{6}$/.test(c)); }
   function shapeGuard(k, v) { if ((k === 'shapeColor' && !v && !T.shapeFill) || (k === 'shapeFill' && !v && !T.shapeColor)) { toast('A shape needs an outline or a fill', 1800); return false; } return true; }
   // steel sections: outer outline (+ holes), drawn in the dragged box
+  function sectionDims(kind, x0, y0, x1, y1) {
+    const w = x1 - x0, h = y1 - y0, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, tf = h * 0.09, tw = Math.max(2, w * 0.08), D = (a, b, side, off, name) => ({ a, b, side, off, name });
+    switch (kind) {
+      case 'e_w': return [D([x1, y0], [x1, y1], -1, 30, 'Depth (d)'), D([x0, y1], [x1, y1], 1, 30, 'Flange width (bf)'), D([x0, y0], [x0, y0 + tf], 1, 26, 'Flange thickness (tf)'), D([cx - tw / 2, cy], [cx + tw / 2, cy], 1, 0, 'Web thickness (tw)')];
+      case 'e_s': { const t1 = h * 0.05, t2 = h * 0.11; return [D([x1, y0], [x1, y1], -1, 30, 'Depth (d)'), D([x0, y1], [x1, y1], 1, 30, 'Flange width (bf)'), D([x0 + w * 0.25, y0], [x0 + w * 0.25, y0 + (t1 + t2) / 2], 1, 0, 'Mean flange thickness (tf)'), D([cx - tw / 2, cy], [cx + tw / 2, cy], 1, 0, 'Web thickness (tw)')]; }
+      case 'e_c': { const t = Math.max(2, w * 0.16); return [D([x0, y0], [x0, y1], 1, 30, 'Depth (d)'), D([x0, y1], [x1, y1], 1, 30, 'Flange width (bf)'), D([x1, y0], [x1, y0 + tf], -1, 26, 'Flange thickness (tf)'), D([x0, cy], [x0 + t, cy], 1, 0, 'Web thickness (tw)')]; }
+      case 'e_l': { const t = Math.max(2, Math.min(w, h) * 0.14); return [D([x0, y0], [x0, y1], 1, 30, 'Leg (d)'), D([x0, y1], [x1, y1], 1, 30, 'Leg (b)'), D([x0, y0], [x0 + t, y0], -1, 26, 'Thickness (t)')]; }
+      case 'e_2l': { const g = w * 0.06, t = Math.max(2, Math.min(w / 2, h) * 0.16), a = cx - g / 2, b = cx + g / 2;
+        return [D([x0, y0], [x0, y1], 1, 30, 'Leg (d), each angle'), D([x0, y1], [a, y1], 1, 30, 'Leg (b), each angle'), D([a - t, y0], [a, y0], -1, 22, 'Thickness (t)'), D([a, y0], [b, y0], -1, 52, 'Gap between backs (s)'), D([x0, y1], [x1, y1], 1, 84, 'Overall width')]; }
+      case 'e_t': return [D([x1, y0], [x1, y1], -1, 30, 'Depth (d)'), D([x0, y0], [x1, y0], -1, 30, 'Flange width (bf)'), D([x0, y0], [x0, y0 + tf * 1.2], 1, 26, 'Flange thickness (tf)'), D([cx - tw / 2, y1 - h * 0.28], [cx + tw / 2, y1 - h * 0.28], 1, 0, 'Stem thickness (tw)')];
+      case 'e_z': { const t = Math.max(2, w * 0.1); return [D([x1, y0], [x1, y1], -1, 30, 'Depth (d)'), D([x0, y0], [cx + t / 2, y0], -1, 30, 'Flange width (bf)'), D([x0, y0], [x0, y0 + tf], 1, 26, 'Flange thickness (tf)'), D([cx - t / 2, cy], [cx + t / 2, cy], 1, 0, 'Web thickness (tw)')]; }
+      case 'e_hss': { const t = Math.max(2, Math.min(w, h) * 0.1); return [D([x1, y0], [x1, y1], -1, 30, 'Height (H)'), D([x0, y1], [x1, y1], 1, 30, 'Width (B)'), D([x0, cy], [x0 + t, cy], 1, 0, 'Wall thickness (t)')]; }
+      case 'e_pipe': { const r = Math.min(w, h) / 2; return [D([cx - r, cy + r], [cx + r, cy + r], 1, 30, 'Outside diameter (OD)'), D([cx + r * 0.8, cy], [cx + r, cy], 1, 0, 'Wall thickness (t)')]; }
+    }
+    return [D([x0, y1], [x1, y1], 1, 30, 'Width'), D([x1, y0], [x1, y1], -1, 30, 'Height')];
+  }
   function sectionPts(kind, x0, y0, x1, y1) {
     const w = x1 - x0, h = y1 - y0, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, tf = h * 0.09, tw = Math.max(2, w * 0.08);
     switch (kind) {
@@ -3177,7 +3194,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   function makeDim(a, b, side, label, off, col, cfg) {
     cfg = Object.assign({}, DIMDEF, cfg || {});
     const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy * side, ny = ux * side;
-    const lw = cfg.lw, ah = Math.min(10 + lw * 3, L * 0.3), aw = ah * 0.36;
+    const lw = cfg.lw, small = L < (10 + lw * 3) * 2.4, ah = small ? (10 + lw * 3) * 0.75 : Math.min(10 + lw * 3, L * 0.3), aw = ah * 0.36;
     const at = (p, k) => [p[0] + nx * k, p[1] + ny * k], A1 = at(a, off), B1 = at(b, off);
     const S = [];
     if (off) S.push({ k: 'p', c: col, w: lw, pts: flat([at(a, 6), at(a, off + 10)]) }, { k: 'p', c: col, w: lw, pts: flat([at(b, 6), at(b, off + 10)]) });
@@ -3188,13 +3205,20 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       if (cfg.end === 'open') { const bx = tip[0] + vx * ah, by = tip[1] + vy * ah; return { k: 'p', c: col, w: lw, pts: flat([[bx - vy * aw, by + vx * aw], tip, [bx + vy * aw, by - vx * aw]]) }; }
       const bx = tip[0] + vx * ah, by = tip[1] + vy * ah; return { k: 'p', c: col, w: 1, fl: col, pts: flat([tip, [bx - vy * aw, by + vx * aw], [bx + vy * aw, by - vx * aw], tip]) };
     };
-    if (cfg.end !== 'none') S.push(head(A1, ux, uy), head(B1, -ux, -uy));
+    // too short for arrows inside: put them outside, pointing in
+    if (small) { S.push({ k: 'p', c: col, w: lw, pts: flat([[A1[0] - ux * ah * 2, A1[1] - uy * ah * 2], A1]) }, { k: 'p', c: col, w: lw, pts: flat([B1, [B1[0] + ux * ah * 2, B1[1] + uy * ah * 2]]) }); }
+    if (cfg.end !== 'none') S.push(small && cfg.end !== 'tick' && cfg.end !== 'dot' ? head(A1, -ux, -uy) : head(A1, ux, uy), small && cfg.end !== 'tick' && cfg.end !== 'dot' ? head(B1, ux, uy) : head(B1, -ux, -uy));
     S.forEach(st => { if (st.w === 1.6) st.w = lw; });
     const items = [];
     if (label) {
       const sz = cfg.sz, f = cfg.f; mctx.font = fontOf({ sz, f }); const tw = mctx.measureText(label).width + 8;
-      const m = [(A1[0] + B1[0]) / 2 + nx * (sz * 0.75 + lw + 4), (A1[1] + B1[1]) / 2 + ny * (sz * 0.75 + lw + 4)];
+      let m = [(A1[0] + B1[0]) / 2 + nx * (sz * 0.75 + lw + 4), (A1[1] + B1[1]) / 2 + ny * (sz * 0.75 + lw + 4)];
       let ang = Math.atan2(uy, ux); if (ang >= Math.PI / 2 - 1e-6) ang -= Math.PI; if (ang < -Math.PI / 2 - 1e-6) ang += Math.PI;
+      if (small) {   // short dimensions: flat label beside the line, past the arrow
+        ang = 0; const horiz = Math.abs(ux) > Math.abs(uy);
+        if (horiz) m = [Math.max(A1[0], B1[0]) + ah * 2.2 + tw / 2, (A1[1] + B1[1]) / 2];
+        else m = [(A1[0] + B1[0]) / 2 + (nx >= 0 ? 1 : -1) * (tw / 2 + 14), (A1[1] + B1[1]) / 2];
+      }
       const it = { t: 'text', id: uid(), x: m[0] - tw / 2, y: m[1] - sz * 0.625, w: tw, txt: label, sz, c: col, f };
       if (Math.abs(ang) > 1e-3) it.r = ang;
       items.push(it);
@@ -3436,8 +3460,11 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         if (!cd || pi < 0) curveEdit = null;
         else {
           ctx.save(); setPageTransform(ctx, L, pi); const z = view.z;
-          ctx.setLineDash([6 / z, 5 / z]); ctx.strokeStyle = 'rgba(47,111,237,.55)'; ctx.lineWidth = 1.6 / z; ctx.beginPath(); ctx.moveTo(cd.A[0], cd.A[1]); ctx.lineTo(cd.H[0], cd.H[1]); ctx.lineTo(cd.B[0], cd.B[1]); ctx.stroke(); ctx.setLineDash([]);
-          [['A', cd.A], ['B', cd.B], ['H', cd.H]].forEach(([k, q]) => { ctx.beginPath(); ctx.arc(q[0], q[1], (k === 'H' ? 12 : 9) / z, 0, 7); ctx.fillStyle = k === 'H' ? '#2f6fed' : '#ffffff'; ctx.fill(); ctx.lineWidth = 3 / z; ctx.strokeStyle = k === 'H' ? '#ffffff' : '#2f6fed'; ctx.stroke(); });
+          const guide = cd.k === 'n' ? cd.cps : cd.k === 'l' ? null : [cd.A, cd.H, cd.B];
+          if (guide && guide.length > 2) { ctx.setLineDash([6 / z, 5 / z]); ctx.strokeStyle = 'rgba(47,111,237,.45)'; ctx.lineWidth = 1.4 / z; ctx.beginPath(); guide.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke(); ctx.setLineDash([]); }
+          curveHandles(cd).forEach(h => { const q = h.q; ctx.beginPath();
+            if (h.t === 'ghost') { ctx.arc(q[0], q[1], 8 / z, 0, 7); ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.fill(); ctx.lineWidth = 1.6 / z; ctx.strokeStyle = 'rgba(47,111,237,.7)'; ctx.stroke(); ctx.beginPath(); ctx.moveTo(q[0] - 4 / z, q[1]); ctx.lineTo(q[0] + 4 / z, q[1]); ctx.moveTo(q[0], q[1] - 4 / z); ctx.lineTo(q[0], q[1] + 4 / z); ctx.lineWidth = 1.8 / z; ctx.stroke(); return; }
+            ctx.arc(q[0], q[1], (h.t === 'bend' ? 11 : 9) / z, 0, 7); ctx.fillStyle = h.t === 'bend' ? '#2f6fed' : '#ffffff'; ctx.fill(); ctx.lineWidth = 3 / z; ctx.strokeStyle = h.t === 'bend' ? '#ffffff' : '#2f6fed'; ctx.stroke(); });
           ctx.restore();
         }
       }
@@ -3471,6 +3498,9 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
           setPageTransform(ctx, L, action.pi); ctx.beginPath(); ctx.moveTo(P[0], P[1]); for (let i = 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]); ctx.closePath();
           ctx.fillStyle = 'rgba(224,49,49,.10)'; ctx.fill(); ctx.setLineDash([9 / view.z, 7 / view.z]); ctx.strokeStyle = '#e03131'; ctx.lineWidth = 2 / view.z; ctx.stroke(); ctx.setLineDash([]);
         }
+      }
+      if (action && action.snapPt && (action.kind === 'bend' || action.kind === 'move')) {
+        const pi_ = action.kind === 'bend' ? action.pi : selection && selection.pi; if (pi_ != null && pi_ >= 0) { setPageTransform(ctx, L, pi_); const q = action.snapPt, z = view.z; ctx.beginPath(); ctx.arc(q.x, q.y, 11 / z, 0, 7); ctx.strokeStyle = '#12b886'; ctx.lineWidth = 3 / z; ctx.stroke(); ctx.beginPath(); ctx.arc(q.x, q.y, 3.5 / z, 0, 7); ctx.fillStyle = '#12b886'; ctx.fill(); }
       }
       if (action && action.kind === 'lasso' && action.poly.length > 2) {
         setPageTransform(ctx, L, action.pi); ctx.beginPath(); const P = action.poly; ctx.moveTo(P[0], P[1]); for (let i = 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]); ctx.closePath();
@@ -3819,6 +3849,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         (selection.set.size === 1 && [...selection.set][0].eq ? `<div class="opt-sep"></div><button class="otb tbl" data-a="eqedit" title="Edit equation">${svg('eq')} Edit</button>` : '') +
         (selection.set.size === 1 && [...selection.set][0].t === 'beam' ? `<div class="opt-sep"></div><button class="otb tbl" data-a="beamedit" title="Edit beam, loads and diagrams">${svg('b_ss')} Edit beam</button>` : '') +
         (selection.set.size === 1 && [...selection.set][0].t === 'table' ? `<div class="opt-sep"></div><button class="otb" data-a="tbl" aria-label="Table options" title="Table options">${svg('table')}</button><button class="otb tbl" data-a="tgrid" title="Type in the table">Edit cells</button>` : '') +
+        (selection.set.size === 1 && curveDef([...selection.set][0]) ? `<div class="opt-sep"></div><button class="otb" data-a="ptadd" title="Add a bend point">${svg('plus')}</button><button class="otb" data-a="ptdel" title="Remove a bend point"><b style="font:900 1.2rem var(--ui)">−</b></button><button class="otb tbl" data-a="wave" title="Make it a wave">∿ Waves</button><button class="otb" data-a="lsnap" aria-pressed="${lineSnapOn()}" title="Connect: line ends click onto other lines">${svg('magnet')}</button>` : '') +
         (one3d ? `<button class="otb" data-a="s3" aria-label="3D view and size" title="3D: size, turn and tilt">${svg('orbit')}</button>` : '') +
 
         (selection.set.size === 1 && [...selection.set][0].t === 'table' ? `<div class="opt-sep"></div>` + [['r+', '+ Row'], ['r-', '− Row'], ['c+', '+ Col'], ['c-', '− Col'], ['hdr', 'Header']].map(([k, l]) => `<button class="otb tbl" data-a="${k}" title="${l}">${l}</button>`).join('') : '');
@@ -3841,6 +3872,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         else if (b.dataset.a === 'rmbg') { const it = [...selection.set][0]; bgRemoveModal(it, ch => replaceItem(it, ch)); }
         else if (b.dataset.a === 'tbl') tablePop(b);
         else if (b.dataset.a === 'beamedit') { const it = [...selection.set][0]; beamDesigner(it.md, md => replaceItem(it, { md, h: beamLayout(md, it.w).H })); }
+        else if (['ptadd', 'ptdel', 'wave', 'lsnap'].includes(b.dataset.a)) lineEdit(b.dataset.a, b);
         else if (b.dataset.a === 'eqedit') { eqModal(api, [...selection.set][0]); }
         else if (b.dataset.a === 'tgrid') { const it = [...selection.set][0]; tableGridModal(it, ch => { const cw = it.w / it.cols, rh = it.h / it.rows; replaceItem(it, Object.assign(ch, { w: cw * ch.cols, h: rh * ch.rows, cwf: undefined, rhf: undefined })); }); }
         else if (b.dataset.c) recolorSelection(b.dataset.c);
@@ -3887,8 +3919,20 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     // ---------- curves you can bend ----------
     let curveEdit = null;
     const CVK = { curve: 'q', carrow: 'a', scurve: 's' }, CVN = { q: 41, a: 44, s: 49 };
+    // smooth line through control points (Catmull-Rom)
+    const crAt = (cps, i, t) => { const n = cps.length, P = j => cps[Math.max(0, Math.min(n - 1, j))], p0 = P(i - 1), p1 = P(i), p2 = P(i + 1), p3 = P(i + 2), t2 = t * t, t3 = t2 * t, f = k => 0.5 * (2 * p1[k] + (-p0[k] + p2[k]) * t + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3); return [f(0), f(1)]; };
+    function nPts(cps, arrow) {
+      const n = cps.length; if (n < 2) return cps.slice(); const out = [];
+      if (n === 2) out.push(cps[0], cps[1]);
+      else { for (let i = 0; i < n - 1; i++) { const seg = Math.max(6, Math.min(28, Math.round(Math.hypot(cps[i + 1][0] - cps[i][0], cps[i + 1][1] - cps[i][1]) / 7))); for (let k = 0; k < seg; k++) out.push(crAt(cps, i, k / seg)); } out.push(cps[n - 1]); }
+      if (arrow) { const B = out[out.length - 1], prev = out[Math.max(0, out.length - 4)], len = Math.hypot(B[0] - cps[0][0], B[1] - cps[0][1]), hh = arrowHead(B, prev, Math.min(50, len * 0.4)); out.push(hh[0], B, hh[2]); }
+      return out;
+    }
     function curveDef(s) {
-      if (!s || !s.cv || !s.pts || s.pts.length / 3 !== CVN[s.cv]) return null;
+      if (!s || !s.pts) return null;
+      if (s.cv === 'n' && Array.isArray(s.cp) && s.cp.length >= 2) return { k: 'n', cps: s.cp };
+      if (!s.cv && s.k === 'p' && s.pts.length === 6 && !s.fl) return { k: 'l', A: [s.pts[0], s.pts[1]], B: [s.pts[3], s.pts[4]] };
+      if (!s.cv || s.pts.length / 3 !== CVN[s.cv]) return null;
       const P = s.pts, at = i => [P[i * 3], P[i * 3 + 1]];
       return s.cv === 's' ? { k: 's', A: at(0), B: at(48), H: at(12) } : { k: s.cv, A: at(0), B: at(40), H: at(20) };
     }
@@ -3899,23 +3943,73 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       if (k === 'a') { const Lh = Math.min(50, Math.hypot(D[0], D[1]) * 0.4), hh = arrowHead(B, pts[pts.length - 4], Lh); pts.push(hh[0], B, hh[2]); }
       return pts;
     }
+    // handles: line ends, bend points, and "+" spots between points that add a new one
+    function curveHandles(cd) {
+      if (cd.k === 'n') { const c = cd.cps, n = c.length, o = c.map((q, i) => ({ id: 'P' + i, q, t: i === 0 || i === n - 1 ? 'end' : 'bend' })); for (let i = 0; i < n - 1; i++) o.push({ id: 'G' + i, q: n === 2 ? [(c[0][0] + c[1][0]) / 2, (c[0][1] + c[1][1]) / 2] : crAt(c, i, 0.5), t: 'ghost' }); return o; }
+      if (cd.k === 'l') return [{ id: 'A', q: cd.A, t: 'end' }, { id: 'B', q: cd.B, t: 'end' }, { id: 'G0', q: [(cd.A[0] + cd.B[0]) / 2, (cd.A[1] + cd.B[1]) / 2], t: 'ghost' }];
+      return [{ id: 'A', q: cd.A, t: 'end' }, { id: 'B', q: cd.B, t: 'end' }, { id: 'H', q: cd.H, t: 'bend' }];
+    }
+    const cdEnds = cd => cd.k === 'n' ? [cd.cps[0], cd.cps[cd.cps.length - 1]] : [cd.A, cd.B];
+    function curveCps(s) {
+      const cd = curveDef(s); if (!cd) return null;
+      if (cd.k === 'n') return cd.cps.map(q => q.slice()); if (cd.k === 'l') return [cd.A.slice(), cd.B.slice()];
+      if (cd.k === 's') { const P = s.pts; return [cd.A.slice(), [P[36], P[37]], [P[108], P[109]], cd.B.slice()]; }
+      return [cd.A.slice(), cd.H.slice(), cd.B.slice()];
+    }
+    const asN = (s, cps) => { const ns = Object.assign({}, s, { cv: 'n', cp: cps.map(q => [+q[0].toFixed(1), +q[1].toFixed(1)]) }); if (s.cv === 'a') ns.ca = 1; ns.pts = flat(nPts(ns.cp, ns.ca)); return ns; };
+    const lineSnapOn = () => T.lineSnap !== false;
     function curveHit(L, d) {
       const cd = curveDef(curveEdit.s), pi = nb.pages.indexOf(curveEdit.pid); if (!cd || pi < 0) return null;
-      const x = d.x - L.lefts[pi], y = d.y - L.tops[pi], r = 24 / view.z;
-      let best = null, bd = r; for (const k of ['H', 'A', 'B']) { const q = cd[k], dd = Math.hypot(x - q[0], y - q[1]); if (dd < bd) { bd = dd; best = k; } }
+      const x = d.x - L.lefts[pi], y = d.y - L.tops[pi];
+      let best = null, bd = 24 / view.z;
+      for (const h of curveHandles(cd)) { const dd = Math.hypot(x - h.q[0], y - h.q[1]) + (h.t === 'ghost' ? 6 / view.z : 0); if (dd < bd) { bd = dd; best = h.id; } }
       return best;
     }
     function beginBend(e, input, which) {
       const p = pages.get(curveEdit.pid); const pi = nb.pages.indexOf(curveEdit.pid);
       if (selection) { const m = root.querySelector('.selmenu'); if (m) m.style.visibility = 'hidden'; }
       action = { kind: 'bend', id: e.pointerId, input, which, pi, p, before: snap(p), orig: curveEdit.s, d0: curveDef(curveEdit.s) };
+      const pf = Object.assign({}, p, { strokes: p.strokes.filter(x => x !== curveEdit.s) }); action.pf = pf; action.anch = anchorsOn(pf);
+      if (which[0] === 'G') {   // tapping a "+" adds a bend point there and starts dragging it
+        const cd = action.d0, cps = curveCps(curveEdit.s), i = +which.slice(1), h = curveHandles(cd).find(q => q.id === which); cps.splice(i + 1, 0, h.q.slice());
+        const ns = asN(curveEdit.s, cps), k = p.strokes.indexOf(curveEdit.s); if (k >= 0) { p.strokes[k] = ns; curveEdit.s = ns; }
+        action.d0 = curveDef(ns); action.which = 'P' + (i + 1); bumpPage(p.id); req();
+      }
     }
     function moveBend(e, a) {
-      const lp = localPt(e, a.pi), d0 = a.d0, A = d0.A.slice(), B = d0.B.slice(), H = d0.H.slice();
+      let lp = localPt(e, a.pi); const d0 = a.d0, cur = curveEdit.s, idx = a.p.strokes.indexOf(cur); if (idx < 0) return;
+      const last = d0.k === 'n' ? 'P' + (d0.cps.length - 1) : 'B', isEnd = a.which === 'A' || a.which === 'B' || a.which === 'P0' || a.which === last;
+      a.snapPt = null;
+      if (isEnd && lineSnapOn()) { const q = nearestAnchor(a.anch, lp) || nearestEdge(a.pf, lp); if (q) { lp = { x: q.x, y: q.y }; a.snapPt = q; } }
+      if (d0.k === 'n' || d0.k === 'l') {
+        let ns;
+        if (d0.k === 'n') { const cps = d0.cps.map(q => q.slice()); cps[+a.which.slice(1)] = [lp.x, lp.y]; ns = Object.assign({}, cur, { cp: cps, pts: flat(nPts(cps, cur.ca)) }); }
+        else { const A = d0.A.slice(), B = d0.B.slice(), E = a.which === 'A' ? A : B; E[0] = lp.x; E[1] = lp.y; ns = Object.assign({}, cur, { pts: flat([A, B]) }); }
+        a.p.strokes[idx] = ns; curveEdit.s = ns; bumpPage(a.p.id); req(); return;
+      }
+      const A = d0.A.slice(), B = d0.B.slice(), H = d0.H.slice();
       if (a.which === 'H') { H[0] = lp.x; H[1] = lp.y; }
       else { const E = a.which === 'A' ? A : B, dx = lp.x - E[0], dy = lp.y - E[1]; E[0] += dx; E[1] += dy; H[0] += dx / 2; H[1] += dy / 2; }
-      const cur = curveEdit.s, ns = Object.assign({}, cur, { pts: flat(curveFrom(d0.k, A, B, H)) }), i = a.p.strokes.indexOf(cur);
-      if (i < 0) return; a.p.strokes[i] = ns; curveEdit.s = ns; bumpPage(a.p.id); req();
+      const ns = Object.assign({}, cur, { pts: flat(curveFrom(d0.k, A, B, H)) }), i = idx;
+      a.p.strokes[i] = ns; curveEdit.s = ns; bumpPage(a.p.id); req();
+    }
+    function lineEdit(act, btn) {
+      if (act === 'lsnap') { T.lineSnap = !lineSnapOn(); saveTools(); buildSelMenu(); toast(lineSnapOn() ? 'Line ends click onto other lines while you drag them' : 'Connecting off', 1800); return; }
+      const s = selection && [...selection.set][0]; if (!s) return; const cps = curveCps(s); if (!cps) return;
+      const put = c => { const p = selPage(), before = snap(p), ns = asN(s, c); p.strokes = p.strokes.map(x => x === s ? ns : x); pushUndo(nb.id, p.id, before); markDirty(p.id, nb); setSelection(selection.pi, new Set([ns])); };
+      if (act === 'ptadd') { let bi = 0, bl = -1; for (let i = 0; i < cps.length - 1; i++) { const l = Math.hypot(cps[i + 1][0] - cps[i][0], cps[i + 1][1] - cps[i][1]); if (l > bl) { bl = l; bi = i; } } cps.splice(bi + 1, 0, cps.length === 2 ? [(cps[0][0] + cps[1][0]) / 2, (cps[0][1] + cps[1][1]) / 2] : crAt(cps, bi, 0.5)); put(cps); toast('Point added. Drag the blue dot to bend the line there.', 2200); return; }
+      if (act === 'ptdel') { if (cps.length <= 2) { toast('This line has no bend points left.', 1600); return; } cps.splice(Math.floor(cps.length / 2), 1); put(cps); return; }
+      if (act === 'wave') {
+        const st = { n: 3, h: 0.12 };
+        const make = () => { const A = cps[0], B = cps[cps.length - 1], dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, h = L * st.h, o = [];
+          for (let k = 0; k <= st.n; k++) { o.push([A[0] + dx * k / st.n, A[1] + dy * k / st.n]); if (k < st.n) { const sg = k % 2 ? -1 : 1; o.push([A[0] + dx * (k + 0.5) / st.n + nx * h * sg, A[1] + dy * (k + 0.5) / st.n + ny * h * sg]); } }
+          return o; };
+        openPop(btn, `<h4>Waves</h4><div class="chips" style="padding:0 10px 6px">${[1, 2, 3, 4, 5, 6, 8, 10].map(n => `<button class="chip" data-a="n:${n}" aria-pressed="${n === st.n}">${n} curve${n === 1 ? '' : 's'}</button>`).join('')}</div><h4>Height</h4><div class="chips" style="padding:0 10px 8px">${[[0.06, 'Low'], [0.12, 'Medium'], [0.22, 'High'], [0.35, 'Very high']].map(([v, l]) => `<button class="chip" data-a="h:${v}" aria-pressed="${v === st.h}">${l}</button>`).join('')}</div><p style="margin:0 10px 8px;color:var(--muted);font-size:.8rem">Then drag any blue dot to shape it more.</p>`, a2 => {
+          const [k, v] = a2.split(':'); st[k] = +v; popEl.querySelectorAll(`[data-a^="${k}:"]`).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.a === a2)));
+          const cur = selection && [...selection.set][0], p = selPage(), ns = asN(cur, make()); p.strokes = p.strokes.map(x => x === cur ? ns : x); markDirty(p.id, nb); setSelection(selection.pi, new Set([ns]));
+        }, true);
+        const p = selPage(), before = snap(p), ns = asN(s, make()); p.strokes = p.strokes.map(x => x === s ? ns : x); pushUndo(nb.id, p.id, before); markDirty(p.id, nb); setSelection(selection.pi, new Set([ns]));
+      }
     }
     function endBend(a) {
       pushUndo(nb.id, a.p.id, a.before); markDirty(a.p.id, nb);
@@ -4349,6 +4443,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         addPoint(e, a); req(false, true);
       } else if (a.kind === 'erase') eraseAlong(e);
       else if (a.kind === 'erzone') { const lp = localPt(e, a.pi), P = a.poly; a.b = lp; if (Math.hypot(lp.x - P[P.length - 2], lp.y - P[P.length - 1]) > 3 / view.z) P.push(lp.x, lp.y); req(false, true); }
+      else if (a.kind === 'lasso' && T.lassoMode === 'rect') { const lp = localPt(e, a.pi), s0 = a.start; a.poly = [s0.x, s0.y, lp.x, s0.y, lp.x, lp.y, s0.x, lp.y]; if (Math.hypot(lp.x - s0.x, lp.y - s0.y) < 4 / view.z) a.poly = [s0.x, s0.y]; req(false, true); }
       else if (a.kind === 'lasso') { const lp = localPt(e, a.pi); const P = a.poly; if (Math.hypot(lp.x - P[P.length - 2], lp.y - P[P.length - 1]) > 3 / view.z) P.push(lp.x, lp.y); req(false, true); }
       else if (a.kind === 'shape') {
         let lp = localPt(e, a.pi);
@@ -4375,7 +4470,14 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         const pt = stagePt(e); s3Live(n => { n.yaw = a.y0 + (pt.x - a.sx) * 0.012; n.pit = clamp(a.p0 + (pt.y - a.sy) * 0.012, -Math.PI / 2, Math.PI / 2); });
       } else if (a.kind === 'move' || a.kind === 'scale') {
         const lp = localPt(e, selection.pi), tr = selection.tr, b = selection.box;
-        if (a.kind === 'move') { tr.dx = lp.x - a.start.x; tr.dy = lp.y - a.start.y; }
+        if (a.kind === 'move') {
+          tr.dx = lp.x - a.start.x; tr.dy = lp.y - a.start.y; a.snapPt = null;
+          const one = selection.set.size === 1 ? [...selection.set][0] : null, cd = one && one.pts && curveDef(one);
+          if (cd && lineSnapOn()) {
+            if (!a.anch) { const p = selPage(); a.pf = Object.assign({}, p, { strokes: p.strokes.filter(x => x !== one) }); a.anch = anchorsOn(a.pf); }
+            for (const E of cdEnds(cd)) { const c = { x: E[0] + tr.dx, y: E[1] + tr.dy }, q = nearestAnchor(a.anch, c) || nearestEdge(a.pf, c); if (q) { tr.dx += q.x - c.x; tr.dy += q.y - c.y; a.snapPt = q; break; } }
+          }
+        }
         else { const sx = (lp.x - b.x) / b.w, sy = (lp.y - b.y) / b.h; tr.sc = clamp((sx + sy) / 2, 0.1, 10); }
         req(false, true);
       } else if (a.kind === 'tap') { const pt = stagePt(e); if (Math.hypot(pt.x - a.sx, pt.y - a.sy) > 12) a.moved = true; }
@@ -4428,7 +4530,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
               let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; const add = bb => { x0 = Math.min(x0, bb.x); y0 = Math.min(y0, bb.y); x1 = Math.max(x1, bb.x + bb.w); y1 = Math.max(y1, bb.y + bb.h); };
               if (a.s3) add(iBox(a.s3)); else a.strokes.forEach(st => { const P_ = st.pts; for (let i = 0; i < P_.length; i += 3) add({ x: P_[i], y: P_[i + 1], w: 0, h: 0 }); });
               const eng = ENGIDS.includes(kind);
-              dims = [{ a: [x0, y1], b: [x1, y1], side: 1, off: 30, name: eng ? 'Flange width (bf)' : 'Width' }, { a: [x1, y0], b: [x1, y1], side: -1, off: 30, name: eng ? 'Depth (d)' : 'Height' }];
+              dims = eng && !a.s3 ? sectionDims(kind, x0, y0, x1, y1) : [{ a: [x0, y1], b: [x1, y1], side: 1, off: 30, name: 'Width' }, { a: [x1, y0], b: [x1, y1], side: -1, off: 30, name: 'Height' }];
             }
             promptDims(p, dims);
           }
@@ -5102,7 +5204,8 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         group('3D shapes', [['side', 'One side'], ['all', 'All sides']].map(([k, l]) => `<button class="chip" data-k="fill3d" data-v="${k}" aria-pressed="${(T.fill3d || 'side') === k}" title="${k === 'side' ? 'Tap a side of a 3D shape to color just that side. Tap it again to clear it.' : 'Tap a 3D shape to color every side'}">${l}</button>`).join('')) +
         group('Close gaps', [[0, 'Off'], [14, 'Small'], [30, 'Large']].map(([v, l]) => otb(`data-k="fillGap" data-v="${v}"`, `<span class="gap-lbl">${l}</span>`, 'Close gaps: ' + l, T.fillGap === v)).join('')) +
         group('How it works', `<span class="rhint">Tap inside any closed outline, drawn by hand or with shapes. Tap a filled area again to change its color. On a 3D shape, tap one side.</span>`);
-      case 'lasso': return group('Select', `<span class="rhint">Loop around anything to move, resize, recolor, fill or copy it. Tap an item to pick it.</span>`);
+      case 'lasso': return group('Lasso shape', otb('data-k="lassoMode" data-v="free"', svg('lasso'), 'Freehand: draw a loop around things', (T.lassoMode || 'free') === 'free') + otb('data-k="lassoMode" data-v="rect"', svg('rect'), 'Rectangle: drag a box around things', T.lassoMode === 'rect')) +
+        group('Select', `<span class="rhint">${T.lassoMode === 'rect' ? 'Drag a box around anything' : 'Loop around anything'} to move, resize, recolor, fill or copy it. Tap an item to pick it, or use Pick to add or remove items.</span>`);
       case 'shape': {
         const sl = SHAPES.find(s => s[0] === T.shape) || SHAPES[0], open = OPEN_SHAPES.includes(T.shape) || LOADS.some(l => l[0] === T.shape);
         if (isEngShape(T.shape)) {
@@ -7993,7 +8096,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
 
 
   // ======================= settings page =======================
-  const APP_VERSION = '2.4', APP_DATE = 'October 2026';
+  const APP_VERSION = '2.5', APP_DATE = 'October 2026';
   const FEEDBACK_TO = '';   // email address that feedback goes to; empty lets the person choose in their mail app
   const SET_SECS = [['profile', 'pfile', 'Profile'], ['display', 'palette', 'Display and theme'], ['writing', 'pen', 'Pen and touch'], ['language', 'globe', 'Language'], ['privacy', 'lock', 'Privacy and security'], ['storage', 'cloud', 'Storage and backup'], ['share', 'share2', 'Share the app'], ['about', 'info', 'About Tala Notes']];
   let setSec = 'profile';
@@ -8071,7 +8174,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
         card('Credits', `<p class="set-sub">PDF export uses jsPDF, zip files use JSZip and PDFs open with PDF.js, all open-source projects. Fonts: Figtree and Caveat from Google Fonts.</p>`);
     }

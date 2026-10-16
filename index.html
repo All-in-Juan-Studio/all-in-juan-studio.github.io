@@ -7993,7 +7993,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
 
 
   // ======================= settings page =======================
-  const APP_VERSION = '2.3', APP_DATE = 'October 2026';
+  const APP_VERSION = '2.4', APP_DATE = 'October 2026';
   const FEEDBACK_TO = '';   // email address that feedback goes to; empty lets the person choose in their mail app
   const SET_SECS = [['profile', 'pfile', 'Profile'], ['display', 'palette', 'Display and theme'], ['writing', 'pen', 'Pen and touch'], ['language', 'globe', 'Language'], ['privacy', 'lock', 'Privacy and security'], ['storage', 'cloud', 'Storage and backup'], ['share', 'share2', 'Share the app'], ['about', 'info', 'About Tala Notes']];
   let setSec = 'profile';
@@ -8071,7 +8071,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
         card('Credits', `<p class="set-sub">PDF export uses jsPDF, zip files use JSZip and PDFs open with PDF.js, all open-source projects. Fonts: Figtree and Caveat from Google Fonts.</p>`);
     }
@@ -8816,9 +8816,21 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   const beamSol = md => { let r = beamCache.get(md); if (!r) { try { r = solveBeam(md); } catch (e) { r = { err: 'Could not solve this beam.' }; } beamCache.set(md, r); } return r; };
 
   // ---------- drawing the beam, loads, reactions and diagrams ----------
+  // loads that would overlap are stacked in levels above the beam; a load can also be given a level by hand
+  function beamLanes(md) {
+    const L = +md.L || 1, out = new Map(), lanes = [];
+    const iv = l => l.t === 'w' ? [Math.min(+l.x1, +l.x2) - L * 0.02, Math.max(+l.x1, +l.x2) + L * 0.02] : [+l.x - L * 0.09, +l.x + L * 0.09];
+    const fits = (k, a) => !(lanes[k] || []).some(b => a[0] < b[1] && b[0] < a[1]);
+    const put = (l, k) => { (lanes[k] = lanes[k] || []).push(iv(l)); out.set(l, k); };
+    const ls = md.loads.filter(l => l.t === 'P' || l.t === 'w');
+    ls.filter(l => l.lane && l.lane !== 'auto').forEach(l => put(l, clamp((+l.lane || 1) - 1, 0, 5)));
+    ls.filter(l => !out.has(l)).sort((a, b) => (a.t === 'w' ? 0 : 1) - (b.t === 'w' ? 0 : 1) || iv(a)[0] - iv(b)[0]).forEach(l => { const a = iv(l); let k = 0; while (!fits(k, a) && k < 8) k++; put(l, k); });
+    let max = 0; out.forEach(k => { if (k > max) max = k; });
+    return { of: l => out.get(l) || 0, max };
+  }
   function beamLayout(md, W) {
     const s = md.show, fs = md.st.fs || 1, base = W * 0.022 * fs, panels = [];
-    if (s.fbd) panels.push(['fbd', W * 0.30 + base * 3]);
+    if (s.fbd) panels.push(['fbd', W * 0.30 + base * 3 + beamLanes(md).max * base * 5.4]);
     if (s.fbd && s.dims) panels.push(['dims', base * 3.2]);
     if (s.sfd) panels.push(['sfd', W * 0.24 + base * 3]);
     if (s.bmd) panels.push(['bmd', W * 0.24 + base * 3]);
@@ -8842,7 +8854,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     lay.panels.forEach(([k, h, py]) => {
       const top = y0 + py;
       if (k === 'fbd') {
-        const by = top + h * 0.5, th = B * 0.55, lw = Math.max(1.5, B * 0.12);
+        const LN = beamLanes(md), laneH = B * 5.4, by = top + h * 0.5 + LN.max * laneH * 0.5, th = B * 0.55, lw = Math.max(1.5, B * 0.12);
         ctx.fillStyle = dark ? '#2b3140' : '#e9ecef'; ctx.fillRect(X(0), by - th / 2, bw, th); line([[X(0), by - th / 2], [X(L), by - th / 2], [X(L), by + th / 2], [X(0), by + th / 2], [X(0), by - th / 2]], st.beam, lw);
         // segment joints where the beam changes
         md.segs.slice(0, -1).forEach(sg => { if (sg.to > 0 && sg.to < L) line([[X(sg.to), by - th], [X(sg.to), by + th]], st.beam, lw * 0.7, [B * 0.2, B * 0.2]); });
@@ -8864,17 +8876,19 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         const maxW = Math.max(1e-9, ...md.loads.filter(l => l.t === 'w').map(l => Math.max(Math.abs(+l.w1 || 0), Math.abs(+l.w2 || 0))));
         md.loads.forEach(ld => {
           if (ld.t === 'P') {
-            const th_ = (+ld.ang || 90) * Math.PI / 180, x = X(clamp(ld.x, 0, L)), len = B * 4.2, dn = (+ld.P || 0) >= 0 ? 1 : -1;
-            const tipY = by - th / 2, sx = x - Math.cos(th_) * len * dn, sy_ = tipY - Math.sin(th_) * len * dn;
+            const th_ = (+ld.ang || 90) * Math.PI / 180, x = X(clamp(ld.x, 0, L)), len = B * 4.2, dn = (+ld.P || 0) >= 0 ? 1 : -1, k = LN.of(ld);
+            const tipY = by - th / 2 - k * laneH, sx = x - Math.cos(th_) * len * dn, sy_ = tipY - Math.sin(th_) * len * dn;
+            if (k) { ctx.save(); ctx.globalAlpha = 0.45; line([[x, tipY], [x, by - th / 2]], st.load, Math.max(1, lw * 0.5), [B * 0.25, B * 0.25]); ctx.restore(); }
             arrow(sx, sy_, x, tipY, st.load, lw * 1.1);
-            if (md.show.vals) label(`${fmtN(Math.abs(+ld.P || 0), d)} ${fu}${Math.abs((+ld.ang || 90) - 90) > 0.01 ? ` @ ${fmtN(+ld.ang, 1)}°` : ''}`, sx, sy_ - B * 0.6, st.load, 'center', 'bottom');
+            if (md.show.vals) label(`${fmtN(Math.abs(+ld.P || 0), d)} ${fu}${Math.abs((+ld.ang || 90) - 90) > 0.01 ? ` @ ${fmtN(+ld.ang, 1)}°` : ''}`, sx + B * 0.45, sy_ + B * 0.55, st.load, 'left', 'middle');
           } else if (ld.t === 'w') {
-            const a = clamp(Math.min(ld.x1, ld.x2), 0, L), b = clamp(Math.max(ld.x1, ld.x2), 0, L), wa = ld.x1 <= ld.x2 ? +ld.w1 || 0 : +ld.w2 || 0, wb = ld.x1 <= ld.x2 ? +ld.w2 || 0 : +ld.w1 || 0, hmax = B * 3.6, tipY = by - th / 2;
+            const k = LN.of(ld), a = clamp(Math.min(ld.x1, ld.x2), 0, L), b = clamp(Math.max(ld.x1, ld.x2), 0, L), wa = ld.x1 <= ld.x2 ? +ld.w1 || 0 : +ld.w2 || 0, wb = ld.x1 <= ld.x2 ? +ld.w2 || 0 : +ld.w1 || 0, hmax = B * 3.6, tipY = by - th / 2 - k * laneH;
+            if (k) { line([[X(a), tipY], [X(b), tipY]], st.load, Math.max(1, lw * 0.6)); ctx.save(); ctx.globalAlpha = 0.4; [a, b].forEach(q => line([[X(q), tipY], [X(q), by - th / 2]], st.load, Math.max(1, lw * 0.5), [B * 0.25, B * 0.25])); ctx.restore(); }
             const hy = v => tipY - B * 0.3 - Math.abs(v) / maxW * hmax;
             line([[X(a), hy(wa)], [X(b), hy(wb)]], st.load, lw);
             const nA = Math.max(2, Math.round((X(b) - X(a)) / (B * 2.2)));
             for (let i = 0; i <= nA; i++) { const t = i / nA, xx = a + (b - a) * t, wv = wa + (wb - wa) * t; if (Math.abs(wv) / maxW * hmax > B * 0.5) arrow(X(xx), hy(wv), X(xx), tipY - B * 0.15, st.load, lw * 0.8); }
-            if (md.show.vals) label(Math.abs(wa - wb) < 1e-9 ? `${fmtN(wa, d)} ${wu}` : `${fmtN(wa, d)} → ${fmtN(wb, d)} ${wu}`, (X(a) + X(b)) / 2, Math.min(hy(wa), hy(wb)) - B * 0.4, st.load, 'center', 'bottom');
+            if (md.show.vals) label(Math.abs(wa - wb) < 1e-9 ? `${fmtN(wa, d)} ${wu}` : `${fmtN(wa, d)} → ${fmtN(wb, d)} ${wu}`, X(a), Math.min(hy(wa), hy(wb)) - B * 0.4, st.load, 'left', 'bottom');
           } else if (ld.t === 'M') {
             const x = X(clamp(ld.x, 0, L)), r = B * 1.7, cw = ld.dir === 'cw', a0 = cw ? Math.PI * 1.15 : -Math.PI * 0.15, a1 = cw ? Math.PI * 2.05 : -Math.PI * 1.05;
             ctx.strokeStyle = ink(st.load); ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(x, by, r, a0, a1, !cw); ctx.stroke();
@@ -8944,11 +8958,11 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
             ${md.sups.map((s, i) => `<div class="bd-item">${sel(`sups.${i}.t`, s.t, SUP_T)}<label>at x = ${inp(`sups.${i}.x`, s.x)} ${lu()}</label>${s.t === 'spring' ? `<label>k ${inp(`sups.${i}.k`, s.k || 1000, 90)} ${fu()}/${lu()}</label>` : ''}<button class="bd-del" data-del="sups.${i}" aria-label="Remove support">${svg('close')}</button></div>`).join('')}
             <button class="chip" data-add="sup">+ Add a support</button></section>
           <section><h3>Loads</h3>
-            ${md.loads.map((l, i) => l.t === 'P' ? `<div class="bd-item"><b class="lt">Point load</b><label>P ${inp(`loads.${i}.P`, l.P)} ${fu()}</label><label>at x = ${inp(`loads.${i}.x`, l.x)} ${lu()}</label><label>angle ${inp(`loads.${i}.ang`, l.ang, 64)}°</label><button class="bd-del" data-del="loads.${i}" aria-label="Remove load">${svg('close')}</button></div>`
-              : l.t === 'w' ? `<div class="bd-item"><b class="lt">Distributed</b><label>from ${inp(`loads.${i}.x1`, l.x1, 64)}</label><label>to ${inp(`loads.${i}.x2`, l.x2, 64)} ${lu()}</label><label>w start ${inp(`loads.${i}.w1`, l.w1, 64)}</label><label>w end ${inp(`loads.${i}.w2`, l.w2, 64)} ${fu()}/${lu()}</label><button class="bd-del" data-del="loads.${i}" aria-label="Remove load">${svg('close')}</button></div>`
+            ${md.loads.map((l, i) => l.t === 'P' ? `<div class="bd-item"><b class="lt">Point load</b><label>P ${inp(`loads.${i}.P`, l.P)} ${fu()}</label><label>at x = ${inp(`loads.${i}.x`, l.x)} ${lu()}</label><label>angle ${inp(`loads.${i}.ang`, l.ang, 64)}°</label><label>level ${sel(`loads.${i}.lane`, l.lane || 'auto', [['auto', 'Auto'], ['1', '1 · on the beam'], ['2', '2'], ['3', '3'], ['4', '4']])}</label><button class="bd-del" data-del="loads.${i}" aria-label="Remove load">${svg('close')}</button></div>`
+              : l.t === 'w' ? `<div class="bd-item"><b class="lt">Distributed</b><label>from ${inp(`loads.${i}.x1`, l.x1, 64)}</label><label>to ${inp(`loads.${i}.x2`, l.x2, 64)} ${lu()}</label><label>w start ${inp(`loads.${i}.w1`, l.w1, 64)}</label><label>w end ${inp(`loads.${i}.w2`, l.w2, 64)} ${fu()}/${lu()}</label><label>level ${sel(`loads.${i}.lane`, l.lane || 'auto', [['auto', 'Auto'], ['1', '1 · on the beam'], ['2', '2'], ['3', '3'], ['4', '4']])}</label><button class="bd-del" data-del="loads.${i}" aria-label="Remove load">${svg('close')}</button></div>`
               : `<div class="bd-item"><b class="lt">Moment</b><label>M ${inp(`loads.${i}.M`, l.M)} ${fu()}·${lu()}</label><label>at x = ${inp(`loads.${i}.x`, l.x)} ${lu()}</label>${sel(`loads.${i}.dir`, l.dir || 'ccw', [['cw', 'Clockwise'], ['ccw', 'Counterclockwise']])}<button class="bd-del" data-del="loads.${i}" aria-label="Remove load">${svg('close')}</button></div>`).join('')}
             <div class="chips"><button class="chip" data-add="P">+ Point load</button><button class="chip" data-add="w">+ Distributed load</button><button class="chip" data-add="M">+ Moment</button></div>
-            <p class="bd-note">Positive loads point down. A point load's angle is measured from the beam: 90° is straight down. Use the same start and end w for a uniform load, or different values for a triangle or trapezoid.</p></section>
+            <p class="bd-note">Positive loads point down. A point load's angle is measured from the beam: 90° is straight down. Use the same start and end w for a uniform load, or different values for a triangle or trapezoid. Loads that would overlap stack on top of each other; change a load's level to choose which one goes on top.</p></section>
           <section><h3>Show on the page</h3><div class="chips">${[['fbd', 'Beam and loads'], ['react', 'Reactions'], ['dims', 'Dimensions'], ['sfd', 'Shear diagram'], ['bmd', 'Moment diagram'], ['axial', 'Axial force'], ['defl', 'Deflection'], ['vals', 'Values'], ['fill', 'Shaded diagrams'], ['grid', 'Grid lines']].map(([k, l]) => `<button class="chip" data-show="${k}" aria-pressed="${!!md.show[k]}">${l}</button>`).join('')}</div>
             <div class="bd-cols">${[['beam', 'Beam'], ['load', 'Loads'], ['react', 'Reactions'], ['sfd', 'Shear'], ['bmd', 'Moment'], ['defl', 'Deflection'], ['axial', 'Axial']].map(([k, l]) => `<label class="bd-col"><input type="color" data-col="${k}" value="${md.st[k]}"><span>${l}</span></label>`).join('')}</div>
             <div class="bd-row"><label>Text size ${sel('st.fs', md.st.fs, [[0.8, 'Small'], [1, 'Normal'], [1.25, 'Large'], [1.5, 'Extra large']])}</label><label>Decimals ${sel('st.dec', md.st.dec, [[0, '0'], [1, '1'], [2, '2'], [3, '3']])}</label></div></section>`;

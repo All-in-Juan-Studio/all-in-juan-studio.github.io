@@ -1729,6 +1729,25 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   ICONS.search = 'M10.5 4a6.5 6.5 0 1 0 0 13a6.5 6.5 0 1 0 0-13z M15.5 15.5L20.5 20.5';
   const svg = (n, sw = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${n === 'more' || n === 'grip' ? 3.2 : (n === 'ds_o' ? 3 : n === 'join' ? 2.4 : sw)}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICONS[n] || ''}"/></svg>`;
   let toastT = 0;
+  async function checkUpdate(btn, apply) {
+    const msg = document.querySelector('.upd-msg');
+    const say = m => { if (msg) msg.textContent = m; else toast(m); };
+    const base = location.href.split('#')[0].split('?')[0].replace(/index\.html$/, '');
+    btn.disabled = true;
+    try {
+      const res = await fetch(base + 'index.html?u=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw 0;
+      const txt = await res.text();
+      const m = txt.match(/APP_VERSION = '([0-9.]+)'/), v = m ? m[1] : '';
+      const newer = v && v.split('.').map(Number).reduce((r, n, i) => r || (n !== (APP_VERSION.split('.').map(Number)[i] || 0) ? (n > (APP_VERSION.split('.').map(Number)[i] || 0) ? 1 : -1) : 0), 0) > 0;
+      if (!newer && !apply) { say('You have the newest version (' + APP_VERSION + ').'); btn.disabled = false; btn.lastChild.textContent = 'Check again'; return; }
+      say(apply ? 'Updating…' : 'Updating to version ' + v + '…');
+      try { if (window.caches) { const ks = await caches.keys(); for (const k of ks) { const c = await caches.open(k); await c.put(base + 'index.html', new Response(txt, { headers: { 'Content-Type': 'text/html' } })); await c.put(base, new Response(txt, { headers: { 'Content-Type': 'text/html' } })); } } } catch (e) {}
+      try { const r = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (r) await r.update(); } catch (e) {}
+      await flush();
+      setTimeout(() => location.replace(base + '?u=' + Date.now()), 300);
+    } catch (e) { say("Couldn't check. Make sure you're connected to the internet."); btn.disabled = false; }
+  }
   function toast(msg, ms = 2600) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), ms); }
 
   // ======================= storage =======================
@@ -8174,7 +8193,8 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card('Updates', window.GN_APP ? `<p class="set-sub upd-msg">You have version ${APP_VERSION}. Check if a newer version is on your website.</p><div class="set-acts"><button class="btn primary" data-a="chkupd">${svg('rotate')}Check for updates</button></div>` : `<p class="set-sub">This copy always opens the newest version.</p>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
         card('Credits', `<p class="set-sub">PDF export uses jsPDF, zip files use JSZip and PDFs open with PDF.js, all open-source projects. Fonts: Figtree and Caveat from Google Fonts.</p>`);
     }
@@ -8183,6 +8203,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       const t = e.target.closest('[data-t],[data-c],[data-a],[data-acc],[data-fk],[data-thm]'); if (!t) return; const d = t.dataset;
       if (d.thm) { setAppTheme(d.thm); again(); return; }
       if (d.a === 'tblook') { toolbarLookModal(); return; }
+      if (d.a === 'chkupd' || d.a === 'doupd') { checkUpdate(t, d.a === 'doupd'); return; }
       if (d.fk) { body.querySelectorAll('[data-fk]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); return; }
       if (d.acc != null) { settings.profile = Object.assign({}, prof(), { accent: d.acc }); saveSettings(); applyAccent(); again(); return; }
       if (d.t) {

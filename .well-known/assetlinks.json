@@ -2,7 +2,7 @@
       "relation": ["delegate_permission/common.handle_all_urls"],
       "target": {
         "namespace": "android_app",
-        "package_name": "com.mairovillas13maker.talanotes",
-        "sha256_cert_fingerprints": ["2F:A2:CA:21:12:E1:EC:6A:5E:CB:32:25:E7:0F:44:BB:CD:CD:F1:1C:BD:F5:93:6E:3F:BA:13:C3:25:34:FC:6A"]
+        "package_name": "com.allinjuanstudio.talanotes",
+        "sha256_cert_fingerprints": ["01:2A:AE:B7:F8:2F:6C:12:1A:42:AC:4A:B1:78:7D:96:06:29:1E:CC:78:99:3F:F5:60:62:2D:91:AB:4D:5B:3E"]
       }
     }]

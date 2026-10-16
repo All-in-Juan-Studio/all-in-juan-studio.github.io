@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.mairovillas13maker.talanotes",
+        "sha256_cert_fingerprints": ["2F:A2:CA:21:12:E1:EC:6A:5E:CB:32:25:E7:0F:44:BB:CD:CD:F1:1C:BD:F5:93:6E:3F:BA:13:C3:25:34:FC:6A"]
+      }
+    }]

@@ -1882,7 +1882,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
 
   // ======================= account + sync (installed app, Firebase) =======================
   // App owner: paste your Firebase web config here, e.g. { apiKey: '…', authDomain: '…', projectId: '…', appId: '…' }
-  const FB_CONFIG = null;
+  const FB_CONFIG = { apiKey: 'AIzaSyCeJwCajIMqsQvdoJX24a9ptE6XlvISTBI', authDomain: 'tala-notes-4988b.firebaseapp.com', projectId: 'tala-notes-4988b', storageBucket: 'tala-notes-4988b.firebasestorage.app', messagingSenderId: '548591130689', appId: '1:548591130689:web:6cd45fee00347679b70ec0' };
   const Sync = {
     user: null, auth: null, db: null, ready: false, err: '', state: '', last: 0, busy: null, again: false, timer: 0, halt: false, booted: false, _m: null,
     cfg() { return FB_CONFIG || ls.get('inkleaf:fbcfg', null); },

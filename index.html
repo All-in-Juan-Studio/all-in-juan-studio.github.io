@@ -412,6 +412,13 @@ body.rsizing, body.rsizing * { cursor: nwse-resize !important; }
 .set-stats span { color: var(--muted); font-size: .8rem; }
 .set-link { display: flex; gap: 8px; }
 .set-link input { flex: 1; min-width: 0; height: 42px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 10px; font: inherit; background: var(--surface-2); color: var(--ink); }
+.sy-form { display: grid; gap: 10px; }
+.sy-in { width: 100%; box-sizing: border-box; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; font: inherit; background: var(--surface); color: var(--ink); }
+.sy-in:focus { outline: none; border-color: var(--accent); }
+.sy-msg { margin: 0; min-height: 1.2em; font-size: 13px; color: var(--muted, #6b7280); } .sy-msg.bad, .sy-st.bad { color: #d6455d; }
+.btn.sy-link { background: none; border-color: transparent; box-shadow: none; text-decoration: underline; padding-inline: 6px; }
+.sy-or { display: flex; align-items: center; gap: 10px; color: var(--muted, #6b7280); font-size: 12px; } .sy-or::before, .sy-or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.sy-dev summary { cursor: pointer; font-size: 13px; color: var(--muted, #6b7280); margin-top: 6px; } .sy-dev .fb-text { margin-top: 8px; font-family: ui-monospace, monospace; font-size: 12px; }
 .fb-text { width: 100%; box-sizing: border-box; border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px; font: inherit; resize: vertical; background: var(--surface); color: var(--ink); }
 @media (max-width: 720px) {
   .modal.set-modal { height: calc(100vh - 32px); }
@@ -1748,6 +1755,63 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       setTimeout(() => location.replace(base + '?u=' + Date.now()), 300);
     } catch (e) { say("Couldn't check. Make sure you're connected to the internet."); btn.disabled = false; }
   }
+  const GOOGLE_G = '<svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.8-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.3 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>';
+  const syErr = c => ({ 'auth/invalid-credential': 'Wrong email or password.', 'auth/wrong-password': 'Wrong email or password.', 'auth/user-not-found': 'No account with that email yet. Tap Create account.', 'auth/invalid-login-credentials': 'Wrong email or password.', 'auth/email-already-in-use': 'That email already has an account. Tap Sign in.', 'auth/weak-password': 'Use a password with at least 6 characters.', 'auth/invalid-email': 'That email doesn\'t look right.', 'auth/missing-password': 'Type your password.', 'auth/network-request-failed': 'No internet connection.', 'auth/too-many-requests': 'Too many tries. Wait a few minutes and try again.', 'auth/popup-closed-by-user': 'Google sign-in was closed.', 'auth/cancelled-popup-request': 'Google sign-in was closed.', 'auth/unauthorized-domain': 'This website isn\'t allowed yet. In Firebase, add it under Authentication → Settings → Authorized domains.', 'auth/operation-not-allowed': 'This sign-in method is off. Turn it on in Firebase → Authentication → Sign-in method.', 'permission-denied': 'The database rules block this. Check the Firestore rules.', unavailable: 'No internet connection.', connect: "Couldn't connect. Check your internet." }[c] || 'Something went wrong (' + c + ').');
+  function acctHTML() {
+    const S = Sync, u = S.user;
+    if (Store.mode !== 'idb') return card('Account', `<p class="set-sub">This copy already saves to your Claude account.</p>`);
+    if (!S.cfg()) return card('Accounts are not switched on yet', `<p class="set-sub">Sign-in needs a free Firebase project. Once it's added, you can sign in here and your notebooks sync between your devices.</p>
+      <details class="sy-dev"><summary>For the app owner: add Firebase settings</summary><p class="set-sub">Paste the firebaseConfig from Firebase → Project settings → Your apps.</p><textarea class="fb-text sy-cfg" rows="6" placeholder="apiKey: '…', authDomain: '…', projectId: '…', appId: '…'"></textarea><div class="set-acts"><button class="btn primary" data-a="syCfg">Save</button></div></details>`);
+    if (!S.ready) return card('Account', `<p class="set-sub">${S.err ? syErr(S.err) : 'Connecting…'}</p>${S.err ? `<div class="set-acts"><button class="btn" data-a="syRetry">${svg('rotate')}Try again</button></div>` : ''}`);
+    if (!u) return card('Sign in', `<p class="set-sub">Sign in to keep your notebooks safe online and on all your devices. You can keep using Tala Notes without an account.</p>
+      <div class="sy-form"><input class="sy-in" type="email" name="email" autocomplete="email" placeholder="Email"><input class="sy-in" type="password" name="password" autocomplete="current-password" placeholder="Password (6 or more characters)"><p class="sy-msg" role="status"></p>
+      <div class="set-acts"><button class="btn primary" data-a="syIn">Sign in</button><button class="btn" data-a="syUp">Create account</button><button class="btn sy-link" data-a="syForgot">Forgot password?</button></div>
+      <div class="sy-or"><span>or</span></div><div class="set-acts"><button class="btn" data-a="syGoogle">${GOOGLE_G}Continue with Google</button></div></div>`);
+    const mins = Math.round((Date.now() - S.last) / 6e4);
+    const st = S.state === 'syncing' ? 'Syncing…' : S.state === 'error' ? "Couldn't sync: " + syErr(S.err) : S.state === 'offline' ? "You're offline. It will sync when you're back online." : S.last ? 'Synced ' + (mins < 1 ? 'just now' : mins < 60 ? mins + ' min ago' : new Date(S.last).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) : 'Ready to sync';
+    return card('Your account', `<div class="set-row static"><span><b>${svg('pfile')} ${esc(u.email || u.displayName || 'Signed in')}</b><small class="sy-st${S.state === 'error' ? ' bad' : ''}">${st}</small></span></div><p class="set-sub">Your notebooks sync with every device where you sign in to this account. They also stay saved on this device.</p><div class="set-acts"><button class="btn primary" data-a="sySync"${S.state === 'syncing' ? ' disabled' : ''}>${svg('rotate')}Sync now</button><button class="btn" data-a="syOut">Sign out</button></div>`);
+  }
+  function refreshAcct() {
+    const st = $('#libStatus'); if (st && Store.mode === 'idb' && Sync.booted) st.textContent = Sync.state === 'syncing' ? '· syncing…' : Sync.user ? '· synced to your account' : '· saved on this device';
+    const box = document.querySelector('.acct-live'); if (!box) return;
+    const keep = [...box.querySelectorAll('.sy-in')].map(i => i.value), msg = box.querySelector('.sy-msg');
+    if (keep.length && !Sync.user && Sync.ready) return; // keep the sign-in form as typed
+    box.innerHTML = acctHTML(); wireAcct(box);
+  }
+  function wireAcct(box) { const pw = box.querySelector('input[type=password]'); if (pw) pw.onkeydown = e => { if (e.key === 'Enter') acctAction('syIn', box.querySelector('[data-a=syIn]')); }; }
+  async function acctAction(a, btn) {
+    const box = document.querySelector('.acct-live'); if (!box) return;
+    const msg = box.querySelector('.sy-msg'), say = (m, bad) => { if (msg) { msg.textContent = m; msg.classList.toggle('bad', !!bad); } else toast(m, 3500); };
+    const em = (box.querySelector('input[type=email]') || {}).value, pw = (box.querySelector('input[type=password]') || {}).value;
+    const busy = on => box.querySelectorAll('button').forEach(b => { b.disabled = on; });
+    const run = async (label, fn) => { busy(true); say(label); try { await fn(); say(''); } catch (e) { say(syErr(e && e.code || 'error'), true); } busy(false); };
+    if (a === 'syCfg') {
+      const raw = (box.querySelector('.sy-cfg') || {}).value || '';
+      try {
+        const body = raw.slice(raw.indexOf('{') + 1 || 0, raw.lastIndexOf('}') > 0 ? raw.lastIndexOf('}') : raw.length), cfg = {};
+        body.replace(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g, (_, k, v) => { cfg[k] = v; });
+        if (!cfg.apiKey || !cfg.projectId) throw 0;
+        ls.set('inkleaf:fbcfg', cfg); toast('Saved. Connecting…'); refreshAcct(); Sync.init();
+      } catch (e) { toast("That doesn't look like a Firebase config. It needs apiKey and projectId.", 4000); }
+      return;
+    }
+    if (a === 'syRetry') { Sync.err = ''; refreshAcct(); Sync.init(); return; }
+    if (a === 'syIn') return run('Signing in…', () => Sync.auth.signInWithEmailAndPassword((em || '').trim(), pw || ''));
+    if (a === 'syUp') return run('Creating your account…', () => Sync.auth.createUserWithEmailAndPassword((em || '').trim(), pw || ''));
+    if (a === 'syForgot') { if (!em) { say('Type your email first, then tap Forgot password.', true); return; } return run('Sending…', async () => { await Sync.auth.sendPasswordResetEmail(em.trim()); toast('Check your email for a link to reset your password.', 4500); }); }
+    if (a === 'syGoogle') return run('Opening Google…', async () => {
+      const pr = new firebase.auth.GoogleAuthProvider();
+      try { await Sync.auth.signInWithPopup(pr); }
+      catch (e) { if (e && /popup-blocked|operation-not-supported/.test(e.code || '')) await Sync.auth.signInWithRedirect(pr); else throw e; }
+    });
+    if (a === 'sySync') { await Sync.sync(); if (Sync.state === 'ok') toast(Sync.pulled && Sync.pulled.length ? 'Synced. Got your latest notes.' : 'Synced.', 2200); return; }
+    if (a === 'syOut') {
+      confirmBox('Sign out?', 'Your notebooks stay on this device and in your account. Sign in again any time to keep syncing.', 'Sign out', async () => {
+        try { await flush(); await Sync.sync(); } catch (e) {}
+        await Sync.auth.signOut(); const M = Sync.meta(); M.uid = ''; M.m = {}; Sync.saveMeta(); Sync.state = ''; Sync.last = 0; refreshAcct(); toast('Signed out.', 1800);
+      });
+    }
+  }
   function toast(msg, ms = 2600) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), ms); }
 
   // ======================= storage =======================
@@ -1794,7 +1858,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       return ls.get('inkleaf:' + key, null);
     },
     write(key, data) {
-      if (this.mode === 'idb') { const p = (this.chains[key] || Promise.resolve()).then(() => IDB.put(key, JSON.parse(JSON.stringify(data)))); this.chains[key] = p.catch(() => {}); return p; }
+      if (this.mode === 'idb') { const p = (this.chains[key] || Promise.resolve()).then(() => IDB.put(key, JSON.parse(JSON.stringify(data)))).then(r => { Sync.touch(key); return r; }); this.chains[key] = p.catch(() => {}); return p; }
       ls.set('inkleaf:' + key, data);
       if (this.mode !== 'cloud') return Promise.resolve();
       const doc = this.col.doc(key);
@@ -1808,13 +1872,136 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     },
     remove(key) {
       ls.del('inkleaf:' + key);
-      if (this.mode === 'idb') return IDB.del(key).catch(() => {});
+      if (this.mode === 'idb') return IDB.del(key).then(() => Sync.touch(key, true)).catch(() => {});
       if (this.mode !== 'cloud') return Promise.resolve();
       const p = (this.chains[key] || Promise.resolve()).then(() => this.col.doc(key).delete());
       this.chains[key] = p.catch(() => {});
       return p.catch(() => {});
     }
   };
+
+  // ======================= account + sync (installed app, Firebase) =======================
+  // App owner: paste your Firebase web config here, e.g. { apiKey: '…', authDomain: '…', projectId: '…', appId: '…' }
+  const FB_CONFIG = null;
+  const Sync = {
+    user: null, auth: null, db: null, ready: false, err: '', state: '', last: 0, busy: null, again: false, timer: 0, halt: false, booted: false, _m: null,
+    cfg() { return FB_CONFIG || ls.get('inkleaf:fbcfg', null); },
+    on() { return Store.mode === 'idb' && !!this.cfg(); },
+    meta() { return this._m || (this._m = ls.get('inkleaf:sync', null) || { uid: '', m: {} }); },
+    saveMeta() { ls.set('inkleaf:sync', this.meta()); },
+    touch(key, del) { if (this.halt || key.startsWith('__')) return; this.meta().m[key] = del ? -Date.now() : Date.now(); clearTimeout(this.mt); this.mt = setTimeout(() => this.saveMeta(), 400); this.soon(); },
+    load() {
+      if (window.firebase && firebase.firestore && firebase.auth) return Promise.resolve();
+      const V = '10.12.2', srcs = [`https://www.gstatic.com/firebasejs/${V}/`, `https://cdn.jsdelivr.net/npm/firebase@${V}/`];
+      const add = (b, f) => new Promise((res, rej) => { const el = document.createElement('script'); el.src = b + f; el.onload = res; el.onerror = () => { el.remove(); rej(new Error('load')); }; document.head.appendChild(el); });
+      const from = b => add(b, 'firebase-app-compat.js').then(() => Promise.all([add(b, 'firebase-auth-compat.js'), add(b, 'firebase-firestore-compat.js')]));
+      return from(srcs[0]).catch(() => from(srcs[1]));
+    },
+    init() {
+      if (!this.on()) return Promise.resolve();
+      if (this._init) return this._init;
+      return (this._init = (async () => {
+        try {
+          await this.load();
+          if (!firebase.apps.length) firebase.initializeApp(this.cfg());
+          this.auth = firebase.auth(); this.db = firebase.firestore();
+          try { await this.auth.getRedirectResult(); } catch (e) { this.err = e && e.code || ''; }
+          this.user = await new Promise(r => { const off = this.auth.onAuthStateChanged(x => { off(); r(x); }); });
+          this.ready = true; this.err = '';
+          this.auth.onAuthStateChanged(x => { const was = this.user && this.user.uid; this.user = x; if (x && x.uid !== was) this.sync(); refreshAcct(); });
+        } catch (e) { this.err = 'connect'; this._init = null; }
+        refreshAcct();
+      })());
+    },
+    soon(ms) { if (!this.user || this.halt) return; clearTimeout(this.timer); this.timer = setTimeout(() => this.sync(), ms != null ? ms : Math.max(4000, 15000 - (Date.now() - this.last))); },
+    sync() {
+      if (this.busy) { this.again = true; return this.busy; }
+      this.busy = this._sync().finally(() => { this.busy = null; if (this.again) { this.again = false; this.soon(); } });
+      return this.busy;
+    },
+    did(k) { return String(k).replace(/\//g, '_'); },
+    async putDoc(kv, k, v) {
+      const str = JSON.stringify(v), N = 700000, n = Math.max(1, Math.ceil(str.length / N)), id = this.did(k);
+      if (n === 1) { await kv.doc(id).set({ d: str }); return; }
+      for (let i = 0; i < n; i++) await kv.doc(id + '~' + i).set({ d: str.slice(i * N, (i + 1) * N) });
+      await kv.doc(id).set({ n });
+    },
+    async getDoc(kv, k) {
+      const id = this.did(k), sn = await kv.doc(id).get(); if (!sn.exists) return undefined;
+      const x = sn.data(); if (!x.n) return JSON.parse(x.d);
+      let str = ''; for (let i = 0; i < x.n; i++) { const c = await kv.doc(id + '~' + i).get(); str += c.data().d; }
+      return JSON.parse(str);
+    },
+    async delDoc(kv, k) {
+      const id = this.did(k);
+      try { const sn = await kv.doc(id).get(); if (sn.exists && sn.data().n) for (let i = 0; i < sn.data().n; i++) await kv.doc(id + '~' + i).delete(); await kv.doc(id).delete(); } catch (e) {}
+    },
+    async _sync() {
+      const u = this.user; if (!u || !this.db || this.halt) return;
+      if (navigator.onLine === false) { this.state = 'offline'; refreshAcct(); return; }
+      this.state = 'syncing'; refreshAcct();
+      try {
+        if (this.booted && (dirty.size || indexDirty)) await flush();
+        const M = this.meta();
+        if (M.uid !== u.uid) { M.uid = u.uid; M.m = {}; M.first = 1; }
+        const root = this.db.collection('users').doc(u.uid), kv = root.collection('kv');
+        const snap = await root.get(), R = (snap.exists && snap.data().m) || {};
+        const localKeys = new Set(await IDB.keys());
+        const keys = new Set([...Object.keys(R), ...Object.keys(M.m), ...localKeys]);
+        const up = {}, pulled = [];
+        for (const k of keys) {
+          if (k.startsWith('__')) continue;
+          const lt = M.m[k] != null ? M.m[k] : localKeys.has(k) ? 1 : 0, rt = R[k] || 0;
+          if (k === 'index' && rt > 0 && lt > 0 && rt !== lt) {
+            const remote = await this.getDoc(kv, 'index');
+            const local = this.booted ? index : await IDB.get('index');
+            const merged = mergeIndex(local, remote, M.first);
+            if (this.booted) { index = merged; if (!$('#library').hidden) renderLibrary(); }
+            await IDB.put('index', JSON.parse(JSON.stringify(merged)));
+            await this.putDoc(kv, 'index', merged);
+            M.m.index = up.index = Date.now(); pulled.push('index'); continue;
+          }
+          if (Math.abs(rt) > Math.abs(lt)) {
+            if (rt < 0) { if (localKeys.has(k)) await IDB.del(k); }
+            else {
+              const v = await this.getDoc(kv, k); if (v === undefined) continue;
+              await IDB.put(k, v); pulled.push(k);
+              if (k === 'index' && this.booted && v && Array.isArray(v.notebooks)) { index = v; if (!$('#library').hidden) renderLibrary(); }
+            }
+            M.m[k] = rt;
+          } else if (Math.abs(lt) > Math.abs(rt)) {
+            if (lt < 0) await this.delDoc(kv, k);
+            else {
+              const v = await IDB.get(k);
+              if (v === undefined) { M.m[k] = -Date.now(); await this.delDoc(kv, k); up[k] = M.m[k]; continue; }
+              await this.putDoc(kv, k, v);
+            }
+            M.m[k] = up[k] = lt;
+          }
+        }
+        if (Object.keys(up).length) await root.set({ m: up }, { merge: true });
+        M.first = 0; this.saveMeta(); this.last = Date.now(); this.state = 'ok'; this.err = '';
+        this.pulled = pulled;
+      } catch (e) { this.state = 'error'; this.err = (e && (e.code || e.message)) || 'error'; }
+      refreshAcct();
+    }
+  };
+  // Combine two copies of the notebook list: newest version of each notebook wins, trash and deletions are kept
+  function mergeIndex(a, b, first) {
+    if (!a || !Array.isArray(a.notebooks)) return b; if (!b || !Array.isArray(b.notebooks)) return a;
+    if (first && b.notebooks.length) a = Object.assign({}, a, { notebooks: a.notebooks.filter(n => !(n.guide && (n.updated || 0) - (n.created || 0) < 5000)) });
+    const out = Object.assign({}, b, a), gone = Object.assign({}, b.gone || {}, a.gone || {}); out.gone = gone;
+    const best = new Map();
+    const take = (n, t, e) => { if (!n || !n.id || (gone[n.id] || 0) >= t) return; const c = best.get(n.id); if (!c || t > c.t) best.set(n.id, { t, n, e }); };
+    for (const x of [a, b]) { x.notebooks.forEach(n => take(n, n.updated || 0, null)); (x.trash || []).forEach(e => { if (e.k === 'nb') take(e.n, e.del || 0, e); }); }
+    const nbs = [], trash = [], seen = new Set();
+    best.forEach(c => (c.e ? trash : nbs).push(c.e || c.n));
+    for (const x of [a, b]) (x.trash || []).forEach(e => { if (e.k !== 'nb' && !seen.has(e.id) && !(gone[e.id] >= (e.del || 0))) { seen.add(e.id); trash.push(e); } });
+    out.notebooks = nbs; out.trash = trash.sort((p, q) => (q.del || 0) - (p.del || 0));
+    const gm = new Map(); (b.groups || []).forEach(g => gm.set(g.id, g)); (a.groups || []).forEach(g => gm.set(g.id, g));
+    out.groups = [...gm.values()].filter(g => !gone[g.id]);
+    return out;
+  }
 
   // ======================= model =======================
   const SIZES = {
@@ -3077,7 +3264,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   const dirty = new Set(); let indexDirty = false, saveTimer = 0, saving = false;
   function setStatus(kind, msg) {
     const el = $('#status'); el.classList.toggle('err', kind === 'err');
-    el.textContent = msg || (kind === 'saving' ? 'Saving…' : Store.mode === 'cloud' ? 'Saved' : 'Saved on this device');
+    el.textContent = msg || (kind === 'saving' ? 'Saving…' : Store.mode === 'cloud' ? 'Saved' : Sync.user ? 'Saved and synced' : 'Saved on this device');
   }
   function markDirty(pid, nbo) { if (pid) { dirty.add(pid); thumbDirty(pid); bumpPage(pid); } if (nbo) nbo.updated = Date.now(); indexDirty = true; reqAll(); scheduleSave(); }
   function scheduleSave() { setStatus('saving'); clearTimeout(saveTimer); saveTimer = setTimeout(flush, 900); }
@@ -3104,7 +3291,8 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     }
     saving = false;
   }
-  document.addEventListener('visibilitychange', () => { if (document.hidden && (dirty.size || indexDirty)) flush(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && (dirty.size || indexDirty)) flush().then(() => Sync.soon(0)); else if (!document.hidden) Sync.soon(1500); });
+  addEventListener('online', () => Sync.soon(1500));
 
   // ======================= tools state =======================
   const T = Object.assign({
@@ -3519,7 +3707,14 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         }
       }
       if (action && action.snapPt && (action.kind === 'bend' || action.kind === 'move')) {
-        const pi_ = action.kind === 'bend' ? action.pi : selection && selection.pi; if (pi_ != null && pi_ >= 0) { setPageTransform(ctx, L, pi_); const q = action.snapPt, z = view.z; ctx.beginPath(); ctx.arc(q.x, q.y, 11 / z, 0, 7); ctx.strokeStyle = '#12b886'; ctx.lineWidth = 3 / z; ctx.stroke(); ctx.beginPath(); ctx.arc(q.x, q.y, 3.5 / z, 0, 7); ctx.fillStyle = '#12b886'; ctx.fill(); }
+        const pi_ = action.kind === 'bend' ? action.pi : selection && selection.pi; if (pi_ != null && pi_ >= 0 && action.kind === 'bend' && action.snapO && /perp|h|v|d45|ang/.test(action.snapPt.kind || '')) {
+          setPageTransform(ctx, L, pi_); const q = action.snapPt, O = action.snapO, z = view.z;
+          ctx.save(); ctx.setLineDash([6 / z, 5 / z]); ctx.strokeStyle = '#12b886'; ctx.lineWidth = 1.5 / z; ctx.beginPath(); const ex = q.x - O.x, ey = q.y - O.y, el = Math.hypot(ex, ey) || 1; ctx.moveTo(O.x - ex / el * 30 / z, O.y - ey / el * 30 / z); ctx.lineTo(q.x + ex / el * 30 / z, q.y + ey / el * 30 / z); ctx.stroke(); ctx.restore();
+          if (q.kind === 'perp') { const s_ = 12 / z, vx = -ex / el, vy = -ey / el; let ux = q.ux, uy = q.uy; if (ux * (O.x - q.x) + uy * (O.y - q.y) < 0) { ux = -ux; uy = -uy; } ux = -ux; uy = -uy; ctx.beginPath(); ctx.moveTo(q.x + ux * s_, q.y + uy * s_); ctx.lineTo(q.x + ux * s_ + vx * s_, q.y + uy * s_ + vy * s_); ctx.lineTo(q.x + vx * s_, q.y + vy * s_); ctx.strokeStyle = '#12b886'; ctx.lineWidth = 2 / z; ctx.stroke(); }
+          const lab = { perp: '90°', h: 'level', v: 'plumb', d45: '45°', ang: Math.round(Math.abs(Math.atan2(ey, ex) * 180 / Math.PI)) % 180 === 0 ? 'level' : Math.round(Math.abs(Math.atan2(ey, ex) * 180 / Math.PI)) === 90 ? 'plumb' : '45°' }[q.kind];
+          ctx.font = `600 ${12 / z}px Figtree, sans-serif`; const tw = ctx.measureText(lab).width, bx = q.x + 14 / z, by = q.y - 26 / z; ctx.fillStyle = '#12b886'; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, tw + 12 / z, 18 / z, 9 / z) : ctx.rect(bx, by, tw + 12 / z, 18 / z); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText(lab, bx + 6 / z, by + 13 / z);
+        }
+        if (pi_ != null && pi_ >= 0) { setPageTransform(ctx, L, pi_); const q = action.snapPt, z = view.z; ctx.beginPath(); ctx.arc(q.x, q.y, 11 / z, 0, 7); ctx.strokeStyle = '#12b886'; ctx.lineWidth = 3 / z; ctx.stroke(); ctx.beginPath(); ctx.arc(q.x, q.y, 3.5 / z, 0, 7); ctx.fillStyle = '#12b886'; ctx.fill(); }
       }
       if (action && action.kind === 'lasso' && action.poly.length > 2) {
         setPageTransform(ctx, L, action.pi); ctx.beginPath(); const P = action.poly; ctx.moveTo(P[0], P[1]); for (let i = 2; i < P.length; i += 2) ctx.lineTo(P[i], P[i + 1]); ctx.closePath();
@@ -3999,7 +4194,13 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       let lp = localPt(e, a.pi); const d0 = a.d0, cur = curveEdit.s, idx = a.p.strokes.indexOf(cur); if (idx < 0) return;
       const last = d0.k === 'n' ? 'P' + (d0.cps.length - 1) : 'B', isEnd = a.which === 'A' || a.which === 'B' || a.which === 'P0' || a.which === last;
       a.snapPt = null;
-      if (isEnd && lineSnapOn()) { const q = nearestAnchor(a.anch, lp) || nearestEdge(a.pf, lp); if (q) { lp = { x: q.x, y: q.y }; a.snapPt = q; } }
+      if (isEnd && lineSnapOn()) {
+        let O = null;
+        if (d0.k === 'n') { const i = +a.which.slice(1), c = d0.cps; O = c[i === 0 ? 1 : c.length - 2]; }
+        else if (d0.A && d0.B) O = a.which === 'A' ? d0.B : d0.A;
+        O = O ? { x: O[0], y: O[1] } : null;
+        const q = smartSnap(a.pf, a.anch, lp, O); if (q) { lp = { x: q.x, y: q.y }; a.snapPt = q; a.snapO = O; }
+      }
       if (d0.k === 'n' || d0.k === 'l') {
         let ns;
         if (d0.k === 'n') { const cps = d0.cps.map(q => q.slice()); cps[+a.which.slice(1)] = [lp.x, lp.y]; ns = Object.assign({}, cur, { cp: cps, pts: flat(nPts(cps, cur.ca)) }); }
@@ -4319,6 +4520,36 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         }
       }
       return best;
+    }
+    // Joining a line end: points on other lines where the joint is square (⊥), level (—), plumb (|) or 45°
+    function smartSnap(pf, anch, pt, O) {
+      const z = view.z, R = 30 / z, cands = [];
+      const pa = nearestAnchor(anch, pt); if (pa) cands.push({ x: pa.x, y: pa.y, kind: 'pt', sc: Math.hypot(pa.x - pt.x, pa.y - pt.y) - 4 / z });
+      if (pf) for (const st of pf.strokes) {
+        if (isHL(st) || st.k === 'g' || !objVisible(pf, st) || st.pts.length < 6) continue;
+        const b = sBox(st); if (pt.x < b.x - R || pt.x > b.x + b.w + R || pt.y < b.y - R || pt.y > b.y + b.h + R) continue;
+        const Q = st.pts;
+        for (let i = 3; i < Q.length; i += 3) {
+          const ax = Q[i - 3], ay = Q[i - 2], dx = Q[i] - ax, dy = Q[i + 1] - ay, l2 = dx * dx + dy * dy; if (!l2) continue;
+          const l = Math.sqrt(l2), ux = dx / l, uy = dy / l;
+          const tn = clamp(((pt.x - ax) * dx + (pt.y - ay) * dy) / l2, 0, 1), nx = ax + tn * dx, ny = ay + tn * dy, dn = Math.hypot(pt.x - nx, pt.y - ny);
+          if (dn > R) continue;
+          if (dn < 14 / z) cands.push({ x: nx, y: ny, kind: 'edge', sc: dn });
+          if (!O) continue;
+          const at = (t, kind, bonus) => { if (t < -0.001 || t > 1.001) return; const x = ax + t * dx, y = ay + t * dy, d = Math.hypot(pt.x - x, pt.y - y); if (d < R && Math.hypot(x - O.x, y - O.y) > 8 / z) cands.push({ x, y, kind, ux, uy, sc: d - bonus }); };
+          at(((O.x - ax) * dx + (O.y - ay) * dy) / l2, 'perp', 10 / z);
+          if (Math.abs(dy) > 1e-6) at((O.y - ay) / dy, 'h', 7 / z);
+          if (Math.abs(dx) > 1e-6) at((O.x - ax) / dx, 'v', 7 / z);
+          for (const sg of [1, -1]) { const den = dx - sg * dy; if (Math.abs(den) > 1e-6) at(((O.x - ax) - sg * (O.y - ay)) / den, 'd45', 4 / z); }
+        }
+      }
+      let best = null; for (const c of cands) if (!best || c.sc < best.sc) best = c;
+      if (best) return best;
+      if (O) {   // nothing to join: keep the line level, plumb or at 45°
+        const ang = Math.atan2(pt.y - O.y, pt.x - O.x), st = Math.PI / 4, k = Math.round(ang / st), d = Math.hypot(pt.x - O.x, pt.y - O.y);
+        if (d > 20 / z && Math.abs(ang - k * st) < 0.06) { const a2 = k * st; return { x: O.x + Math.cos(a2) * d, y: O.y + Math.sin(a2) * d, kind: 'ang' }; }
+      }
+      return null;
     }
     function nearestAnchor(list, pt) {
       let best = null, bd = 24 / view.z;
@@ -6904,6 +7135,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   }
   function purgeTrash(e) {
     const L = trashList(), i = L.indexOf(e); if (i < 0) return; L.splice(i, 1);
+    (index.gone || (index.gone = {}))[e.k === 'nb' ? e.n.id : e.id] = Date.now();
     if (e.k === 'nb') { e.n.pages.forEach(pid => { Store.remove('p-' + pid); pages.delete(pid); }); if (e.n.cv && e.n.cv.img) { Store.remove('cvimg-' + e.n.id); coverImgs.delete(e.n.id); } hist.delete(e.n.id); }
     else Store.remove('p-' + e.id);
     Store.write('index', index); if (!$('#library').hidden) renderLibrary();
@@ -7885,7 +8117,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   function deleteGroup(g) {
     if (!g) return;
     confirmBox(`Delete the group “${g.name}”?`, 'The notebooks inside go back to your shelf. No notebook is deleted.', 'Delete group', () => {
-      index.notebooks.forEach(n => { if (n.gid === g.id) delete n.gid; }); index.groups = groups().filter(x => x !== g); if (libGroup === g.id) libGroup = '';
+      index.notebooks.forEach(n => { if (n.gid === g.id) delete n.gid; }); index.groups = groups().filter(x => x !== g); (index.gone || (index.gone = {}))[g.id] = Date.now(); if (libGroup === g.id) libGroup = '';
       Store.write('index', index); renderLibrary(); toast(`Group deleted. Its notebooks are back on your shelf.`, 2400);
     });
   }
@@ -7939,7 +8171,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     { const live = index.notebooks.slice().sort((a, b) => b.updated - a.updated)[0], hc = $('#heroCont');
       hc.hidden = !live; if (live) { hc.dataset.open = live.id; hc.innerHTML = `<i class="hc-cv" style="--c:${live.cover || '#3b4cca'}"><b></b></i><span><small>Continue where you left off</small><b>${esc(live.title)}</b><em>${live.pages.length} page${live.pages.length === 1 ? '' : 's'} · ${fmtDate(live.updated)}</em></span><span class="hc-go">${svg('chev')}</span>`; } }
     applyHome();
-    $('#libStatus').textContent = Store.mode === 'cloud' ? '· saved to your account' : '· saved on this device';
+    $('#libStatus').textContent = Store.mode === 'cloud' ? '· saved to your account' : Sync.user ? '· synced to your account' : '· saved on this device';
     $('#backToTabs').hidden = !tabState.tabs.length;
   }
   $('#newNb').innerHTML = svg('plus') + 'New notebook';
@@ -8117,7 +8349,8 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   // ======================= settings page =======================
   const APP_VERSION = '2.5', APP_DATE = 'October 2026';
   const FEEDBACK_TO = '';   // email address that feedback goes to; empty lets the person choose in their mail app
-  const SET_SECS = [['profile', 'pfile', 'Profile'], ['display', 'palette', 'Display and theme'], ['writing', 'pen', 'Pen and touch'], ['language', 'globe', 'Language'], ['privacy', 'lock', 'Privacy and security'], ['storage', 'cloud', 'Storage and backup'], ['share', 'share2', 'Share the app'], ['about', 'info', 'About Tala Notes']];
+  const SET_SECS = [['profile', 'pfile', 'Profile'], ['account', 'cloud', 'Account and sync'], ['display', 'palette', 'Display and theme'], ['writing', 'pen', 'Pen and touch'], ['language', 'globe', 'Language'], ['privacy', 'lock', 'Privacy and security'], ['storage', 'cloud', 'Storage and backup'], ['share', 'share2', 'Share the app'], ['about', 'info', 'About Tala Notes']];
+  if (!window.GN_APP) SET_SECS.splice(SET_SECS.findIndex(x => x[0] === 'account'), 1);
   let setSec = 'profile';
   function openSettings(sec) {
     if (sec) setSec = sec;
@@ -8189,20 +8422,24 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         <textarea class="fb-text" rows="6" placeholder="What happened, or what would you like?"></textarea>
         ${tog('fbInfo', true, 'Include device details', 'App version, screen size and browser. Helps fix bugs faster.')}
         <div class="set-acts"><button class="btn primary" data-a="sendfb">${svg('mail')}Open in email app</button><button class="btn" data-a="copyfb">${svg('copy')}Copy text</button></div>`);
+    } else if (k === 'account') {
+      h = `<div class="acct-live">${acctHTML()}</div>`; if (Sync.on() && !Sync.ready) Sync.init();
     } else if (k === 'about') {
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>Joining lines: the end clicks to a square (90°) joint, a level or plumb point, or 45° on the other line, with a guide to show it.</li><li>Accounts: sign in with email or Google, and your notebooks sync between your devices.</li><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
         card('Updates', window.GN_APP ? `<p class="set-sub upd-msg">You have version ${APP_VERSION}. Check if a newer version is on your website.</p><div class="set-acts"><button class="btn primary" data-a="chkupd">${svg('rotate')}Check for updates</button></div>` : `<p class="set-sub">This copy always opens the newest version.</p>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
         card('Credits', `<p class="set-sub">PDF export uses jsPDF, zip files use JSZip and PDFs open with PDF.js, all open-source projects. Fonts: Figtree and Caveat from Google Fonts.</p>`);
     }
     body.innerHTML = `<h2 class="set-title">${(SET_SECS.find(s => s[0] === k) || [0, 0, ''])[2]}</h2>` + h;
+    { const al = body.querySelector('.acct-live'); if (al) wireAcct(al); }
     body.onclick = async e => {
       const t = e.target.closest('[data-t],[data-c],[data-a],[data-acc],[data-fk],[data-thm]'); if (!t) return; const d = t.dataset;
       if (d.thm) { setAppTheme(d.thm); again(); return; }
       if (d.a === 'tblook') { toolbarLookModal(); return; }
+      if (d.a && d.a.startsWith('sy')) { acctAction(d.a, t); return; }
       if (d.a === 'chkupd' || d.a === 'doupd') { checkUpdate(t, d.a === 'doupd'); return; }
       if (d.fk) { body.querySelectorAll('[data-fk]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); return; }
       if (d.acc != null) { settings.profile = Object.assign({}, prof(), { accent: d.acc }); saveSettings(); applyAccent(); again(); return; }
@@ -8313,6 +8550,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
   }
   async function doWipe() {
     toast('Erasing…', 10000);
+    Sync.halt = true; clearTimeout(Sync.timer); try { if (Sync.auth && Sync.user) await Sync.auth.signOut(); } catch (e) {}
     const keys = ['index', 'avatar', 'homebg', 'glyphs', 'mystk'];
     index.notebooks.forEach(n => { n.pages.forEach(pid => keys.push('p-' + pid)); keys.push('cvimg-' + n.id); });
     trashList().forEach(e => { const n = e.n || {}; (n.pages || []).forEach(pid => keys.push('p-' + pid)); if (n.id) keys.push('cvimg-' + n.id); });
@@ -8527,7 +8765,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     S(P, { k: 'p', c: '#7c5cff', w: 3, ds: 'd', pts: flat(shapePts('rrect', [150, P.y + 10], [1050, P.y + 820])) });
     st(P, 'arrowS', 1090, P.y + 60, 100, 1.2);
 
-    index.notebooks.push({ id: uid(), title: 'Getting started', cover: '#f0782f', paper: 'lined', bg: 'cream', size: 'tablet', pages: pgs.map(p => p.id), created: Date.now(), updated: Date.now(), pnum: 'center' });
+    index.notebooks.push({ id: uid(), title: 'Getting started', cover: '#f0782f', paper: 'lined', bg: 'cream', size: 'tablet', pages: pgs.map(p => p.id), created: Date.now(), updated: Date.now(), pnum: 'center', guide: 1 });
     pgs.forEach(p => Store.write('p-' + p.id, encodePage(p))); Store.write('index', index);
   }
 
@@ -9257,7 +9495,9 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     Store.read('avatar').then(d => { if (d && d.d) { avatarImg = d.d; refreshAvatars(); } }).catch(() => {});
     Store.read('mystk').then(d => { if (d && Array.isArray(d.list)) { myStk = d.list.filter(m => m && m.src); if (!$('#editor').hidden) buildRibbon(); } }).catch(() => {});
     if (home().bg === 'photo') Store.read('homebg').then(d => { if (d && d.d) { homeBgImg = d.d; applyHome(); } }).catch(() => {});
+    if (Sync.on()) { $('#libStatus').textContent = '· syncing…'; await Promise.race([Sync.init().then(() => Sync.user ? Sync.sync() : 0), new Promise(r => setTimeout(r, 6000))]).catch(() => {}); }
     let idx = await Store.read('index');
+    Sync.booted = true;
     if (!idx && Store.mode === 'cloud') {
       const local = ls.get('inkleaf:index', null);
       if (local && local.notebooks && local.notebooks.length) {

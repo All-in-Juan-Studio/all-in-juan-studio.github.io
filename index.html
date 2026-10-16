@@ -413,6 +413,22 @@ body.rsizing, body.rsizing * { cursor: nwse-resize !important; }
 .set-link { display: flex; gap: 8px; }
 .set-link input { flex: 1; min-width: 0; height: 42px; border: 1.5px solid var(--line); border-radius: 10px; padding: 0 10px; font: inherit; background: var(--surface-2); color: var(--ink); }
 .sy-form { display: grid; gap: 10px; }
+.welc-card { gap: 12px; text-align: left; justify-items: stretch; }
+.welc-card h1 { text-align: center; font-size: 1.7rem; }
+.welc-tala { justify-self: center; width: 110px; height: 110px; } .welc-tala svg { width: 100%; height: 100%; }
+.welc-sub { margin: 0; text-align: center; color: var(--muted); }
+.welc-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .welc-btns .btn, .welc-g { justify-content: center; min-height: 44px; }
+.welc-g { display: flex; gap: 8px; align-items: center; }
+.welc-skip { display: grid; justify-items: center; gap: 2px; min-height: 52px; background: none; border: 1.5px dashed var(--line); } .welc-skip small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.welc-agree { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; padding: 10px 12px; border-radius: 12px; background: var(--accent-soft); cursor: pointer; }
+.welc-agree span { text-align: left; } .welc-btns + .sy-link { justify-self: center; }
+.welc-agree input { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--accent); }
+.welc-agree.need { animation: welcShake .4s; outline: 2px solid #d6455d; }
+@keyframes welcShake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.lnk { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer; }
+.terms-modal { max-width: 640px; }
+.terms { max-height: min(60vh, 560px); overflow: auto; padding-right: 6px; font-size: 14px; line-height: 1.5; }
+.terms h3 { margin: 14px 0 6px; font-size: 1.05rem; } .terms ol, .terms ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; } .terms-date { margin: 0; color: var(--muted); font-size: 12px; }
 .sy-in { width: 100%; box-sizing: border-box; border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 12px; font: inherit; background: var(--surface); color: var(--ink); }
 .sy-in:focus { outline: none; border-color: var(--accent); }
 .sy-msg { margin: 0; min-height: 1.2em; font-size: 13px; color: var(--muted, #6b7280); } .sy-msg.bad, .sy-st.bad { color: #d6455d; }
@@ -1766,10 +1782,11 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     if (!u) return card('Sign in', `<p class="set-sub">Sign in to keep your notebooks safe online and on all your devices. You can keep using Tala Notes without an account.</p>
       <div class="sy-form"><input class="sy-in" type="email" name="email" autocomplete="email" placeholder="Email"><input class="sy-in" type="password" name="password" autocomplete="current-password" placeholder="Password (6 or more characters)"><p class="sy-msg" role="status"></p>
       <div class="set-acts"><button class="btn primary" data-a="syIn">Sign in</button><button class="btn" data-a="syUp">Create account</button><button class="btn sy-link" data-a="syForgot">Forgot password?</button></div>
-      <div class="sy-or"><span>or</span></div><div class="set-acts"><button class="btn" data-a="syGoogle">${GOOGLE_G}Continue with Google</button></div></div>`);
+      <div class="sy-or"><span>or</span></div><div class="set-acts"><button class="btn" data-a="syGoogle">${GOOGLE_G}Continue with Google</button></div><p class="set-sub">By signing in you agree to the <button class="lnk" data-a="syTerms">Terms of Use and Privacy Policy</button>.</p></div>`);
     const mins = Math.round((Date.now() - S.last) / 6e4);
     const st = S.state === 'syncing' ? 'Syncing…' : S.state === 'error' ? "Couldn't sync: " + syErr(S.err) : S.state === 'offline' ? "You're offline. It will sync when you're back online." : S.last ? 'Synced ' + (mins < 1 ? 'just now' : mins < 60 ? mins + ' min ago' : new Date(S.last).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) : 'Ready to sync';
-    return card('Your account', `<div class="set-row static"><span><b>${svg('pfile')} ${esc(u.email || u.displayName || 'Signed in')}</b><small class="sy-st${S.state === 'error' ? ' bad' : ''}">${st}</small></span></div><p class="set-sub">Your notebooks sync with every device where you sign in to this account. They also stay saved on this device.</p><div class="set-acts"><button class="btn primary" data-a="sySync"${S.state === 'syncing' ? ' disabled' : ''}>${svg('rotate')}Sync now</button><button class="btn" data-a="syOut">Sign out</button></div>`);
+    return card('Your account', `<div class="set-row static"><span><b>${svg('pfile')} ${esc(u.email || u.displayName || 'Signed in')}</b><small class="sy-st${S.state === 'error' ? ' bad' : ''}">${st}</small></span></div><p class="set-sub">Your notebooks sync with every device where you sign in to this account. They also stay saved on this device.</p><div class="set-acts"><button class="btn primary" data-a="sySync"${S.state === 'syncing' ? ' disabled' : ''}>${svg('rotate')}Sync now</button><button class="btn" data-a="syOut">Sign out</button></div>`) +
+      card('Delete account', `<p class="set-sub">Deletes your account and the copy of your notebooks saved online. The notebooks on this device stay.</p><div class="set-acts"><button class="btn ghost-danger" data-a="syDel">${svg('trash')}Delete my account…</button><button class="btn sy-link" data-a="syTerms">Terms and Privacy</button></div>`);
   }
   function refreshAcct() {
     const st = $('#libStatus'); if (st && Store.mode === 'idb' && Sync.booted) st.textContent = Sync.state === 'syncing' ? '· syncing…' : Sync.user ? '· synced to your account' : '· saved on this device';
@@ -1795,6 +1812,8 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       } catch (e) { toast("That doesn't look like a Firebase config. It needs apiKey and projectId.", 4000); }
       return;
     }
+    if (a === 'syTerms') { termsModal(); return; }
+    if (a === 'syDel') { confirmBox('Delete your account?', 'Your account and the online copy of your notebooks will be deleted for good. The notebooks on this device stay. This can\'t be undone.', 'Delete account', deleteAccount); return; }
     if (a === 'syRetry') { Sync.err = ''; refreshAcct(); Sync.init(); return; }
     if (a === 'syIn') return run('Signing in…', () => Sync.auth.signInWithEmailAndPassword((em || '').trim(), pw || ''));
     if (a === 'syUp') return run('Creating your account…', () => Sync.auth.createUserWithEmailAndPassword((em || '').trim(), pw || ''));
@@ -1810,6 +1829,95 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
         try { await flush(); await Sync.sync(); } catch (e) {}
         await Sync.auth.signOut(); const M = Sync.meta(); M.uid = ''; M.m = {}; Sync.saveMeta(); Sync.state = ''; Sync.last = 0; refreshAcct(); toast('Signed out.', 1800);
       });
+    }
+  }
+  const TERMS_V = 1, TERMS_DATE = 'October 16, 2026';
+  function termsHTML() {
+    return `<div class="terms">
+      <p class="terms-date">Last updated ${TERMS_DATE}</p>
+      <h3>Terms of Use</h3>
+      <ol>
+        <li><b>Using Tala Notes.</b> Tala Notes is a free notebook app made by All in Juan Studio for writing, studying and drawing. Use it for lawful purposes only. Don't use it to store or share anything illegal or to harm other people.</li>
+        <li><b>Your notes are yours.</b> You own everything you write, draw and import. Tala Notes doesn't claim any rights to your content and only stores it so you can use it.</li>
+        <li><b>Your account.</b> Keep your password private. You're responsible for what happens in your account. Accounts that abuse the service may be suspended.</li>
+        <li><b>Keep backups.</b> Tala Notes is provided as is. We work hard to keep your notes safe, but we can't promise that data will never be lost, so make a backup now and then (Settings → Storage and backup).</li>
+        <li><b>Changes.</b> Features may change or be added, including optional paid features later. You'll always be told before anything costs money. If these terms change, the app will show you the new version.</li>
+        <li><b>Limits.</b> As far as the law allows, All in Juan Studio isn't liable for lost data or other losses from using the app.</li>
+      </ol>
+      <h3>Privacy Policy</h3>
+      <ul>
+        <li><b>Without an account,</b> your notebooks stay only on your device. Nothing is uploaded.</li>
+        <li><b>With an account,</b> we store your email, an account ID, sign-in dates, and your synced notebooks, pages and pictures. They are kept with Google Firebase (Authentication and Cloud Firestore) on servers in Singapore.</li>
+        <li><b>Who can see it.</b> Only you, through your account. As the app's administrator, All in Juan Studio can technically access stored data. It is only looked at to fix a problem or when you ask for help, and it's never sold or shared.</li>
+        <li><b>No ads, no tracking.</b> Tala Notes has no ads or analytics, and passwords are never visible to anyone.</li>
+        <li><b>Your rights.</b> Under the Philippine Data Privacy Act of 2012, you can ask to see, correct or delete your data. You can delete your account and its cloud copy any time in Settings → Account and sync.</li>
+        <li><b>Under 18?</b> Please ask a parent or guardian before creating an account.</li>
+        <li><b>Questions?</b> Use Settings → Send feedback.</li>
+      </ul>
+    </div>`;
+  }
+  function termsModal() {
+    modal(`<h2>Terms and Privacy</h2>${termsHTML()}<div class="modal-actions"><button class="btn primary" data-x>Done</button></div>`, (m, close) => { m.classList.add('terms-modal'); m.parentElement.style.zIndex = 400; m.querySelector('[data-x]').onclick = close; });
+  }
+  function showWelcome(done) {
+    if (document.querySelector('.welc')) return;
+    const el = document.createElement('div'); el.className = 'onb welc'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Welcome to Tala Notes');
+    document.body.appendChild(el);
+    let agreed = false;
+    const finish = () => { settings.termsV = TERMS_V; saveSettings(); el.classList.add('out'); setTimeout(() => { el.remove(); done && done(); }, 250); };
+    const render = () => {
+      const ready = Sync.ready, em = (el.querySelector('input[type=email]') || {}).value || '', pw = (el.querySelector('input[type=password]') || {}).value || '';
+      el.innerHTML = `<div class="onb-card welc-card">
+        <div class="welc-tala">${talaSVG('wave')}</div>
+        <h1>Welcome to Tala Notes</h1>
+        <p class="welc-sub">Sign in to keep your notebooks safe online and on all your devices, or start right away without an account.</p>
+        <div class="sy-form">
+          <input class="sy-in" type="email" name="email" autocomplete="email" placeholder="Email" value="${esc(em)}"${ready ? '' : ' disabled'}>
+          <input class="sy-in" type="password" name="password" autocomplete="current-password" placeholder="Password (6 or more characters)" value="${esc(pw)}"${ready ? '' : ' disabled'}>
+          <label class="welc-agree"><input type="checkbox"${agreed ? ' checked' : ''}><span>I agree to the <button class="lnk" data-w="terms">Terms of Use and Privacy Policy</button></span></label>
+          <p class="sy-msg" role="status">${ready ? '' : Sync.err ? 'No internet right now. You can sign in later in Settings.' : 'Connecting…'}</p>
+          <div class="welc-btns"><button class="btn primary" data-w="up"${ready ? '' : ' disabled'}>Create account</button><button class="btn" data-w="in"${ready ? '' : ' disabled'}>Sign in</button></div>
+          <button class="btn sy-link" data-w="forgot"${ready ? '' : ' disabled'}>Forgot password?</button>
+          <div class="sy-or"><span>or</span></div>
+          <button class="btn welc-g" data-w="google"${ready ? '' : ' disabled'}>${GOOGLE_G}Continue with Google</button>
+          <button class="btn welc-skip" data-w="skip">Continue without an account<small>Your notes stay on this device. You can sign in later in Settings.</small></button>
+        </div>
+      </div>`;
+      const cb = el.querySelector('.welc-agree input'); cb.onchange = () => { agreed = cb.checked; el.querySelector('.welc-agree').classList.remove('need'); };
+      const pwI = el.querySelector('input[type=password]'); pwI.onkeydown = e => { if (e.key === 'Enter') el.querySelector('[data-w=in]').click(); };
+    };
+    const say = (m, bad) => { const g = el.querySelector('.sy-msg'); if (g) { g.textContent = m; g.classList.toggle('bad', !!bad); } };
+    el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-w]'); if (!b) return; const w = b.dataset.w;
+      if (w === 'terms') { e.preventDefault(); termsModal(); return; }
+      if (!agreed) { const a = el.querySelector('.welc-agree'); a.classList.remove('need'); void a.offsetWidth; a.classList.add('need'); say('Please tick the box to agree to the Terms first.', true); return; }
+      if (w === 'skip') { finish(); return; }
+      const em = (el.querySelector('input[type=email]').value || '').trim(), pw = el.querySelector('input[type=password]').value || '';
+      const busy = on => el.querySelectorAll('button, input').forEach(x => { if (!x.classList.contains('lnk')) x.disabled = on; });
+      const run = async (label, fn, close = true) => { busy(true); say(label); try { await fn(); if (close) { finish(); toast('Signed in. Your notebooks will sync.', 2500); } else busy(false); } catch (er) { busy(false); say(syErr(er && er.code || 'error'), true); } };
+      if (w === 'up') return run('Creating your account…', () => Sync.auth.createUserWithEmailAndPassword(em, pw));
+      if (w === 'in') return run('Signing in…', () => Sync.auth.signInWithEmailAndPassword(em, pw));
+      if (w === 'forgot') { if (!em) { say('Type your email first, then tap Forgot password.', true); return; } return run('Sending…', async () => { await Sync.auth.sendPasswordResetEmail(em); say('Check your email for a link to reset your password.'); }, false); }
+      if (w === 'google') return run('Opening Google…', async () => { const pr = new firebase.auth.GoogleAuthProvider(); try { await Sync.auth.signInWithPopup(pr); } catch (er) { if (er && /popup-blocked|operation-not-supported/.test(er.code || '')) await Sync.auth.signInWithRedirect(pr); else throw er; } });
+    });
+    render();
+    if (!Sync.ready) { Sync.init(); const t = setInterval(() => { if (!document.body.contains(el)) return clearInterval(t); if (Sync.ready || Sync.err) { clearInterval(t); if (el.querySelector('input[type=email]').disabled) render(); } }, 400); }
+  }
+  async function deleteAccount() {
+    const u = Sync.user; if (!u) return;
+    toast('Deleting your account…', 10000);
+    try {
+      Sync.halt = true; clearTimeout(Sync.timer);
+      const root = Sync.db.collection('users').doc(u.uid), kv = root.collection('kv');
+      const snap = await root.get(), R = (snap.exists && snap.data().m) || {};
+      for (const k of Object.keys(R)) await Sync.delDoc(kv, k);
+      await root.delete();
+      await u.delete();
+      const M = Sync.meta(); M.uid = ''; M.m = {}; Sync.saveMeta(); Sync.state = ''; Sync.last = 0; Sync.halt = false;
+      toast('Your account and its cloud copy are deleted. Your notebooks are still on this device.', 4500); refreshAcct();
+    } catch (e) {
+      Sync.halt = false;
+      toast(e && e.code === 'auth/requires-recent-login' ? 'For safety, sign out and sign in again, then delete your account. Your cloud notes were already removed.' : "Couldn't delete: " + syErr(e && e.code || 'error'), 5500); refreshAcct();
     }
   }
   function toast(msg, ms = 2600) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), ms); }
@@ -8403,7 +8511,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
           `<label class="field"><span>PIN hint (optional, shown if you forget)</span><input type="text" class="pin-hint" maxlength="60" placeholder="e.g. my dog's birthday" value="${esc(L.hint || '')}"></label>` +
           `<div class="set-acts"><button class="btn" data-a="pinchange">Change PIN</button><button class="btn" data-a="newcode">${svg('key')}${L.rh ? 'Make a new recovery code' : 'Make a recovery code'}</button><button class="btn ghost-danger" data-a="pinoff">Turn off</button></div>`
         : `<p class="set-sub">Keep your notebooks private with a 4-digit PIN.</p><div class="set-acts"><button class="btn primary" data-a="pinset">${svg('lock')}Set a PIN</button></div>`)) +
-        card('Your privacy', `<ul class="set-ul"><li>${Store.mode === 'cloud' ? 'Your notebooks are saved privately in your Claude account. Only you can see them unless you share them.' : 'Your notebooks are saved only on this device. Nothing is uploaded.'}</li><li>No ads and no tracking. Tala Notes doesn't collect anything about you.</li><li>Pictures and files you open in windows stay on this device unless you put them in a notebook.</li></ul>`) +
+        card('Your privacy', `<ul class="set-ul"><li>${Store.mode === 'cloud' ? 'Your notebooks are saved privately in your Claude account. Only you can see them unless you share them.' : Sync.user ? 'Your notebooks are saved on this device and synced to your Tala Notes account (Google Firebase). The app administrator can technically access synced data, but only looks at it to fix problems or when you ask.' : 'Your notebooks are saved only on this device. Nothing is uploaded.'}</li><li>No ads and no tracking. Tala Notes doesn't collect anything about you.</li><li>Pictures and files you open in windows stay on this device unless you put them in a notebook.</li></ul><div class="set-acts"><button class="btn" data-a="syTerms">${svg('file')}Terms and Privacy</button></div>`) +
         card('Erase', `<p class="set-sub">Remove every notebook, picture and setting${Store.mode === 'cloud' ? ' from your account' : ' from this device'}. Make a backup first if you might want them back.</p><div class="set-acts"><button class="btn ghost-danger" data-a="wipe">${svg('trash')}Erase all my data…</button></div>`);
     } else if (k === 'storage') {
       const nbs = index.notebooks, pagesN = nbs.reduce((a, n) => a + n.pages.length, 0), last = settings.lastBackup;
@@ -8431,8 +8539,9 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>Joining lines, both when you draw a new line and when you drag one with the Lasso: the end clicks to a square (90°) joint, a level or plumb point, or 45° on the other line, with a guide to show it.</li><li>Accounts: sign in with email or Google, and your notebooks sync between your devices.</li><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>A welcome screen to sign in, create an account or continue without one, plus Terms of Use and a Privacy Policy. You can also delete your account in Settings.</li><li>Joining lines, both when you draw a new line and when you drag one with the Lasso: the end clicks to a square (90°) joint, a level or plumb point, or 45° on the other line, with a guide to show it.</li><li>Accounts: sign in with email or Google, and your notebooks sync between your devices.</li><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
         card('Updates', window.GN_APP ? `<p class="set-sub upd-msg">You have version ${APP_VERSION}. Check if a newer version is on your website.</p><div class="set-acts"><button class="btn primary" data-a="chkupd">${svg('rotate')}Check for updates</button></div>` : `<p class="set-sub">This copy always opens the newest version.</p>`) +
+        card('Terms and privacy', `<p class="set-sub">How Tala Notes handles your notes and account.</p><div class="set-acts"><button class="btn" data-a="syTerms">${svg('file')}Read the Terms and Privacy Policy</button></div>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
         card('Credits', `<p class="set-sub">PDF export uses jsPDF, zip files use JSZip and PDFs open with PDF.js, all open-source projects. Fonts: Figtree and Caveat from Google Fonts.</p>`);
     }
@@ -8442,6 +8551,7 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
       const t = e.target.closest('[data-t],[data-c],[data-a],[data-acc],[data-fk],[data-thm]'); if (!t) return; const d = t.dataset;
       if (d.thm) { setAppTheme(d.thm); again(); return; }
       if (d.a === 'tblook') { toolbarLookModal(); return; }
+      if (d.a === 'syTerms') { termsModal(); return; }
       if (d.a && d.a.startsWith('sy')) { acctAction(d.a, t); return; }
       if (d.a === 'chkupd' || d.a === 'doupd') { checkUpdate(t, d.a === 'doupd'); return; }
       if (d.fk) { body.querySelectorAll('[data-fk]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); return; }
@@ -9517,7 +9627,9 @@ body.nb-dragging, body.nb-dragging * { cursor: grabbing !important; }
     if (!idx) buildGuide();
     tabState.tabs = tabState.tabs.filter(id => index.notebooks.some(n => n.id === id));
     renderLibrary();
-    if (!settings.onboarded) runOnboarding(false);
+    if (Sync.on() && !Sync.user && (settings.termsV || 0) < TERMS_V) showWelcome(() => { if (!settings.onboarded) runOnboarding(false); });
+    else if (!settings.onboarded) runOnboarding(false);
+    if (Sync.user && (settings.termsV || 0) < TERMS_V) { settings.termsV = TERMS_V; saveSettings(); }
     else if (settings.bkRemind && index.notebooks.length && Date.now() - (settings.lastBackup || settings.bkSince || (settings.bkSince = Date.now(), saveSettings(), Date.now())) > settings.bkRemind * 864e5) setTimeout(() => toast(`Time for a backup: Settings → Storage and backup → Back up all notebooks.`, 5000), 1500);
   }
   applyLang();

@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.allinjuanstudio.talanotes",
+        "sha256_cert_fingerprints": ["01:2A:AE:B7:F8:2F:6C:12:1A:42:AC:4A:B1:78:7D:96:06:29:1E:CC:78:99:3F:F5:60:62:2D:91:AB:4D:5B:3E"]
+      }
+    }]

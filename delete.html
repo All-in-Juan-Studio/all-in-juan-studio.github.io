@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Delete your account · Tala Notes</title>
+<link rel="icon" href="favicon-32.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f8;--card:#fff;--ink:#1c2230;--muted:#5f6779;--line:#dde1e8;--accent:#2f6fed;--danger:#e5484d}
+@media (prefers-color-scheme:dark){:root{--bg:#14171f;--card:#1e222c;--ink:#e9ecf5;--muted:#9aa2b5;--line:#2e3442;--accent:#7aa2ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:28px 16px 60px}.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}.brand img{width:48px;height:48px;border-radius:12px}.brand b{font-size:1.3rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:16px}h1{font-size:1.6rem;margin:0 0 6px}h3{margin:20px 0 6px}
+.terms-date{color:var(--muted);font-size:.9rem}li{margin:6px 0}a{color:var(--accent)}
+label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 4px}input[type=email],input[type=password]{width:100%;height:46px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;font:inherit;background:var(--card);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 18px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:700 1rem Figtree,sans-serif;cursor:pointer;margin:14px 8px 0 0}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}.btn:disabled{opacity:.5;cursor:default}
+.msg{margin-top:12px;font-weight:700}.msg.bad{color:var(--danger)}.msg.ok{color:#2f9e66}.muted{color:var(--muted)}.chk{display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:14px}.chk input{width:20px;height:20px;margin-top:2px}
+</style></head><body><main><div class="brand"><img src="icon-192.png" alt=""><b>Tala Notes</b></div>
+<div class="card"><h1>Delete your Tala Notes account</h1>
+<p>You can delete your account in the app (Settings → Account and sync → Delete account) or here.</p>
+<p><b>What is deleted:</b> your account (email and sign-in), all notebooks and pages synced to your account, and your place in any shared notebooks. Shared notebooks you created stop being shared. This happens right away and can't be undone.</p>
+<p><b>What stays:</b> notebooks saved on your own phone or tablet stay there until you uninstall the app, and backup files you saved stay where you put them.</p></div>
+<div class="card" id="box">
+<div id="signin"><h3 style="margin-top:0">Sign in to the account you want to delete</h3>
+<label for="em">Email</label><input id="em" type="email" autocomplete="email">
+<label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password">
+<button class="btn primary" id="go">Sign in</button><button class="btn" id="gg">Continue with Google</button>
+<p class="muted" style="font-size:.9rem">Forgot your password? <a href="#" id="reset">Send me a reset email</a></p></div>
+<div id="del" hidden><p>Signed in as <b id="who"></b>.</p>
+<label class="chk"><input type="checkbox" id="sure"> I understand my account and synced notebooks will be deleted forever.</label>
+<button class="btn danger" id="kill" disabled>Delete my account</button><button class="btn" id="out">Sign out</button></div>
+<div class="msg" id="msg"></div></div>
+<p class="muted"><a href="privacy.html">Terms of Use and Privacy Policy</a></p></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id), msg = (t, k) => { const m = $('msg'); m.textContent = t; m.className = 'msg ' + (k || ''); };
+  firebase.initializeApp({ apiKey: 'AIzaSyCeJwCajIMqsQvdoJX24a9ptE6XlvISTBI', authDomain: 'tala-notes-4988b.firebaseapp.com', projectId: 'tala-notes-4988b', storageBucket: 'tala-notes-4988b.firebasestorage.app', messagingSenderId: '548591130689', appId: '1:548591130689:web:6cd45fee00347679b70ec0' }); const auth = firebase.auth(), db = firebase.firestore();
+  const err = e => ({ 'auth/invalid-credential': 'Wrong email or password.', 'auth/invalid-login-credentials': 'Wrong email or password.', 'auth/wrong-password': 'Wrong email or password.', 'auth/user-not-found': 'No account with that email.', 'auth/too-many-requests': 'Too many tries. Wait a few minutes.', 'auth/network-request-failed': 'No internet connection.', 'auth/popup-closed-by-user': 'Google sign-in was closed.', 'auth/requires-recent-login': 'Please sign out, sign in again, then delete.' }[e && e.code] || 'Something went wrong (' + ((e && (e.code || e.message)) || 'error') + ').');
+  auth.onAuthStateChanged(u => { $('signin').hidden = !!u; $('del').hidden = !u; if (u) $('who').textContent = u.email || u.displayName || 'your account'; });
+  $('go').onclick = async () => { msg(''); try { await auth.signInWithEmailAndPassword($('em').value.trim(), $('pw').value); } catch (e) { msg(err(e), 'bad'); } };
+  $('gg').onclick = async () => { msg(''); try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch (e) { msg(err(e), 'bad'); } };
+  $('reset').onclick = async ev => { ev.preventDefault(); const em = $('em').value.trim(); if (!em) { msg('Type your email first.', 'bad'); return; } try { await auth.sendPasswordResetEmail(em); msg('Reset email sent. Check your inbox.', 'ok'); } catch (e) { msg(err(e), 'bad'); } };
+  $('out').onclick = () => auth.signOut();
+  $('sure').onchange = () => { $('kill').disabled = !$('sure').checked; };
+  const delDoc = async (kv, id) => { try { const sn = await kv.doc(id).get(); if (sn.exists && sn.data().n) for (let i = 0; i < sn.data().n; i++) await kv.doc(id + '~' + i).delete(); await kv.doc(id).delete(); } catch (e) {} };
+  $('kill').onclick = async () => {
+    const u = auth.currentUser; if (!u) return; $('kill').disabled = true; msg('Deleting…');
+    try {
+      const root = db.collection('users').doc(u.uid), kv = root.collection('kv'), snap = await root.get(), R = (snap.exists && snap.data().m) || {};
+      // leave or stop shared notebooks listed in the notebook index
+      try { const idx = await kv.doc('index').get(); let ix = null; if (idx.exists) { const x = idx.data(); if (x.d) ix = JSON.parse(x.d); else if (x.n) { let s = ''; for (let i = 0; i < x.n; i++) s += (await kv.doc('index~' + i).get()).data().d; ix = JSON.parse(s); } }
+        for (const n of ((ix && ix.notebooks) || []).filter(n => n.share && n.share.sid)) { const ref = db.collection('shared').doc(n.share.sid);
+          try { if (n.share.owner === u.uid) { const ps = await ref.collection('p').get(); for (const d of ps.docs) await d.ref.delete(); await ref.delete(); } else await ref.update({ members: firebase.firestore.FieldValue.arrayRemove(u.uid) }); } catch (e) {} } } catch (e) {}
+      for (const k of Object.keys(R)) await delDoc(kv, k.replace(/\//g, '_'));
+      await root.delete();
+      await u.delete();
+      $('signin').hidden = true; $('del').hidden = true; msg('Your account and its synced notebooks are deleted. Notebooks saved on your devices are still there.', 'ok');
+    } catch (e) { $('kill').disabled = false; msg(err(e), 'bad'); }
+  };
+})();
+</script></body></html>

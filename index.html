@@ -484,6 +484,7 @@ body.rsizing, body.rsizing * { cursor: nwse-resize !important; }
 .crop-bar .cb-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 2px; }
 .crop-bar b { display: inline-flex; align-items: center; gap: 6px; font-size: .9rem; margin-right: 4px; } .crop-bar b svg { width: 18px; height: 18px; color: var(--accent); }
 .tr-tools { display: flex; } .tr-tools button { flex: 1; }
+.fr-dg { display: flex; } .fr-dg button { flex: 1; }
 .tr-cv { touch-action: none; cursor: crosshair; }
 .tr-hint { font-size: .8rem; color: var(--muted); font-weight: 600; margin-top: -4px; }
 .tr-types { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -1956,7 +1957,7 @@ body { background: var(--desk); }
 .rail .lifted { transform: scale(1.12); transition: transform .14s ease-out; z-index: 4; }
 .rail-ghost { position: fixed; z-index: 120; pointer-events: none; left: 0; top: 0; display: grid; place-items: center; width: 48px; height: 52px; border-radius: 16px; background: var(--surface); color: var(--ink); box-shadow: 0 14px 30px rgba(15,20,35,.28), 0 0 0 1px color-mix(in srgb, var(--ink) 8%, transparent); transition: background .15s, box-shadow .15s; }
 .rail-ghost svg { width: 26px; height: 26px; }
-.rail-ghost.inst { width: 64px; height: 40px; } .rail-ghost.inst svg { width: 56px; height: 24px; }
+.rail-ghost.inst svg { flex: none; }
 .rail-ghost.rm { background: #ffe3e8; box-shadow: 0 14px 30px rgba(200,30,60,.3), 0 0 0 2px #e03157; }
 .rail-ghost .rmtag { position: absolute; top: 100%; margin-top: 6px; background: #e03157; color: #fff; font: 700 11px/1 var(--ui); padding: 5px 8px; border-radius: 8px; white-space: nowrap; display: none; }
 .rail-ghost.rm .rmtag { display: block; }
@@ -2130,9 +2131,13 @@ body { background: var(--desk); }
   .ui3 .pbubble { height: 36px; font-size: .8rem; }
 }
 @media (max-width: 460px) {
-  .ui3 #bar2 [data-b2="overview"], .ui3 #bar2 #addTabBtn, .ui3 #bar2 #b2Redo { display: none !important; }
+  .ui3 #bar2 [data-b2="overview"], .ui3 #bar2 #addTabBtn { display: none !important; }
 }
-@media (max-width: 380px) { .ui3 #bar2 [data-b2="layers"] { display: none !important; } }
+@media (max-width: 760px) { .ui3 #bar2 .b2tabs { flex: 1 1 0 !important; min-width: 0 !important; overflow: hidden; } .ui3 #bar2 #tabs { min-width: 0 !important; } .ui3 #bar2 .tab { min-width: 0 !important; flex-shrink: 1 !important; } .ui3 #bar2 .b2grp { flex-shrink: 0 !important; } .ui3 #bar2 [data-b2="layers"], .ui3 #bar2 [data-b2="shot"] { display: grid !important; } }
+@media (min-width: 361px) { .ui3 #bar2 #b2Redo { display: grid !important; } }
+@media (max-width: 400px) { .ui3 #bar2 .b2 { width: 34px !important; } .ui3 #bar2 .b2tabs { display: none !important; } }
+
+.pop .rsize { margin: 0 6px 8px; display: flex; } .pop .rsize button { flex: 1; font-weight: 800; }
 </style>
 </head>
 <body>
@@ -2407,7 +2412,7 @@ body { background: var(--desk); }
     laser: 'M4 20l7-7 M14.5 9.5a3 3 0 1 0 0-.01 M18 4l-1 1.5 M21 7.5l-1.8.4 M14 3l.3 1.8 M20.5 12l-1.6-.6',
     fillet: 'M4 20V12a8 8 0 0 1 8-8h8 M4 20h4 M20 4v4',
     joints: 'M6 17.5a1.8 1.8 0 1 0 0.01 0 M12 6.5a1.8 1.8 0 1 0 0.01 0 M18 17.5a1.8 1.8 0 1 0 0.01 0 M7 15.8l4-7.6 M13 8.2l4 7.6 M7.8 17.5h8.4',
-    people: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5 M16 4.3a3.5 3.5 0 0 1 0 6.4 M18 14.8c2 .7 3.2 2.4 3.5 5.2', exam: 'M6 3h12v18H6z M9 3v2h6V3 M9 10l1.5 1.5L13 9 M9 15.5l1.5 1.5L13 14.5 M15 10.2h0 M15 15.7h0', fsheet: 'M6 2.5h9l4 4V21.5H6z M15 2.5v4h4 M9 17l1.4-6.5h2.6 M8.8 13.6h3.4 M13.5 13.5l3 3.5 M16.5 13.5l-3 3.5', chevd: 'M6 9l6 6 6-6', chevr: 'M9 6l6 6-6 6', truss: 'M2 18h20 M2 18l5-9h10l5 9 M7 9l3.5 9 M10.5 18L12 9 M12 9l1.5 9 M13.5 18l3.5-9 M2 18l-0.01 0', graphfn: 'M4 4v16h16 M6 16c3-9 6-9 8-3s4 3 6-6', cartesian: 'M12 3v18 M3 12h18 M12 3l-2 2 M12 3l2 2 M21 12l-2-2 M21 12l-2 2 M7 8h0 M17 7h0 M8 17h0', numline: 'M3 12h18 M3 12l2-2 M3 12l2 2 M21 12l-2-2 M21 12l-2 2 M7 10v4 M12 10v4 M17 10v4',
+    people: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5 M16 4.3a3.5 3.5 0 0 1 0 6.4 M18 14.8c2 .7 3.2 2.4 3.5 5.2', exam: 'M6 3h12v18H6z M9 3v2h6V3 M9 10l1.5 1.5L13 9 M9 15.5l1.5 1.5L13 14.5 M15 10.2h0 M15 15.7h0', fsheet: 'M6 2.5h9l4 4V21.5H6z M15 2.5v4h4 M9 17l1.4-6.5h2.6 M8.8 13.6h3.4 M13.5 13.5l3 3.5 M16.5 13.5l-3 3.5', chevd: 'M6 9l6 6 6-6', chevr: 'M9 6l6 6-6 6', frame: 'M5 20V6h14v14 M5 6l2.5 2.5 M19 6l-2.5 2.5 M2.5 20h5 M16.5 20h5 M3 22l1.2-2 M5.5 22l1.2-2 M17 22l1.2-2 M19.5 22l1.2-2', truss: 'M2 18h20 M2 18l5-9h10l5 9 M7 9l3.5 9 M10.5 18L12 9 M12 9l1.5 9 M13.5 18l3.5-9 M2 18l-0.01 0', graphfn: 'M4 4v16h16 M6 16c3-9 6-9 8-3s4 3 6-6', cartesian: 'M12 3v18 M3 12h18 M12 3l-2 2 M12 3l2 2 M21 12l-2-2 M21 12l-2 2 M7 8h0 M17 7h0 M8 17h0', numline: 'M3 12h18 M3 12l2-2 M3 12l2 2 M21 12l-2-2 M21 12l-2 2 M7 10v4 M12 10v4 M17 10v4',
     cards: 'M7 4h12a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M3 8v11a1 1 0 0 0 1 1h12',
     shot: 'M4 8V5a1 1 0 0 1 1-1h3 M16 4h3a1 1 0 0 1 1 1v3 M20 16v3a1 1 0 0 1-1 1h-3 M8 20H5a1 1 0 0 1-1-1v-3 M9 12a3 3 0 1 0 6 0a3 3 0 1 0-6 0',
     trim: 'M6 6a2.5 2.5 0 1 0 0 .01 M6 18a2.5 2.5 0 1 0 0 .01 M8 7.5L20 17 M8 16.5L20 7 M3 12h3',
@@ -2927,12 +2932,14 @@ body { background: var(--desk); }
   const TCUS_DEF = { top: 'flat', bot: 'flat', web: 'pratt', endH: 0.3, supL: 'pin', supR: 'roller', mid: 'none' };
   const tcusCfg = () => Object.assign({}, TCUS_DEF, T.tcus || {});
   const TRUSSIDS = TRUSSES.map(x => x[0]);
+  const FRAMES = [['f_portal', 'Portal frame'], ['f_bay2', 'Two bays'], ['f_story2', 'Two stories'], ['f_multi', 'Building frame'], ['f_gable', 'Gable frame'], ['f_canti', 'L-frame'], ['f_3h', 'Three-hinged frame'], ['f_3hg', 'Three-hinged gable']];
+  const FRAMEIDS = FRAMES.map(x => x[0]);
   const LOADS = [['pload', 'Point load'], ['udl', 'Distributed load'], ['uvl', 'Triangular load'], ['moment', 'Moment (clockwise)'], ['momentccw', 'Moment (counterclockwise)']];
   const BEAM_SUP = { b_ss: { l: 'pin', m: 'none', r: 'roller' }, b_cant: { l: 'fixed', m: 'none', r: 'free' }, b_ff: { l: 'fixed', m: 'none', r: 'fixed' }, b_prop: { l: 'fixed', m: 'none', r: 'roller' }, b_over: { l: 'pin', m: 'roller', mp: 0.7, r: 'free' }, b_cont: { l: 'pin', m: 'roller', mp: 0.5, r: 'roller' } };
   const SUP_KINDS = [['pin', 'Pin'], ['roller', 'Roller'], ['fixed', 'Fixed'], ['free', 'Free end']];
-  const SHAPES = SHAPES2D.concat(LINES, SHAPES3D, ENGSEC, BEAMS, LOADS, TRUSSES);
+  const SHAPES = SHAPES2D.concat(LINES, SHAPES3D, ENGSEC, BEAMS, LOADS, TRUSSES, FRAMES);
   const ENGIDS = ENGSEC.map(x => x[0]), BEAMIDS = BEAMS.map(x => x[0]).concat(LOADS.map(x => x[0]));
-  const isEngShape = k => ENGIDS.includes(k) || BEAMIDS.includes(k) || TRUSSIDS.includes(k);
+  const isEngShape = k => ENGIDS.includes(k) || BEAMIDS.includes(k) || TRUSSIDS.includes(k) || FRAMEIDS.includes(k);
   const beamSup = () => Object.assign({ l: 'pin', m: 'none', mp: 0.5, r: 'roller' }, T.beamSup || {});
   // supports as a list of { k: kind, p: 0..1 along the span }, any number, anywhere
   function supListOf(sp) {
@@ -4617,6 +4624,10 @@ body { background: var(--desk); }
   function buildShapeStrokes(kind, A, B, lock) {
     const outline = T.shapeColor, fill = T.shapeFill, w = T.shapeSize;
     if (kind === 'dim') return makeDim(A, B, 1, '', 0, (T.dimCfg && T.dimCfg.col) || outline || INK[0], T.dimCfg).strokes;
+    if (FRAMEIDS.includes(kind)) {
+      const col = outline || INK[0];
+      return frameParts(kind, A, B).map(pt => { const st = { k: 'p', c: col, w: pt.thin ? Math.max(1, w * 0.5) : pt.heavy ? w * 1.7 : pt.joint ? Math.max(1, w * 0.6) : pt.dot ? Math.max(1, w * 0.5) : w * 1.25, pts: flat(pt.pts) }; if (pt.joint) st.fl = '#ffffff'; else if (pt.dot) st.fl = col; else if (pt.fill && fill) st.fl = fill; return st; });
+    }
     if (TRUSSIDS.includes(kind)) {
       const col = outline || INK[0];
       return trussParts(kind, A, B).map(pt => { const st = { k: 'p', c: col, w: pt.thin ? Math.max(1, w * 0.5) : pt.heavy ? w * 1.7 : pt.joint ? Math.max(1, w * 0.6) : w, pts: flat(pt.pts) }; if (pt.joint) st.fl = '#ffffff'; else if (pt.fill && fill) st.fl = fill; return st; });
@@ -5007,13 +5018,25 @@ body { background: var(--desk); }
       bumpPage(p.id); ent.key = (v + 1) + tail;
     }
     function keepCache(pid, before) { { const u = ucache.get(pid), q = pages.get(pid); if (u && q && u.p === q) { const tl = '|' + cacheEpoch + '|' + (pageDark(q) ? 1 : 0); if (u.key === before + tl) u.key = (pageVer.get(pid) || 0) + tl; } } const tc = tcache.get(pid); if (tc && tc.p === pages.get(pid)) { const tl = '|' + cacheEpoch + '|' + (pageDark(tc.p) ? 1 : 0); if (tc.key === before + tl) tc.key = (pageVer.get(pid) || 0) + tl; return; } const ent = pcache.get(pid), p = pages.get(pid); if (!ent || !p || ent.p !== p) return; const tail = '|' + cacheEpoch + '|' + (pageDark(p) ? 1 : 0); if (ent.key === before + tail) ent.key = (pageVer.get(pid) || 0) + tail; }
+    let liveBox = null;
     function drawLive(L) {
-      const ctx = cLive; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, SW, SH);
+      const ctx = cLive; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // while you write, only the area around your stroke is repainted (much less work per frame on tablets)
+      const onlyStroke = !!(nb && action && action.kind === 'stroke' && !action.snapped && !laserPts.length && !curveEdit && !neatQ.busy && !dimPlace && !(hover && (T.tool === 'eraser' || hover.eraser)));
+      if (onlyStroke && L.lefts[action.pi] != null) {
+        const P = action.s.pts, Q = action.pred || [], z = view.z, ox = view.tx + L.lefts[action.pi] * z, oy = view.ty + L.tops[action.pi] * z;
+        let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (let i = 0; i < P.length; i += 3) { const x = P[i], y = P[i + 1]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        for (let i = 0; i < Q.length; i += 3) { const x = Q[i], y = Q[i + 1]; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        const pad = (action.s.w || 4) * 1.5 + (action.s.ds ? decoPad(action.s.ds, action.s.w || 4) : 0);
+        const B = x0 === Infinity ? null : { x0: ox + (x0 - pad) * z - 4, y0: oy + (y0 - pad) * z - 4, x1: ox + (x1 + pad) * z + 4, y1: oy + (y1 + pad) * z + 4 };
+        if (B) { const U = liveBox ? { x0: Math.min(B.x0, liveBox.x0), y0: Math.min(B.y0, liveBox.y0), x1: Math.max(B.x1, liveBox.x1), y1: Math.max(B.y1, liveBox.y1) } : null; if (U) ctx.clearRect(U.x0, U.y0, U.x1 - U.x0, U.y1 - U.y0); else ctx.clearRect(0, 0, SW, SH); liveBox = B; }
+        else { ctx.clearRect(0, 0, SW, SH); liveBox = null; }
+      } else { ctx.clearRect(0, 0, SW, SH); liveBox = null; }
       if (!nb) return;
       if (neatQ.busy && nb && nb.pages.includes(neatQ.busy.pid)) {
         const pi = nb.pages.indexOf(neatQ.busy.pid), bs = neatQ.busy.list.map(sBox), x0 = Math.min(...bs.map(b => b.x)) - 10, y0 = Math.min(...bs.map(b => b.y)) - 10, x1 = Math.max(...bs.map(b => b.x + b.w)) + 10, y1 = Math.max(...bs.map(b => b.y + b.h)) + 10;
-        ctx.save(); setPageTransform(ctx, L, pi); const z = view.z, t = performance.now() / 300; ctx.strokeStyle = `rgba(124,92,255,${0.35 + 0.25 * Math.sin(t)})`; ctx.lineWidth = 3 / z; ctx.setLineDash([8 / z, 6 / z]); ctx.lineDashOffset = -t * 6 / z; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0, y0, x1 - x0, y1 - y0, 12 / z) : ctx.rect(x0, y0, x1 - x0, y1 - y0); ctx.stroke(); ctx.restore();
-        requestAnimationFrame(() => req(false, true));
+        ctx.save(); setPageTransform(ctx, L, pi); const z = view.z, t = 0; ctx.strokeStyle = 'rgba(124,92,255,.28)'; ctx.lineWidth = 2 / z; ctx.setLineDash([4 / z, 6 / z]); ctx.lineDashOffset = 0; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0, y0, x1 - x0, y1 - y0, 12 / z) : ctx.rect(x0, y0, x1 - x0, y1 - y0); ctx.stroke(); ctx.restore();
       }
       if (laserPts.length) {
         const now = performance.now(), live = action && action.kind === 'laser', LIFE = 900;
@@ -5558,7 +5581,7 @@ body { background: var(--desk); }
         (selection.set.size === 1 && [...selection.set][0].eq ? `<div class="opt-sep"></div><button class="otb tbl" data-a="eqedit" title="Edit equation">${svg('eq')} Edit</button>` : '') +
         (dimOfSel() ? `<div class="opt-sep"></div><button class="otb tbl" data-a="dimedit" title="Edit the dimension">${svg('dim')} Edit dimension</button>` : '') +
         (selection.set.size === 1 && [...selection.set][0].t === 'graph' ? `<div class="opt-sep"></div><button class="otb tbl" data-a="graphedit" title="Edit the graph">${svg('graphfn')} Edit graph</button>` : '') +
-        (selection.set.size === 1 && [...selection.set][0].t === 'truss' ? `<div class="opt-sep"></div><button class="otb tbl" data-a="trussedit" title="Edit the truss">${svg('truss')} Edit truss</button>` : '') +
+        (selection.set.size === 1 && [...selection.set][0].t === 'truss' ? ([...selection.set][0].md.kind === 'frame' ? `<div class="opt-sep"></div><button class="otb tbl" data-a="trussedit" title="Edit the frame, loads and diagrams">${svg('frame')} Edit frame</button>` : `<div class="opt-sep"></div><button class="otb tbl" data-a="trussedit" title="Edit the truss">${svg('truss')} Edit truss</button>`) : '') +
         (selection.set.size === 1 && [...selection.set][0].t === 'beam' ? `<div class="opt-sep"></div><button class="otb tbl" data-a="beamedit" title="Edit beam, loads and diagrams">${svg('b_ss')} Edit beam</button>` : '') +
         (selection.set.size === 1 && [...selection.set][0].t === 'table' ? `<div class="opt-sep"></div><button class="otb" data-a="tbl" aria-label="Table options" title="Table options">${svg('table')}</button><button class="otb tbl" data-a="tgrid" title="Type in the table">Edit cells</button>` : '') +
         (selection.set.size === 1 && curveDef([...selection.set][0]) ? `<div class="opt-sep"></div><button class="otb" data-a="ptadd" title="Add a bend point">${svg('plus')}</button><button class="otb" data-a="ptdel" title="Remove a bend point"><b style="font:900 1.2rem var(--ui)">−</b></button><button class="otb tbl" data-a="wave" title="Make it a wave">∿ Waves</button><button class="otb" data-a="lsnap" aria-pressed="${lineSnapOn()}" title="Connect: line ends click onto other lines">${svg('magnet')}</button>` : '') +
@@ -5590,7 +5613,7 @@ body { background: var(--desk); }
         else if (b.dataset.a === 'graphedit') { graphModal(api, [...selection.set][0]); }
         else if (b.dataset.a === 'dimedit') { editDim(); }
         else if (b.dataset.a === 'cropsel') { cropSelection(); }
-        else if (b.dataset.a === 'trussedit') { const it = [...selection.set][0]; trussDesigner(it.md, md => replaceItem(it, { md, h: Math.round(trussH(md, it.w)) })); }
+        else if (b.dataset.a === 'trussedit') { const it = [...selection.set][0]; (it.md.kind === 'frame' ? frameDesigner : trussDesigner)(it.md, md => replaceItem(it, { md, h: Math.round(trussH(md, it.w)) })); }
         else if (b.dataset.a === 'beamedit') { const it = [...selection.set][0]; beamDesigner(it.md, md => replaceItem(it, { md, h: beamLayout(md, it.w).H })); }
         else if (['ptadd', 'ptdel', 'wave', 'lsnap'].includes(b.dataset.a)) lineEdit(b.dataset.a, b);
         else if (b.dataset.a === 'eqedit') { eqModal(api, [...selection.set][0]); }
@@ -6294,13 +6317,21 @@ body { background: var(--desk); }
       const R = ruleLines(p), NL = neatLine, mid = (y0 + y1) / 2;
       const joins = NL && NL.pid === p.id && mid > NL.base - NL.sz * 1.6 && mid < NL.base + NL.sz * 0.6 && x0 > NL.x0 - NL.sz;
       if (!joins && R) { const k = Math.round((base - R.top) / R.gap); const ry = R.top + k * R.gap; if (k >= 0 && Math.abs(ry - base) < R.gap * 0.7) { base = ry - 5; if (!fixed) sz = clamp(Math.round(R.gap * 0.62), 10, 220); } }
+      let lineX0 = x0;
       if (joins) {
-        base = NL.base; if (!fixed) sz = NL.sz;
+        base = NL.base; if (!fixed) sz = NL.sz; lineX0 = NL.x0;
         mctx.font = fontOf({ sz, f }); const sp = mctx.measureText(' ').width;
-        if (x0 < NL.xEnd + sz * 3.5) x = NL.xEnd + sp;
+        // words written close together line up like a typed sentence; a word written far away stays where you put it
+        x = x0 < NL.xEnd + sz * 5 ? NL.xEnd + sp : x0;
       }
       mctx.font = fontOf({ sz, f }); let tw = mctx.measureText(txt).width;
       if (!fixed && !NL && tw > (x1 - x0) * 1.7 && tw > 0) { sz = Math.max(10, Math.round(sz * (x1 - x0) * 1.7 / tw)); mctx.font = fontOf({ sz, f }); tw = mctx.measureText(txt).width; }
+      // a word much wider than your handwriting shrinks a little so the line stays where you wrote it
+      if (!fixed && tw > 0) { const room = Math.max(x1 - x, x1 - x0) * 1.35 + sz; if (tw > room) { sz = Math.max(10, Math.round(sz * Math.max(0.72, room / tw))); mctx.font = fontOf({ sz, f }); tw = mctx.measureText(txt).width; } }
+      // keep it on the page: a word that would run off the right edge goes to the next line
+      { const right = (p.w || 816) - 20;
+        if (x + tw > right && x > lineX0 + sz) { base += R ? R.gap * Math.max(1, Math.round(sz * 1.45 / R.gap)) : sz * 1.45; x = Math.max(16, lineX0); }
+        if (x + tw > right && tw > 0) { const k = (right - x) / tw; if (k > 0.3) { sz = Math.max(10, Math.round(sz * k)); mctx.font = fontOf({ sz, f }); tw = mctx.measureText(txt).width; } } }
       const top = base - asc(), fills = [];
       for (let k = 0; k < txt.length; k++) {
         const ch = txt[k]; if (/\s/.test(ch)) continue;
@@ -6310,7 +6341,7 @@ body { background: var(--desk); }
       }
       if (!fills.length) return false;
       p.strokes = p.strokes.filter(o => !l.s.includes(o)); p.strokes.push(...fills);
-      neatLine = { pid: p.id, base, sz, x0: NL && NL.pid === p.id && NL.base === base ? NL.x0 : x, xEnd: x + tw };
+      neatLine = { pid: p.id, base, sz, x0: joins || (NL && NL.pid === p.id && Math.abs(NL.base - base) < 1) ? lineX0 : x, xEnd: x + tw };
       return true;
     }
     function neaten(P) {
@@ -7002,13 +7033,14 @@ body { background: var(--desk); }
       sn.objs.forEach(o => { const c = JSON.parse(JSON.stringify(o)); if (c.pts) { for (let i = 0; i < c.pts.length; i += 3) { c.pts[i] += ox; c.pts[i + 1] += oy; } p.strokes.push(onLayer(p, c)); } else { c.x += ox; c.y += oy; c.id = uid(); p.items.push(onLayer(p, c)); } added.push(c.pts ? p.strokes[p.strokes.length - 1] : p.items[p.items.length - 1]); });
       pushUndo(nb.id, p.id, before); markDirty(p.id, nb); setTool('lasso'); setSelection(pi, new Set(added));
     }
-    function insertTruss(md) {
+    function insertTruss(mdIn) {
       if (!nb) return; const L = layout(), pi = currentPageIdx(L), p = pages.get(nb.pages[pi]); if (!p) return;
-      const w = Math.min(p.w * 0.9, 920), h = trussH(md, w), d = toDoc(SW / 2, SH / 2);
-      const it = { t: 'truss', id: uid(), x: (p.w - w) / 2, y: clamp(d.y - L.tops[pi] - h / 2, 30, Math.max(30, p.h - h - 30)), w, h, md };
-      const before = snap(p); p.items.push(onLayer(p, it)); pushUndo(nb.id, p.id, before); markDirty(p.id, nb);
-      setTool('lasso'); setSelection(pi, new Set([it]));
-      toast('Truss added. Tap Edit truss to change it, or use the Lasso to move and resize it.', 3200);
+      const list = Array.isArray(mdIn) ? mdIn : [mdIn], fr = list[0].kind === 'frame', w = Math.min(p.w * 0.9, fr ? (list.length > 1 ? 560 : 760) : 920), hs = list.map(md => trussH(md, w)), tot = hs.reduce((a, b) => a + b, 0) + (list.length - 1) * 16, d = toDoc(SW / 2, SH / 2);
+      let y = clamp(d.y - L.tops[pi] - tot / 2, 30, Math.max(30, p.h - tot - 30)); const before = snap(p), added = [];
+      list.forEach((md, i) => { const it = { t: 'truss', id: uid(), x: (p.w - w) / 2, y, w, h: hs[i], md }; y += hs[i] + 16; p.items.push(onLayer(p, it)); added.push(it); });
+      pushUndo(nb.id, p.id, before); markDirty(p.id, nb);
+      setTool('lasso'); setSelection(pi, new Set(added));
+      toast(fr ? (list.length > 1 ? 'Frame diagrams added. Select one and tap Edit frame to change it.' : 'Frame added. Tap Edit frame to change it, or use the Lasso to move and resize it.') : 'Truss added. Tap Edit truss to change it, or use the Lasso to move and resize it.', 3200);
     }
     function insertGraph(g) {
       if (!nb) return; const L = layout(), pi = currentPageIdx(L), p = pages.get(nb.pages[pi]); if (!p) return;
@@ -7133,7 +7165,14 @@ body { background: var(--desk); }
     }
     function resize() {
       const r = stage.getBoundingClientRect(), nd = Math.min(window.devicePixelRatio || 1, 2), W = Math.max(1, Math.round(r.width * nd)), H = Math.max(1, Math.round(r.height * nd));
+      // when the window changes size (split screen), a page that was fitted to the width stays fitted, at the same spot
+      let refit = null;
+      if (nb && SW > 0 && r.width > 0 && Math.abs(r.width - SW) > 2) {
+        try { const L = layout(); if (!L.hz) { const ci = currentPageIdx(L), [w, h] = L.dims[ci] || [1200, 1600], fitOld = clamp(Math.min((SW - 20) / w, w > h ? (SH - topPad() - 24) / h : 9), 0.12, 1.6);
+          if (Math.abs(view.z - fitOld) / fitOld < 0.03 || L.maxW * view.z > SW + 2) refit = { w, h, docY: (topPad() - view.ty) / view.z }; } } catch (e) { refit = null; }
+      }
       SW = r.width; SH = r.height; dpr = nd;
+      if (refit) { try { const L = layout(); view.z = clamp(Math.min((SW - 20) / refit.w, refit.w > refit.h ? (SH - topPad() - 24) / refit.h : 9), 0.12, 1.6); view.tx = (SW - L.maxW * view.z) / 2; view.ty = topPad() - refit.docY * view.z; } catch (e) { } }
       if (mainCv.width === W && mainCv.height === H) { clampView(); req(); return; }
       [mainCv, liveCv].forEach(c => { c.width = W; c.height = H; });
       if (ruler.on) { ruler.cx = clamp(ruler.cx, 0, SW); ruler.cy = clamp(ruler.cy, 0, SH); }
@@ -7428,6 +7467,15 @@ body { background: var(--desk); }
         group('Select', `<span class="rhint">${T.lassoMode === 'rect' ? 'Drag a box around anything' : 'Loop around anything'} to move, resize, recolor, fill or copy it. Tap an item to pick it, or use Pick to add or remove items.</span>`);
       case 'shape': {
         const sl = SHAPES.find(s => s[0] === T.shape) || SHAPES[0], open = OPEN_SHAPES.includes(T.shape) || LOADS.some(l => l[0] === T.shape);
+        if (FRAMEIDS.includes(T.shape)) {
+          const h3 = T.shape === 'f_3h' || T.shape === 'f_3hg', fs = T.frameSup || 'fixed';
+          return group('Frame', rb('data-act="engcat:frame"', sl[0], sl[1])) +
+            group('Supports', (h3 ? [['pin', 'b_ss', 'Pinned bases'], ['none', 'close', 'No supports']] : T.shape === 'f_canti' ? [['fixed', 'b_cant', 'Fixed base'], ['none', 'close', 'No support']] : [['fixed', 'b_ff', 'Fixed bases'], ['pin', 'b_ss', 'Pinned bases'], ['none', 'close', 'No supports']]).map(([k, ic, l]) => otb(`data-k="frameSup" data-v="${k}"`, svg(ic), l, k === 'none' ? fs === 'none' : k === 'pin' ? (h3 ? fs !== 'none' : fs === 'pin') : (fs !== 'pin' && fs !== 'none'))).join('')) +
+            group('Outline', quickColors('shapeColor', INK, '')) +
+            group('Thickness', slider('shapeSize', 'Width', 1, 30, 1, SLIDER_FMT.shapeSize)) +
+            group('Options', rb('data-act="fjoint"', 'joints', 'Joint dots', !!T.frameJoints) + rb('data-act="shapedims"', 'dim', 'Dimensions', T.shapeDims)) +
+            group('Analysis', rb('data-act="framesolve"', 'frame', 'Solve this frame'));
+        }
         if (TRUSSIDS.includes(T.shape)) {
           return group('Truss', rb('data-act="engcat:truss"', sl[0], sl[1])) +
             group('Panels', `<div class="stepper"><button class="otb" data-act="tpan:-1" aria-label="Fewer panels">−</button><b>${clamp(Math.round(+T.trussN || 6), 2, 16)} panels</b><button class="otb" data-act="tpan:1" aria-label="More panels">+</button></div>`) +
@@ -7503,10 +7551,10 @@ body { background: var(--desk); }
       h = group('Make a graph', rb('data-act="gr:fn"', 'graphfn', 'Function graph') + rb('data-act="gr:cart"', 'cartesian', 'Cartesian plane') + rb('data-act="gr:line"', 'numline', 'Number line')) +
         group('Tips', `<span class="rhint" style="max-width:300px">Graphs go on the page and stay editable: select one with the Lasso and tap Edit graph. Write on top of them with any pen.</span>`);
     } else if (ribbonTab === 'eng') {
-      const on = k => T.tool === 'shape' && isEngShape(T.shape) && (k === 'beam' ? BEAMS : k === 'load' ? LOADS : k === 'truss' ? TRUSSES : ENGSEC).some(q => q[0] === T.shape);
-      h = group('Draw', rb('data-act="engcat:beam"', 'b_ss', 'Beams', on('beam')) + rb('data-act="engcat:truss"', 't_pratt', 'Trusses', on('truss')) + rb('data-act="engcat:load"', LOADS[0][0], 'Loads', on('load')) + rb('data-act="engcat:sec"', ENGSEC[0][0], 'Steel sections', on('sec')) + rb('data-act="engdim"', 'dim', 'Dimension', T.tool === 'shape' && T.shape === 'dim')) +
+      const on = k => T.tool === 'shape' && isEngShape(T.shape) && (k === 'beam' ? BEAMS : k === 'load' ? LOADS : k === 'truss' ? TRUSSES : k === 'frame' ? FRAMES : ENGSEC).some(q => q[0] === T.shape);
+      h = group('Draw', rb('data-act="engcat:beam"', 'b_ss', 'Beams', on('beam')) + rb('data-act="engcat:truss"', 't_pratt', 'Trusses', on('truss')) + rb('data-act="engcat:frame"', 'f_portal', 'Frames', on('frame')) + rb('data-act="engcat:load"', LOADS[0][0], 'Loads', on('load')) + rb('data-act="engcat:sec"', ENGSEC[0][0], 'Steel sections', on('sec')) + rb('data-act="engdim"', 'dim', 'Dimension', T.tool === 'shape' && T.shape === 'dim')) +
         group('Edit', rb('data-act="trim"', 'trim', 'Trim', T.tool === 'eraser' && T.erShape === 'trim')) +
-        group('Design', rb('data-act="beamdes"', 'b_ss', 'Beam designer') + rb('data-act="trussdes"', 'truss', 'Truss solver')) +
+        group('Design', rb('data-act="beamdes"', 'b_ss', 'Beam analysis') + rb('data-act="trussdes"', 'truss', 'Truss analysis') + rb('data-act="framedes"', 'frame', 'Frame analysis')) +
         group('Measure', rb('data-act="ruler"', 'ruler', 'Ruler', activePane && activePane.rulerOn()) + rb('data-act="calc"', 'calc', 'Calculator', !$('#calc').hidden) + rb('data-act="fsheet"', 'fsheet', 'Formulas', !!($('#fpanel') && !$('#fpanel').hidden)));
       if (engTool()) h += ctxBlock('shape');
     } else if (ribbonTab === 'pages') {
@@ -7616,12 +7664,14 @@ body { background: var(--desk); }
       case 'fillpat': patternPop(el, 'fillPat'); break;
       case 'shapepat': patternPop(el, 'shapePat'); break;
       case 'engpick': engPicker(el); break;
-      case 'engcat:beam': case 'engcat:load': case 'engcat:sec': case 'engcat:truss': engPicker(el, a.slice(7)); break;
+      case 'engcat:beam': case 'engcat:load': case 'engcat:sec': case 'engcat:truss': case 'engcat:frame': engPicker(el, a.slice(7)); break;
       case 'trusssolve': { if (!activePane.nb()) { toast('Open a notebook first.', 1600); break; } const tt = (TRUSSES.find(x => x[0] === T.shape) || TRUSSES[0])[2], md = newTrussModel(); md.pre.type = tt; md.pre.n = clamp(Math.round(+T.trussN || 6), 2, 16); const g = tt === 'custom' ? customTrussGen(tcusCfg(), md.pre.L, md.pre.H, md.pre.n) : trussGen(tt, md.pre.L, md.pre.H, md.pre.n); if (tt === 'custom' && g.sups.length < 2) toast('Add at least two supports (or a pin and a roller) to solve the forces.', 3000); md.nodes = g.nodes; md.mem = g.mem; md.sups = g.sups; if (T.trussSup === 'pp' && md.sups[1]) md.sups[1].t = 'pin'; md.loads = g.nodes.map((q, i) => [q, i]).filter(([q]) => q.y > 1e-9).map(([, i]) => ({ id: uid(), n: i, P: 10, ang: 90 })); if (!md.loads.length) md.loads = [{ id: uid(), n: g.nodes.length - 1, P: 10, ang: 90 }]; trussDesigner(md, m2 => activePane.insertTruss(m2)); break; }
       case 'tcusedit': trussCusPop(el); break;
       case 'loadsnap': T.loadSnap = T.loadSnap === false; saveTools(); buildRibbon(); break;
       case 'tpan:-1': case 'tpan:1': T.trussN = clamp(Math.round(+T.trussN || 6) + (a.endsWith('-1') ? -1 : 1), 2, 16); saveTools(); buildRibbon(); break;
       case 'tjoint': T.trussJoints = T.trussJoints === false; saveTools(); buildRibbon(); break;
+      case 'fjoint': T.frameJoints = !T.frameJoints; saveTools(); buildRibbon(); break;
+      case 'framesolve': { if (!activePane.nb()) { toast('Open a notebook first.', 1600); break; } frameDesigner(frameModelFor(FRAMEIDS.includes(T.shape) ? T.shape : 'f_portal'), md => activePane.insertTruss(md), true); break; }
       case 'tflip': T.trussFlip = !T.trussFlip; saveTools(); buildRibbon(); break;
       case 'lang:-1': case 'lang:1': T.loadAng = ((Math.round((+T.loadAng || 45) / 15) * 15 + (a.endsWith('-1') ? -15 : 15)) % 360 + 360) % 360; saveTools(); buildRibbon(); break;
       case 'neat': neatPop(el); break;
@@ -7631,6 +7681,7 @@ body { background: var(--desk); }
       case 'extpage': if (pn && pn.nb()) pagesizePop(el, pn); else toast('Open a notebook first.', 1600); break;
       case 'sides:-1': case 'sides:1': { const k = T.shape === 'star' ? 'starPts' : 'polySides', v = clamp((+T[k] || (k === 'starPts' ? 5 : 6)) + +a.slice(6), 3, 24); T[k] = v; saveTools(); buildRibbon(); break; }
       case 'trussdes': if (!activePane.nb()) { toast('Open a notebook first.', 1600); break; } trussDesigner(null, md => activePane.insertTruss(md)); break;
+      case 'framedes': if (!activePane.nb()) { toast('Open a notebook first.', 1600); break; } frameDesigner(null, md => activePane.insertTruss(md)); break;
       case 'beamdes': if (!activePane.nb()) { toast('Open a notebook first.', 1600); break; } beamDesigner(null, md => activePane.insertBeam(md)); break;
       case 'beamsup': beamSupPop(el); break;
       case 'engtool': setShapeMode(true); break;
@@ -7791,9 +7842,12 @@ body { background: var(--desk); }
     if (f.k !== T.penType || f.c !== T.penColor || f.w !== T.penSize || (f.ds || '') !== (T.penDash || '')) { f.k = T.penType; f.c = T.penColor; f.w = T.penSize; if (T.penDash) f.ds = T.penDash; else delete f.ds; saveTools(); }
   }
   const railPos = () => ['right', 'left', 'top', 'bottom'].includes(settings.railPos) ? settings.railPos : (settings.railSide === 'left' ? 'left' : 'right');
+  const RAIL_SIZES = { xs: 0.8, s: 0.9, m: 1, l: 1.12, xl: 1.25 };
+  function setRailSize(k) { if (!RAIL_SIZES[k]) return; settings.railSize = k; saveSettings(); applyRailPos(); }
   function applyRailPos() {
     const w = $('#work'), pos = railPos(); if (!w) return;
     ['right', 'left', 'top', 'bottom'].forEach(k => w.classList.toggle('rail-' + k, k === pos));
+    { const r = $('#rail'), z = RAIL_SIZES[settings.railSize] || 1; if (r) r.style.zoom = z === 1 ? '' : String(z); }
     requestAnimationFrame(() => panes.forEach(p => { if (!p.root.hidden) p.resize(); }));
   }
   function setRailPos(pos) { settings.railPos = pos; delete settings.railSide; saveSettings(); closeCard(); applyRailPos(); renderRail(); toast({ right: 'Tools on the right', left: 'Tools on the left', top: 'Tools at the top', bottom: 'Tools at the bottom' }[pos], 1800); }
@@ -7813,7 +7867,7 @@ body { background: var(--desk); }
   if (!Array.isArray(T.hlFavs)) T.hlFavs = [{ c: HLC[0], w: 22, op: 0.5, tip: 'round' }, { c: HLC[1] || '#8ce99a', w: 22, op: 0.5, tip: 'round' }];
   if (!Array.isArray(T.erFavs)) T.erFavs = [{ shape: 'pen', mode: 'stroke', w: 24 }, { shape: 'pen', mode: 'precise', w: 16 }];
   T.erFavs.forEach(f => { if (f && f.mode === 'pixel') f.mode = 'precise'; if (f && f.what === 'pic') f.what = 'all'; });
-  const ENG_CAT = { beam: () => BEAMS, truss: () => TRUSSES, load: () => LOADS, sec: () => ENGSEC };
+  const ENG_CAT = { beam: () => BEAMS, truss: () => TRUSSES, frame: () => FRAMES, load: () => LOADS, sec: () => ENGSEC };
   const engOnCat = k => T.tool === 'shape' && ENG_CAT[k]().some(q => q[0] === T.shape);
   // every tool that can sit on the toolbar
   const RAIL_TOOLS = [   // [id, icon, name, is it on?, needs engineering, group]
@@ -7823,8 +7877,8 @@ body { background: var(--desk); }
     ['fill', 'bucket', 'Fill color', () => T.tool === 'fill', 0, 'edit'], ['trim', 'trim', 'Trim lines', () => T.tool === 'eraser' && T.erShape === 'trim', 0, 'edit'],
     ['laser', 'laser', 'Laser pointer', () => T.tool === 'laser', 0, 'present'], ['ruler', 'ruler', 'Ruler', () => !!(activePane && activePane.rulerOn && activePane.rulerOn()), 0, 'present'],
     ['enggroup', 'b_ss', 'Engineering', () => T.tool === 'shape' && isEngShape(T.shape), 1, 'eng'],
-    ['beam', 'b_ss', 'Beams', () => engOnCat('beam'), 1, 'eng'], ['truss', 't_pratt', 'Trusses', () => engOnCat('truss'), 1, 'eng'], ['load', 'pload', 'Loads', () => engOnCat('load'), 1, 'eng'], ['sec', 'e_w', 'Steel sections', () => engOnCat('sec'), 1, 'eng'],
-    ['dim', 'dim', 'Dimension line', () => T.tool === 'shape' && T.shape === 'dim', 1, 'eng'], ['beamdes', 'b_ss', 'Beam designer', null, 1, 'eng'], ['trussdes', 'truss', 'Truss solver', null, 1, 'eng'],
+    ['beam', 'b_ss', 'Beams', () => engOnCat('beam'), 1, 'eng'], ['truss', 't_pratt', 'Trusses', () => engOnCat('truss'), 1, 'eng'], ['frame', 'f_portal', 'Frames', () => engOnCat('frame'), 1, 'eng'], ['load', 'pload', 'Loads', () => engOnCat('load'), 1, 'eng'], ['sec', 'e_w', 'Steel sections', () => engOnCat('sec'), 1, 'eng'],
+    ['dim', 'dim', 'Dimension line', () => T.tool === 'shape' && T.shape === 'dim', 1, 'eng'], ['beamdes', 'b_ss', 'Beam analysis', null, 1, 'eng'], ['trussdes', 'truss', 'Truss analysis', null, 1, 'eng'], ['framedes', 'frame', 'Frame analysis', null, 1, 'eng'],
     ['calc', 'calc', 'Calculator', () => !$('#calc').hidden, 0, 'study'], ['fsheet', 'fsheet', 'Formula sheet', () => !!($('#fpanel') && !$('#fpanel').hidden), 0, 'study'], ['pomo', 'timer', 'Focus timer', () => !$('#pomo').hidden, 0, 'study']
   ];
   const TOOL_GROUPS = { select: 'Select and move', create: 'Add to the page', edit: 'Color and edit', present: 'Present and measure', eng: 'Engineering', study: 'Study' };
@@ -7847,7 +7901,7 @@ body { background: var(--desk); }
     return `<svg viewBox="0 0 52 22" aria-hidden="true"><rect x="5" y="4.6" width="45" height="12.8" rx="3.2" fill="${R}" stroke="${E}" stroke-width=".9"/><path d="M22 4.6 H46.8 A3.2 3.2 0 0 1 50 7.8 V14.2 A3.2 3.2 0 0 1 46.8 17.4 H22 Z" fill="${S}" stroke="${E}" stroke-width=".9"/><path d="M27 8.4 H44 M27 13.6 H40" stroke="var(--rail-edge, #c3c8d2)" stroke-width=".8" stroke-linecap="round"/></svg>`;
   }
   let railKeep = null;
-  const TOOL_SHORT = { lasso: 'Select', crop: 'Crop', hand: 'Move', shape: 'Shapes', text: 'Text', sticker: 'Sticker', eq: 'Math', table: 'Table', graph: 'Graph', photo: 'Photo', shot: 'Capture', fill: 'Fill', trim: 'Trim', laser: 'Laser', ruler: 'Ruler', load: 'Loads', dim: 'Measure', trussdes: 'Truss', calc: 'Calc', fsheet: 'Formulas', pomo: 'Timer', enggroup: 'Engineer', beam: 'Beam', truss: 'Truss', sec: 'Steel' };
+  const TOOL_SHORT = { lasso: 'Select', crop: 'Crop', hand: 'Move', shape: 'Shapes', text: 'Text', sticker: 'Sticker', eq: 'Math', table: 'Table', graph: 'Graph', photo: 'Photo', shot: 'Capture', fill: 'Fill', trim: 'Trim', laser: 'Laser', ruler: 'Ruler', load: 'Loads', dim: 'Measure', trussdes: 'Truss', framedes: 'Frame', beamdes: 'Beam', calc: 'Calc', fsheet: 'Formulas', pomo: 'Timer', enggroup: 'Engineer', beam: 'Beam', truss: 'Truss', sec: 'Steel' };
   function renderRail() {
     const r = $('#rail'); if (!r) return;
     if (T.tool === 'pen' && (T.favSel == null || !T.favs[T.favSel] || !favActive(T.favs[T.favSel]))) { const j = T.favs.findIndex(favActive); T.favSel = j >= 0 ? j : null; }
@@ -7927,15 +7981,15 @@ body { background: var(--desk); }
     if (id === 'trim') { ribbonAction('trim', btn); return; }
     if (id === 'enggroup') {   // all engineering tools behind one button
       const it = (a, ic, l, on) => `<button data-a="${a}" aria-pressed="${!!on}"><i>${svg(ic)}</i>${l}</button>`;
-      openPop(btn, `<h4>Engineering</h4><div class="m3grid">${it('beam', 'b_ss', 'Beams', engOnCat('beam'))}${it('truss', 't_pratt', 'Trusses', engOnCat('truss'))}${it('load', 'pload', 'Loads', engOnCat('load'))}${it('sec', 'e_w', 'Steel sections', engOnCat('sec'))}${it('dim', 'dim', 'Dimension', T.tool === 'shape' && T.shape === 'dim')}${it('beamdes', 'b_ss', 'Beam designer')}${it('trussdes', 'truss', 'Truss solver')}${it('fsheet', 'fsheet', 'Formulas')}</div>`, a => {
+      openPop(btn, `<h4>Engineering</h4><div class="m3grid">${it('beam', 'b_ss', 'Beams', engOnCat('beam'))}${it('truss', 't_pratt', 'Trusses', engOnCat('truss'))}${it('frame', 'f_portal', 'Frames', engOnCat('frame'))}${it('load', 'pload', 'Loads', engOnCat('load'))}${it('sec', 'e_w', 'Steel sections', engOnCat('sec'))}${it('dim', 'dim', 'Dimension', T.tool === 'shape' && T.shape === 'dim')}${it('beamdes', 'b_ss', 'Beam analysis')}${it('trussdes', 'truss', 'Truss analysis')}${it('framedes', 'frame', 'Frame analysis')}${it('fsheet', 'fsheet', 'Formulas')}</div>`, a => {
         closePop();
-        if (['beam', 'truss', 'load', 'sec'].includes(a)) { engPicker(btn, a); if (popEl) placePopBesideRail(popEl, btn); return; }
-        ribbonAction({ dim: 'engdim', beamdes: 'beamdes', trussdes: 'trussdes', fsheet: 'fsheet' }[a], btn); buildRibbon();
+        if (['beam', 'truss', 'frame', 'load', 'sec'].includes(a)) { engPicker(btn, a); if (popEl) placePopBesideRail(popEl, btn); return; }
+        ribbonAction({ dim: 'engdim', beamdes: 'beamdes', trussdes: 'trussdes', framedes: 'framedes', fsheet: 'fsheet' }[a], btn); buildRibbon();
       });
       popEl.classList.add('m3'); placePopBesideRail(popEl, btn); return;
     }
-    if (id === 'beam' || id === 'truss' || id === 'load' || id === 'sec') { engPicker(btn, id); if (popEl) placePopBesideRail(popEl, btn); return; }
-    const act = { ruler: 'ruler', eq: 'eq', photo: 'photo', table: 'table', shot: 'shot', graph: 'gr:fn', dim: 'engdim', beamdes: 'beamdes', trussdes: 'trussdes', calc: 'calc', fsheet: 'fsheet', pomo: 'pomo' }[id];
+    if (id === 'beam' || id === 'truss' || id === 'frame' || id === 'load' || id === 'sec') { engPicker(btn, id); if (popEl) placePopBesideRail(popEl, btn); return; }
+    const act = { ruler: 'ruler', eq: 'eq', photo: 'photo', table: 'table', shot: 'shot', graph: 'gr:fn', dim: 'engdim', beamdes: 'beamdes', trussdes: 'trussdes', framedes: 'framedes', calc: 'calc', fsheet: 'fsheet', pomo: 'pomo' }[id];
     if (act) { ribbonAction(act, btn); if (act === 'table' && popEl) placePopBesideRail(popEl, btn); buildRibbon(); }
   }
   const CARD_TITLE = { pen: () => penName(T.penType) + (/pen|pencil|liner|tip|quill|brush|crayon|marker|charcoal|watercolor/i.test(penName(T.penType)) ? '' : ' pen'), hl: () => 'Highlighter', eraser: () => 'Eraser', lasso: () => 'Lasso', crop: () => 'Crop', shape: () => isEngShape(T.shape) ? 'Engineering' : 'Shapes', fill: () => 'Fill', text: () => 'Text', sticker: () => 'Stickers', laser: () => 'Laser pointer', hand: () => 'Move' };
@@ -8054,7 +8108,9 @@ body { background: var(--desk); }
     const startDrag = ev => {
       dragging = true; clearTimeout(menuT); f.classList.remove('lifted'); f.classList.add('dragging'); closeCard(); closePop && closePop();
       { const tn = document.querySelector('.tname'); if (tn) tn.hidden = true; }
-      ghost = document.createElement('div'); ghost.className = 'rail-ghost' + (isInst ? ' inst' : ''); const ic = f.querySelector('svg'); if (ic) ghost.appendChild(ic.cloneNode(true));
+      ghost = document.createElement('div'); ghost.className = 'rail-ghost' + (isInst ? ' inst' : ''); const ic = f.querySelector('svg');
+      if (ic) { const cs = getComputedStyle(ic), cl = ic.cloneNode(true); cl.style.width = cs.width; cl.style.height = cs.height; cl.style.transform = cs.transform === 'none' ? '' : cs.transform.replace(/matrix\(([^,]+),([^,]+),([^,]+),([^,]+),[^,]+,[^)]+\)/, 'matrix($1,$2,$3,$4,0,0)'); cl.style.flex = 'none'; ghost.appendChild(cl);
+        const fr = f.getBoundingClientRect(), side = Math.max(48, Math.min(72, Math.max(fr.width, fr.height))); ghost.style.width = side + 'px'; ghost.style.height = side + 'px'; ghost._half = side / 2; }
       const tag = document.createElement('span'); tag.className = 'rmtag'; tag.textContent = 'Let go to remove'; ghost.appendChild(tag); document.body.appendChild(ghost);
       const auto = () => { if (!lastEv) return; const r = rail.getBoundingClientRect(), hz = railPos() === 'top' || railPos() === 'bottom';
         if (!hz) { if (lastEv.clientY < r.top + 40) rail.scrollTop -= 8; else if (lastEv.clientY > r.bottom - 40) rail.scrollTop += 8; } else { if (lastEv.clientX < r.left + 40) rail.scrollLeft -= 8; else if (lastEv.clientX > r.right - 40) rail.scrollLeft += 8; }
@@ -8062,9 +8118,11 @@ body { background: var(--desk); }
       scrollRaf = requestAnimationFrame(auto);
     };
     const moveDrag = ev => {
-      lastEv = ev; ghost.style.transform = `translate3d(${ev.clientX - 24}px, ${ev.clientY - 26}px, 0) scale(1.05)`;
+      lastEv = ev; const hh = ghost._half || 26; ghost.style.transform = `translate3d(${ev.clientX - hh}px, ${ev.clientY - hh}px, 0) scale(1.05)`;
       const r = rail.getBoundingClientRect(), out = Math.max(r.left - ev.clientX, ev.clientX - r.right, r.top - ev.clientY, ev.clientY - r.bottom);
-      rm = out > 44 && canRemove(); ghost.classList.toggle('rm', rm); if (rm || out > 0) return;
+      // only a clear pull away from the toolbar removes it; a finger drifting a little off still rearranges
+      rm = out > 90 && canRemove(); ghost.classList.toggle('rm', rm); if (rm) return;
+      ev = { clientX: Math.max(r.left + 2, Math.min(r.right - 2, ev.clientX)), clientY: Math.max(r.top + 2, Math.min(r.bottom - 2, ev.clientY)) };
       // live reorder: slide the item to where the finger is
       let best = null, bd = Infinity; for (const b of sibs()) { if (b === f) continue; const q = b.getBoundingClientRect(), d = Math.hypot(ev.clientX - (q.left + q.width / 2), ev.clientY - (q.top + q.height / 2)); if (d < bd) { bd = d; best = b; } }
       if (!best) return; const q = best.getBoundingClientRect(), sameRow = Math.abs(ev.clientY - (q.top + q.height / 2)) < q.height / 2;
@@ -8124,7 +8182,7 @@ body { background: var(--desk); }
   });
   function railPosPop(anchor) {
     const cur = railPos();
-    openPop(anchor, `<h4>Where the tools go</h4><div class="m3grid">${[['top', 'Top'], ['bottom', 'Bottom'], ['left', 'Left'], ['right', 'Right'], ['focus', 'Hide (Focus)']].map(([k, l]) => `<button data-a="${k}" aria-pressed="${k === cur}"><i>${svg(k === 'focus' ? 'expand' : 'grip')}</i>${l}</button>`).join('')}</div><button class="mi" data-a="custom">${svg('settings')}<span>Customize toolbar</span></button><p class="rp-tip">Tip: hold the grip and drag the tools to any edge.</p>`, a => { closePop(); if (a === 'custom') { toolsEditor(); return; } if (a === 'focus') { ribbonAction('focus'); return; } setRailPos(a); });
+    openPop(anchor, `<h4>Where the tools go</h4><div class="m3grid">${[['top', 'Top'], ['bottom', 'Bottom'], ['left', 'Left'], ['right', 'Right'], ['focus', 'Hide (Focus)']].map(([k, l]) => `<button data-a="${k}" aria-pressed="${k === cur}"><i>${svg(k === 'focus' ? 'expand' : 'grip')}</i>${l}</button>`).join('')}</div><h4>Toolbar size</h4><div class="seg rsize">${[['xs', 'Smallest'], ['s', 'Small'], ['m', 'Normal'], ['l', 'Large'], ['xl', 'Largest']].map(([k, l]) => `<button data-a="sz:${k}" aria-pressed="${(settings.railSize || 'm') === k}" aria-label="${l}" title="${l}">${{ xs: 'XS', s: 'S', m: 'M', l: 'L', xl: 'XL' }[k]}</button>`).join('')}</div><button class="mi" data-a="custom">${svg('settings')}<span>Customize toolbar</span></button><p class="rp-tip">Tip: hold the grip and drag the tools to any edge.</p>`, a => { if (a.startsWith('sz:')) { setRailSize(a.slice(3)); popEl && popEl.querySelectorAll('[data-a^="sz:"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.a === a))); return; } closePop(); if (a === 'custom') { toolsEditor(); return; } if (a === 'focus') { ribbonAction('focus'); return; } setRailPos(a); });
     popEl.classList.add('m3'); placePopBesideRail(popEl, anchor);
   }
   $('#tcDone').addEventListener('click', closeCard);
@@ -8155,7 +8213,7 @@ body { background: var(--desk); }
     const pn = activePane, n = pn && pn.nb(), deck = n && n.kind === 'fc', eng = engOn();
     const it = (a, ic, l, on) => `<button data-a="${a}" aria-pressed="${!!on}"><i>${svg(ic)}</i>${l}</button>`;
     openPop(anchor, `<h4>Add to the page</h4><div class="m3grid">${it('t:text', 'text', 'Text', T.tool === 'text')}${it('photo', 'image', 'Photo')}${it('shot', 'shot', 'Screenshot')}${it('eq', 'eq', 'Equation')}${it('table', 'table', 'Table')}${it('t:sticker', 'sticker', 'Sticker', T.tool === 'sticker')}${it('gr:fn', 'graphfn', 'Graph')}${it('gr:cart', 'cartesian', 'Coordinate plane')}${it('gr:line', 'numline', 'Number line')}${it('imppage', 'upload', 'Import PDF or image')}${it('filewin', 'file', 'File window')}${it('nbwin', 'window', 'Notebook window')}</div>` +
-      (eng ? `<h4>Engineering</h4><div class="m3grid">${it('engcat:beam', 'b_ss', 'Beams')}${it('engcat:truss', 't_pratt', 'Trusses')}${it('engcat:load', LOADS[0][0], 'Loads')}${it('engcat:sec', ENGSEC[0][0], 'Steel sections')}${it('engdim', 'dim', 'Dimension')}${it('beamdes', 'b_ss', 'Beam designer')}${it('trussdes', 'truss', 'Truss solver')}${it('fsheet', 'fsheet', 'Formulas')}</div>` : '') +
+      (eng ? `<h4>Engineering</h4><div class="m3grid">${it('engcat:beam', 'b_ss', 'Beams')}${it('engcat:truss', 't_pratt', 'Trusses')}${it('engcat:frame', 'f_portal', 'Frames')}${it('engcat:load', LOADS[0][0], 'Loads')}${it('engcat:sec', ENGSEC[0][0], 'Steel sections')}${it('engdim', 'dim', 'Dimension')}${it('beamdes', 'b_ss', 'Beam analysis')}${it('trussdes', 'truss', 'Truss analysis')}${it('framedes', 'frame', 'Frame analysis')}${it('fsheet', 'fsheet', 'Formulas')}</div>` : '') +
       (deck ? `<h4>Flashcards</h4><div class="m3grid">${it('fcadd', 'plus', 'Add card')}${it('fcstudy', 'cards', 'Study')}${it('fcexam', 'exam', 'Exam')}</div>` : '') +
       `<h4>Pages</h4><div class="m3grid">${it('addpage', 'newpage', 'New page')}${it('extpage', 'expand', 'Page size')}${it('pageview', 'paper', 'Paper style')}</div>`, a => {
       closePop();
@@ -8259,8 +8317,9 @@ body { background: var(--desk); }
   const cardAfterPick = () => requestAnimationFrame(() => { const rb_ = $('#rail .rtools [aria-pressed="true"]'); openCard(rb_ || $('#bar2 [data-b2="insert"]')); cardSoft = true; });
   function engPicker(anchor, only, withCard) {
     const sec = (t, list, k) => only && only !== k ? '' : `<h4>${t}</h4><div class="shape-grid">${list.map(([k, l]) => `<button data-a="${k}" aria-pressed="${T.shape === k}">${svg(k)}${l}</button>`).join('')}</div>`;
-    openPop(anchor, (!only || only === 'beam' ? `<button class="mi bd-open" data-a="designer">${svg('b_ss')}<span><b>Beam designer</b><small>Any span and supports, point, distributed and angled loads, reactions, shear and moment diagrams</small></span></button>` : '') + sec('Quick beams to draw', BEAMS, 'beam') + (!only || only === 'truss' ? `<button class="mi bd-open" data-a="trussdesigner">${svg('truss')}<span><b>Custom truss and Truss solver</b><small>Draw any truss joint by joint, add loads in any direction, and get every member force</small></span></button>` : '') + sec('Trusses to draw', TRUSSES, 'truss') + sec('Loads', LOADS, 'load') + sec('Steel sections', ENGSEC, 'sec'), a => {
+    openPop(anchor, (!only || only === 'beam' ? `<button class="mi bd-open" data-a="designer">${svg('b_ss')}<span><b>Beam analysis</b><small>Any span and supports, point, distributed and angled loads, reactions, shear and moment diagrams</small></span></button>` : '') + sec('Quick beams to draw', BEAMS, 'beam') + (!only || only === 'truss' ? `<button class="mi bd-open" data-a="trussdesigner">${svg('truss')}<span><b>Custom truss and Truss analysis</b><small>Draw any truss joint by joint, add loads in any direction, and get every member force</small></span></button>` : '') + (!only || only === 'frame' ? `<button class="mi bd-open" data-a="framedesigner">${svg('frame')}<span><b>Frame analysis</b><small>Portal, multi-story, gable or your own frame: reactions and bending moment, shear and axial force diagrams</small></span></button>` : '') + sec('Frames to draw', FRAMES, 'frame')+ sec('Trusses to draw', TRUSSES, 'truss') + sec('Loads', LOADS, 'load') + sec('Steel sections', ENGSEC, 'sec'), a => {
       if (a === 'trussdesigner') { closePop(); if (!activePane.nb()) { toast('Open a notebook first.', 1600); return; } const md = newTrussModel(); md.pre.type = 'custom'; trussDesigner(md, m2 => activePane.insertTruss(m2)); return; }
+      if (a === 'framedesigner') { closePop(); if (!activePane.nb()) { toast('Open a notebook first.', 1600); return; } frameDesigner(null, md => activePane.insertTruss(md)); return; }
       if (a === 'designer') { closePop(); if (!activePane.nb()) { toast('Open a notebook first.', 1600); return; } beamDesigner(null, md => activePane.insertBeam(md)); return; }
       T.shape = a; T.engShape = a; T.tool = 'shape'; if (BEAM_SUP[a]) T.beamSup = Object.assign({ mp: 0.5 }, BEAM_SUP[a]); if (!T.shapeColor) T.shapeColor = INK[0];
       saveTools(); closePop(); buildRibbon(); panes.forEach(p => p.onToolChange()); if (withCard) cardAfterPick();
@@ -8318,7 +8377,7 @@ body { background: var(--desk); }
       ${row('Left support', 'supL', [['pin', 'Pin'], ['roller', 'Roller'], ['none', 'None']])}
       ${row('Right support', 'supR', [['pin', 'Pin'], ['roller', 'Roller'], ['none', 'None']])}
       ${c.bot === 'raised' ? '' : row('Middle support', 'mid', [['none', 'None'], ['pin', 'Pin'], ['roller', 'Roller']])}
-      <p class="tcus-note">Drag a box on the page to draw it. Solve forces sends it to the Truss solver, where you can also move single joints.</p></div>`;
+      <p class="tcus-note">Drag a box on the page to draw it. Solve forces sends it to Truss analysis, where you can also move single joints.</p></div>`;
     const go = () => openPop((anchor = anchor.isConnected ? anchor : ($('#rbody [data-act="tcusedit"]') || anchor)), html(), a => {
       if (a.startsWith('pan:')) T.trussN = clamp(Math.round(+T.trussN || 6) + (a.endsWith('-1') ? -1 : 1), 2, 16);
       else { const [k, v] = a.split(':'); c[k] = k === 'endH' ? +v : v; }
@@ -8348,7 +8407,7 @@ body { background: var(--desk); }
     openPop(anchor, `<h4>Supports along the beam</h4><div class="bsp"><div class="chips bsp-pre">${PRESETS.map(([k, l]) => `<button class="chip" data-a="pre:${k}">${l}</button>`).join('')}</div>
       <svg class="bsp-svg" viewBox="0 0 340 92"></svg><div class="bsp-ctl"></div>
       <div class="bsp-acts"><button class="btn" data-a="add">${svg('plus')}Add support</button><label class="bsp-span">Span <input type="number" min="0.1" step="0.1" value="${span}" data-span> <small>for the labels</small></label></div>
-      <p class="bsp-note">Drag a support along the beam, or type where it goes. Applies to the next beam you draw. For loads, reactions and diagrams, use Beam designer.</p></div>`, (a, el) => {
+      <p class="bsp-note">Drag a support along the beam, or type where it goes. Applies to the next beam you draw. For loads, reactions and diagrams, use Beam analysis.</p></div>`, (a, el) => {
       if (a === 'add') {
         const pts = [0, ...list.map(q => q.p), 1].sort((x, y) => x - y); let best = 0.5, gap = -1; for (let i = 1; i < pts.length; i++) if (pts[i] - pts[i - 1] > gap) { gap = pts[i] - pts[i - 1]; best = (pts[i] + pts[i - 1]) / 2; }
         if (!list.some(q => q.p === 0)) best = list.length ? best : 0; list.push({ k: list.length ? 'roller' : 'pin', p: Math.round(best * 1000) / 1000 }); list.sort((x, y) => x.p - y.p); sel = list.findIndex(q => q.p === Math.round(best * 1000) / 1000);
@@ -8647,7 +8706,7 @@ body { background: var(--desk); }
     back.addEventListener('pointerdown', e => { if (e.target === back) close(); });
     document.addEventListener('keydown', escKey, true);
     onMount(back.querySelector('.modal'), close);
-    const f = back.querySelector('input[type="text"], button.primary'); if (f) setTimeout(() => f.focus(), 30);
+    const f = back.querySelector('input[type="text"], button.primary'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 30);
   }
   function confirmBox(title, body, okLabel, onOk) {
     modal(`<h2>${esc(title)}</h2><p>${esc(body)}</p><div class="modal-actions"><button class="btn" data-x>Cancel</button><button class="btn danger" data-ok>${esc(okLabel)}</button></div>`, (m, close) => {
@@ -11136,7 +11195,7 @@ body { background: var(--desk); }
 
 
   // ======================= settings page =======================
-  const APP_VERSION = '2.30', APP_DATE = 'November 2026';
+  const APP_VERSION = '2.33', APP_DATE = 'November 2026';
   const SET_SECS = [['profile', 'pfile', 'Profile'], ['account', 'cloud', 'Account and sync'], ['display', 'palette', 'Display and theme'], ['writing', 'pen', 'Pen and touch'], ['language', 'globe', 'Language'], ['privacy', 'lock', 'Privacy and security'], ['storage', 'cloud', 'Storage and backup'], ['share', 'share2', 'Share the app'], ['about', 'info', 'About Tala Notes']];
   if (!window.GN_APP) SET_SECS.splice(SET_SECS.findIndex(x => x[0] === 'account'), 1);
   let setSec = 'profile';
@@ -11163,7 +11222,7 @@ body { background: var(--desk); }
       const nbs = index.notebooks, pagesN = nbs.reduce((a, n) => a + n.pages.length, 0);
       h = `<div class="set-hero">${avatarHTML(76)}<div><h2>${esc(nm || 'Add your name')}</h2><p>${esc(p.role || 'Add your course, role or school')}</p>${p.motto ? `<p class="set-motto">“${esc(p.motto)}”</p>` : ''}</div></div>
         <div class="set-stats"><div><b>${nbs.length}</b><span>Notebooks</span></div><div><b>${pagesN}</b><span>Pages</span></div><div><b>${trashList().length}</b><span>In trash</span></div></div>
-        <div class="set-acts"><button class="btn primary" data-a="editprof">${svg('rename')}Edit profile</button><button class="btn" data-a="onboard">${svg('sparkle')}Run the welcome setup again</button></div>`; h += card('What you use Tala Notes for', usesChips(usesOf() || ['eng'], 'data-a') .replace(/data-a="(\w+)"/g, 'data-a="use:$1"') + tog('engTab', engOn(), 'Engineering tab', 'Beams, loads, steel sections, dimensions, the beam designer and the truss solver.'), 'This sets which tools and formula subjects come first.');
+        <div class="set-acts"><button class="btn primary" data-a="editprof">${svg('rename')}Edit profile</button><button class="btn" data-a="onboard">${svg('sparkle')}Run the welcome setup again</button></div>`; h += card('What you use Tala Notes for', usesChips(usesOf() || ['eng'], 'data-a') .replace(/data-a="(\w+)"/g, 'data-a="use:$1"') + tog('engTab', engOn(), 'Engineering tab', 'Beams, loads, steel sections, dimensions, the beam analysis and the truss analysis.'), 'This sets which tools and formula subjects come first.');
     } else if (k === 'display') {
       h = card('App theme', themeGrid(settings.appTheme), 'Colors for the whole app. Your pages keep their own paper.') +
         card('Light or dark', choice('theme', settings.theme, [['system', 'Automatic', 'auto'], ['light', 'Light', 'sun'], ['dark', 'Dark', 'moon']]), 'Automatic follows your device. Some themes are always dark.') +
@@ -11216,7 +11275,7 @@ body { background: var(--desk); }
       h = `<div class="set-hero center">${owlMark('set-owl', 'abg')}<div><h2>Tala Notes</h2><p>Version ${APP_VERSION} · ${APP_DATE}${isNative() ? ' · Android app' : window.GN_APP ? ' · installed app' : ''}</p></div></div>` +
         `<div class="love-note"><span class="ln-heart">♥</span><b>Made for my Anang</b><p>I made Tala Notes for you, my love. Tala means star, and that's what you are to me: the light I look for every day. May every page here keep your notes, your dreams and your late nights safe. Mahal kita. 💛</p><span class="ln-stars">✦ ✧ ✦</span></div>` +
         card('About', `<p class="set-sub">A handwriting notebook made for studying with a pen and tablet: pens and pencils, shapes and engineering drawings, PDFs and videos side by side, and everything saved automatically.</p>`) +
-        card("What's new", `<ul class="set-ul"><li>Better in split screen and narrow windows: Layers and Capture stay on the top bar, and the toolbar gets slimmer (names show when you hold a tool) so the page has more room.</li><li>Capture the whole screen: tap Capture → Whole screen or another app. In the Android app this includes other apps, like the other half of a split screen (Android asks first, every time). On a computer you can pick another window or the whole screen. Then drag around the part you want.</li><li>Remove a pen, highlighter or eraser from its settings card (tap it twice, then Remove at the bottom).</li><li>Folders can have no sticker.</li><li>Easier to read: home looks like Night study now show their background properly, and small grey text is darker on light backgrounds. Checked in every app theme and look, light and dark.</li><li>A cleaner workspace: one top bar holds back, all pages, your notebook tabs, undo, Layers, Capture, ⋯ and +. The page switcher is now a small button at the bottom left that shows the page and zoom (tap it to change pages, add a page or fit the page).</li><li>A simpler home: a smaller greeting with Continue, compact templates, and New group and ⋯ (Back up, Import, Trash, Customize home) beside your notebooks.</li><li>New line styles: Double, Zigzag, Wavy and Swirl, for pens and shapes.</li><li>Snap now works for every shape: corners snap to nearby corners, line ends and edges.</li><li>Engineering tools picked from + open their settings, just like on the toolbar.</li><li>Dragging notebooks and folders on the home screen shows the notebook itself, not a square box.</li><li>Cleaner pen, highlighter and eraser drawings on the toolbar, with plain white erasers. On the left side, pens now come in from the left.</li><li>Moving the toolbar is calmer: a small handle follows your finger and a thin line shows the edge, instead of big boxes. Holding to drag pens, tools and tabs works better on phones and tablets.</li><li>Clearer names: Horizontal (was Sideways), File window, Notebook window, File in split screen, Lock other screens, Perfect shapes, Snap ends, Coordinate plane, Import PDF or image and Notebook options.</li><li>The picture eraser moved off the toolbar: to erase part of a picture, select it and use Remove background (Erase brush) or Remove an object.</li><li>Remove an object from a photo: select a picture, tap Remove an object, paint over what you want gone (a person, a pole, a mark) and tap Remove. Tala Notes fills the spot from the rest of the photo, right on your device.</li><li>Pencil, charcoal and crayon now look real: grainy graphite, dusty charcoal and waxy crayon that catch on the paper. Press lightly for a soft line, harder for a darker one.</li><li>A slimmer toolbar that scrolls as one, with names under every tool and clearer icons. Hold any pen or tool and drag it to a new spot, or drag it off the toolbar to remove it. Hold and drag notebook tabs and page tabs to rearrange them, and drag folders on the home screen too. The top and bottom toolbar shows whole pens. The logo now has a pencil.</li><li>A total makeover: a softer, friendlier look with rounded floating bars, new icons drawn just for Tala Notes, and a new logo of Tala peeking over a notebook. The toolbar is tidier: pens, tools and colors each scroll on their own, tools are sorted into groups, and colors sit at the end. Hold or point at any button to see its name. Clearer names for every tool.</li><li>Erase parts of a picture: select it, tap Remove background, and paint with the Erase brush.</li><li>Better background remover: the new Smart mode finds the main subject and removes what is around it. Touch up with the Erase brush and Keep brush, with an adjustable brush size.</li><li>Roomier toolbar: bigger buttons with more space, and all the engineering tools now sit behind one Engineering button. Pens get most of the spare room. Add any tool back with the gear (Customize toolbar).</li><li>Every tool is on the toolbar now, including engineering. Keep as many pens, highlighters and erasers as you like: tap + to add one, hold one to duplicate, move or remove it. Pens and colors scroll on their own, so the tools always fit. Customize the toolbar (the gear at the end of the tools) to add, remove or reorder tools. Floating tools like the calculator no longer cover the toolbar.</li><li>A whole new look. The ribbon is gone: a slim top bar at the top, and your pens, highlighter, eraser and colors on a tool rail. Tap a pen again to open its settings card (thickness with − and +, color, opacity, pen type). Hold a pen to edit or remove it. Hold and drag the grip to move the tools to the top, bottom, left or right. Everything else is under + (add to the page) and ⋯ (view, study and notebook). The home page has a cleaner, calmer look too.</li><li>Screenshots now copy your page in its real colors, so no more black boxes after switching from dark mode. Drag pictures in from another app in split screen, or paste them, and pictures with see-through parts keep them.</li><li>Safer and more private: content from shared or imported notebooks is checked before it's shown. The app asks before sending handwriting to Google. Your profile photo no longer goes to the cloud, and fonts are built in, so nothing loads from Google Fonts. New passwords need 8 characters, and cloud saving has a safety limit so the free space stays available for everyone. Text is easier to read in every theme and app color. Clearer Terms and Privacy, a support email (talasupportservices@gmail.com), and full credits and licenses.</li><li>Smoother zooming: no more grey or dark blocks while you zoom in and out. The page shows a soft preview first, then sharpens. Uses less memory on phones, and redraws itself if the phone clears it in the background. Escape now always closes the open window.</li><li>Custom truss (Engineering → Trusses → Custom truss): pick the top and bottom shapes, how many panels, the web pattern, height, overhangs, supports and joints, with a live preview. Point loads now connect: the arrow tip snaps to truss joints and line ends (turn it off with Connect in the ribbon).</li><li>Trusses to draw (Engineering → Trusses): Pratt, Howe, Warren, King and Queen post, Fink, roof, Scissor, Bowstring and Cantilever trusses, with panels, supports, joints and upside down options. Tap Solve forces to send one to the Truss solver.</li><li>Loads in any direction: down, up, left, right, at an angle, or following your drag.</li><li>Tala Notes is for everyone now: tell it what you use it for (Settings → What you use Tala Notes for) and it shows the right tools. The Engineering tab appears only if you want it.</li><li>The formula sheet has new subjects: algebra and geometry, calculus, physics, chemistry, statistics, accounting and business math, and nursing dosage.</li><li>Exam reviewer (formerly Board exam reviewer) lets you pick the passing score.</li><li>The handwriting font is built in, so handwritten-style text looks right even offline. The exam screen fits on phones. Updated Terms and Privacy.</li><li>Ready for the Google Play Store: the Android app now has Tala Notes built in, so it opens without internet.</li><li>Pictures and PDF pages now stay on your device and are not uploaded, so syncing is faster and uses less data. Back them up to Google Drive from Settings → Backup. Up to 6 people can share a notebook.</li><li>Faster: erasing on full pages is about 5 times smoother, moving big selections about 4 times, and whiteboards scroll smoothly even with thousands of strokes.</li><li>Fixed: whiteboards and very full pages stopped saving after a while. They now save no matter how much you write.</li><li>Shared notebooks use less data and save more efficiently.</li><li>Shared notebooks: share any notebook with groupmates using a code (Pages → Share, or the notebook menu). Everyone who joins can write in it, and changes show up for everyone. Join one with Join with a code on the home screen.</li><li>Exam reviewer (Pages → Exam mode in a flashcard deck, or Tools → Exam reviewer): timed multiple-choice exams from your flashcards with a 70% passing mark, results, review of missed cards, and spaced repetition so weak cards come back sooner.</li><li>Formula sheet (top bar, or Tools → Formula sheet): over 100 CE formulas from math, statics, strength, beams, hydraulics, soil, surveying, concrete, steel, dynamics and economy. Tap one or drag it onto your page. Add your own, star favorites, or save handwritten formulas from your page.</li><li>Cut out with the Crop tool now cuts real ink and shapes, so you can still erase, trim and recolor the pieces. Picture options are still there.</li><li>Crop tool (Draw tab): drag a box or draw around anything on the page, then copy it as a picture, cut it out, or copy it to the clipboard. Select things with the Lasso and tap Crop to keep only part of them.</li><li>Truss solver (Engineering → Truss solver): Pratt, Howe, Warren, King and Queen post, Fink, roof and cantilever trusses, or draw your own. Get the reactions and every member force, tension or compression, drawn on your page.</li><li>Place dimensions like CAD: draw the two ends, then move the pen to set how far the line sits and tap. Move above or below for a level dimension, to the side for upright, or straight out for one along a slanted line.</li><li>Dimension settings fixed: Distance from shape now works with the Dimension tool, the preview follows every setting, you can type exact numbers, and pick which side the dimension goes on.</li><li>Edit a dimension after placing it: select it with the Lasso and tap Edit dimension to change the text, end line length, the gap at the shape and the style.</li><li>Screenshot is now at the top, next to Export.</li><li>Beam designer: the settings are split into Beam, Supports, Loads and Diagrams tabs, and the diagrams can be taller, thicker, shaded or hatched, with moment drawn up or down and titles on or off.</li><li>Graph tab: function graphs like Desmos (y = …, x = …, points), Cartesian planes with or without grid or only the first quadrant, and number lines. They go on the page and stay editable.</li><li>Faster: big pages and the whiteboard only draw what is on screen.</li><li>Neat letters line up like typed sentences, sit on the lines of lined paper, have a size setting, and erase, trim and change color like ink.</li><li>A smoother laser pointer.</li><li>Neat letters (Pen settings → Neat writing): write, pause, and your words are redrawn neatly in a font you pick, still as ink.</li><li>Whiteboards: one endless board that fills the screen and grows as you draw near the edges.</li><li>Flashcards: write the question on the front and the answer on the back, then Study with flip, shuffle, Got it and Still learning.</li><li>Handwriting to text: circle your writing with the Lasso, tap To text, check the words and pick a font.</li><li>Neat writing (Pen settings): smoother, even strokes as you write.</li><li>Trim is on the Draw tab too, and adding a page asks for the size first.</li><li>Trim: tap part of a line to cut it back to where it crosses other lines (Engineering → Trim, or Eraser → Trim).</li><li>Screenshot (Insert): drag around anything on screen, even a PDF beside your notes, and it is pasted on your page.</li><li>Drag pages to rearrange them in All pages.</li><li>Smoother resizing of split screens and windows, and faster erasing of 3D shapes.</li><li>Hollow 3D shapes (pipes, open boxes) with wall thickness, and line thickness for 3D shapes.</li><li>Fillet: round the corners of any shape.</li><li>Alignment guides: a pink guide shows when a line end lines up with a point on the page.</li><li>Dimensions: end lines, text above, in or below the line, arrow size, and a live preview.</li><li>Hold to shape makes perfect shapes: squares, circles, right, equal and isosceles triangles, even polygons.</li><li>Equations: limits, integrals with limits, sums, derivatives, partials, sin/cos/log, vectors and more.</li><li>Page size: longer, shorter, wider, narrower, an exact size, or back to the original.</li><li>A new Engineering tab with beams, loads, steel sections, dimensions and the beam designer.</li><li>Laser pointer, polygons with any number of sides, stars with any number of points.</li><li>Bring to front and send to back for anything you select.</li><li>Make a page longer or wider (Pages → Page size), and make a new notebook from a PDF.</li><li>No more download/share/print menu when you hold the screen.</li><li>A welcome screen to sign in, create an account or continue without one, plus Terms of Use and a Privacy Policy. You can also delete your account in Settings.</li><li>Joining lines, both when you draw a new line and when you drag one with the Lasso: the end clicks to a square (90°) joint, a level or plumb point, or 45° on the other line, with a guide to show it.</li><li>Accounts: sign in with email or Google, and your notebooks sync between your devices.</li><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam designer: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
+        card("What's new", `<ul class="set-ul"><li>New Frame analysis (Engineering): build a portal, multi-story, gable, L-shaped or your own frame with fixed, pinned or roller supports and hinges, add loads on members and joints, and get the reactions and the bending moment, shear and axial force diagrams. Put one diagram or all three on your page.</li><li>New frames to draw: portal, two bays, two stories, building frame, gable, L-frame and three-hinged frames, with fixed or pinned bases. Tap Solve this frame to analyze the one you picked.</li><li>Windows like Beam analysis now open at the top instead of scrolling down to the buttons.</li><li>Smoother writing: while you write, only the area around your stroke is redrawn, so pens keep up better on tablets. Neat writing no longer blinks while it reads your words.</li><li>Neat writing keeps long sentences in place: words line up where you wrote them, a word that would run off the page moves to the next line, and very wide words shrink a little to fit.</li><li>The page stays fitted when the window changes size (like moving the split-screen divider).</li><li>New AI cutout in Remove background (Android app): finds the main subject on your device and removes the background cleanly. Remove an object is about twice as fast, with smoother results.</li><li>Beam designer is now Beam analysis, and Truss solver is now Truss analysis.</li><li>Pick your toolbar size: tap the grip at the top of the toolbar → Toolbar size (XS to XL).</li><li>Dragging pens and tools works better with the toolbar at the top, bottom or left: the dragged pen keeps the right direction, and a finger drifting a little off the toolbar still rearranges instead of removing.</li><li>Better in split screen and narrow windows: Layers and Capture stay on the top bar, and the toolbar gets slimmer (names show when you hold a tool) so the page has more room.</li><li>Capture the whole screen: tap Capture → Whole screen or another app. In the Android app this includes other apps, like the other half of a split screen (Android asks first, every time). On a computer you can pick another window or the whole screen. Then drag around the part you want.</li><li>Remove a pen, highlighter or eraser from its settings card (tap it twice, then Remove at the bottom).</li><li>Folders can have no sticker.</li><li>Easier to read: home looks like Night study now show their background properly, and small grey text is darker on light backgrounds. Checked in every app theme and look, light and dark.</li><li>A cleaner workspace: one top bar holds back, all pages, your notebook tabs, undo, Layers, Capture, ⋯ and +. The page switcher is now a small button at the bottom left that shows the page and zoom (tap it to change pages, add a page or fit the page).</li><li>A simpler home: a smaller greeting with Continue, compact templates, and New group and ⋯ (Back up, Import, Trash, Customize home) beside your notebooks.</li><li>New line styles: Double, Zigzag, Wavy and Swirl, for pens and shapes.</li><li>Snap now works for every shape: corners snap to nearby corners, line ends and edges.</li><li>Engineering tools picked from + open their settings, just like on the toolbar.</li><li>Dragging notebooks and folders on the home screen shows the notebook itself, not a square box.</li><li>Cleaner pen, highlighter and eraser drawings on the toolbar, with plain white erasers. On the left side, pens now come in from the left.</li><li>Moving the toolbar is calmer: a small handle follows your finger and a thin line shows the edge, instead of big boxes. Holding to drag pens, tools and tabs works better on phones and tablets.</li><li>Clearer names: Horizontal (was Sideways), File window, Notebook window, File in split screen, Lock other screens, Perfect shapes, Snap ends, Coordinate plane, Import PDF or image and Notebook options.</li><li>The picture eraser moved off the toolbar: to erase part of a picture, select it and use Remove background (Erase brush) or Remove an object.</li><li>Remove an object from a photo: select a picture, tap Remove an object, paint over what you want gone (a person, a pole, a mark) and tap Remove. Tala Notes fills the spot from the rest of the photo, right on your device.</li><li>Pencil, charcoal and crayon now look real: grainy graphite, dusty charcoal and waxy crayon that catch on the paper. Press lightly for a soft line, harder for a darker one.</li><li>A slimmer toolbar that scrolls as one, with names under every tool and clearer icons. Hold any pen or tool and drag it to a new spot, or drag it off the toolbar to remove it. Hold and drag notebook tabs and page tabs to rearrange them, and drag folders on the home screen too. The top and bottom toolbar shows whole pens. The logo now has a pencil.</li><li>A total makeover: a softer, friendlier look with rounded floating bars, new icons drawn just for Tala Notes, and a new logo of Tala peeking over a notebook. The toolbar is tidier: pens, tools and colors each scroll on their own, tools are sorted into groups, and colors sit at the end. Hold or point at any button to see its name. Clearer names for every tool.</li><li>Erase parts of a picture: select it, tap Remove background, and paint with the Erase brush.</li><li>Better background remover: the new Smart mode finds the main subject and removes what is around it. Touch up with the Erase brush and Keep brush, with an adjustable brush size.</li><li>Roomier toolbar: bigger buttons with more space, and all the engineering tools now sit behind one Engineering button. Pens get most of the spare room. Add any tool back with the gear (Customize toolbar).</li><li>Every tool is on the toolbar now, including engineering. Keep as many pens, highlighters and erasers as you like: tap + to add one, hold one to duplicate, move or remove it. Pens and colors scroll on their own, so the tools always fit. Customize the toolbar (the gear at the end of the tools) to add, remove or reorder tools. Floating tools like the calculator no longer cover the toolbar.</li><li>A whole new look. The ribbon is gone: a slim top bar at the top, and your pens, highlighter, eraser and colors on a tool rail. Tap a pen again to open its settings card (thickness with − and +, color, opacity, pen type). Hold a pen to edit or remove it. Hold and drag the grip to move the tools to the top, bottom, left or right. Everything else is under + (add to the page) and ⋯ (view, study and notebook). The home page has a cleaner, calmer look too.</li><li>Screenshots now copy your page in its real colors, so no more black boxes after switching from dark mode. Drag pictures in from another app in split screen, or paste them, and pictures with see-through parts keep them.</li><li>Safer and more private: content from shared or imported notebooks is checked before it's shown. The app asks before sending handwriting to Google. Your profile photo no longer goes to the cloud, and fonts are built in, so nothing loads from Google Fonts. New passwords need 8 characters, and cloud saving has a safety limit so the free space stays available for everyone. Text is easier to read in every theme and app color. Clearer Terms and Privacy, a support email (talasupportservices@gmail.com), and full credits and licenses.</li><li>Smoother zooming: no more grey or dark blocks while you zoom in and out. The page shows a soft preview first, then sharpens. Uses less memory on phones, and redraws itself if the phone clears it in the background. Escape now always closes the open window.</li><li>Custom truss (Engineering → Trusses → Custom truss): pick the top and bottom shapes, how many panels, the web pattern, height, overhangs, supports and joints, with a live preview. Point loads now connect: the arrow tip snaps to truss joints and line ends (turn it off with Connect in the ribbon).</li><li>Trusses to draw (Engineering → Trusses): Pratt, Howe, Warren, King and Queen post, Fink, roof, Scissor, Bowstring and Cantilever trusses, with panels, supports, joints and upside down options. Tap Solve forces to send one to Truss analysis.</li><li>Loads in any direction: down, up, left, right, at an angle, or following your drag.</li><li>Tala Notes is for everyone now: tell it what you use it for (Settings → What you use Tala Notes for) and it shows the right tools. The Engineering tab appears only if you want it.</li><li>The formula sheet has new subjects: algebra and geometry, calculus, physics, chemistry, statistics, accounting and business math, and nursing dosage.</li><li>Exam reviewer (formerly Board exam reviewer) lets you pick the passing score.</li><li>The handwriting font is built in, so handwritten-style text looks right even offline. The exam screen fits on phones. Updated Terms and Privacy.</li><li>Ready for the Google Play Store: the Android app now has Tala Notes built in, so it opens without internet.</li><li>Pictures and PDF pages now stay on your device and are not uploaded, so syncing is faster and uses less data. Back them up to Google Drive from Settings → Backup. Up to 6 people can share a notebook.</li><li>Faster: erasing on full pages is about 5 times smoother, moving big selections about 4 times, and whiteboards scroll smoothly even with thousands of strokes.</li><li>Fixed: whiteboards and very full pages stopped saving after a while. They now save no matter how much you write.</li><li>Shared notebooks use less data and save more efficiently.</li><li>Shared notebooks: share any notebook with groupmates using a code (Pages → Share, or the notebook menu). Everyone who joins can write in it, and changes show up for everyone. Join one with Join with a code on the home screen.</li><li>Exam reviewer (Pages → Exam mode in a flashcard deck, or Tools → Exam reviewer): timed multiple-choice exams from your flashcards with a 70% passing mark, results, review of missed cards, and spaced repetition so weak cards come back sooner.</li><li>Formula sheet (top bar, or Tools → Formula sheet): over 100 CE formulas from math, statics, strength, beams, hydraulics, soil, surveying, concrete, steel, dynamics and economy. Tap one or drag it onto your page. Add your own, star favorites, or save handwritten formulas from your page.</li><li>Cut out with the Crop tool now cuts real ink and shapes, so you can still erase, trim and recolor the pieces. Picture options are still there.</li><li>Crop tool (Draw tab): drag a box or draw around anything on the page, then copy it as a picture, cut it out, or copy it to the clipboard. Select things with the Lasso and tap Crop to keep only part of them.</li><li>Truss analysis (Engineering → Truss analysis): Pratt, Howe, Warren, King and Queen post, Fink, roof and cantilever trusses, or draw your own. Get the reactions and every member force, tension or compression, drawn on your page.</li><li>Place dimensions like CAD: draw the two ends, then move the pen to set how far the line sits and tap. Move above or below for a level dimension, to the side for upright, or straight out for one along a slanted line.</li><li>Dimension settings fixed: Distance from shape now works with the Dimension tool, the preview follows every setting, you can type exact numbers, and pick which side the dimension goes on.</li><li>Edit a dimension after placing it: select it with the Lasso and tap Edit dimension to change the text, end line length, the gap at the shape and the style.</li><li>Screenshot is now at the top, next to Export.</li><li>Beam analysis: the settings are split into Beam, Supports, Loads and Diagrams tabs, and the diagrams can be taller, thicker, shaded or hatched, with moment drawn up or down and titles on or off.</li><li>Graph tab: function graphs like Desmos (y = …, x = …, points), Cartesian planes with or without grid or only the first quadrant, and number lines. They go on the page and stay editable.</li><li>Faster: big pages and the whiteboard only draw what is on screen.</li><li>Neat letters line up like typed sentences, sit on the lines of lined paper, have a size setting, and erase, trim and change color like ink.</li><li>A smoother laser pointer.</li><li>Neat letters (Pen settings → Neat writing): write, pause, and your words are redrawn neatly in a font you pick, still as ink.</li><li>Whiteboards: one endless board that fills the screen and grows as you draw near the edges.</li><li>Flashcards: write the question on the front and the answer on the back, then Study with flip, shuffle, Got it and Still learning.</li><li>Handwriting to text: circle your writing with the Lasso, tap To text, check the words and pick a font.</li><li>Neat writing (Pen settings): smoother, even strokes as you write.</li><li>Trim is on the Draw tab too, and adding a page asks for the size first.</li><li>Trim: tap part of a line to cut it back to where it crosses other lines (Engineering → Trim, or Eraser → Trim).</li><li>Screenshot (Insert): drag around anything on screen, even a PDF beside your notes, and it is pasted on your page.</li><li>Drag pages to rearrange them in All pages.</li><li>Smoother resizing of split screens and windows, and faster erasing of 3D shapes.</li><li>Hollow 3D shapes (pipes, open boxes) with wall thickness, and line thickness for 3D shapes.</li><li>Fillet: round the corners of any shape.</li><li>Alignment guides: a pink guide shows when a line end lines up with a point on the page.</li><li>Dimensions: end lines, text above, in or below the line, arrow size, and a live preview.</li><li>Hold to shape makes perfect shapes: squares, circles, right, equal and isosceles triangles, even polygons.</li><li>Equations: limits, integrals with limits, sums, derivatives, partials, sin/cos/log, vectors and more.</li><li>Page size: longer, shorter, wider, narrower, an exact size, or back to the original.</li><li>A new Engineering tab with beams, loads, steel sections, dimensions and the beam analysis.</li><li>Laser pointer, polygons with any number of sides, stars with any number of points.</li><li>Bring to front and send to back for anything you select.</li><li>Make a page longer or wider (Pages → Page size), and make a new notebook from a PDF.</li><li>No more download/share/print menu when you hold the screen.</li><li>A welcome screen to sign in, create an account or continue without one, plus Terms of Use and a Privacy Policy. You can also delete your account in Settings.</li><li>Joining lines, both when you draw a new line and when you drag one with the Lasso: the end clicks to a square (90°) joint, a level or plumb point, or 45° on the other line, with a guide to show it.</li><li>Accounts: sign in with email or Google, and your notebooks sync between your devices.</li><li>Check for updates: Settings → About gets the newest version in one tap.</li><li>Lines and curves: drag the ends to connect to other lines, add bend points, or make waves.</li><li>Lasso: freehand or rectangle.</li><li>Steel sections get proper dimensions: depth, flange width, flange and web thickness, each angle leg, gap and wall thickness.</li><li>Beam analysis: loads that overlap stack neatly, and you can pick each load's level.</li><li>More fonts, any text size, bold, italic and underline.</li><li>Equations: fractions, powers, roots and Greek letters.</li><li>Drag notebooks into group folders, out of them, or into your own order.</li><li>Add pages from a picture or a PDF: one page, some pages or all of them.</li><li>Custom beams: supports anywhere along the span, as many as you need.</li><li>App themes and toolbar looks, plus civil engineering stickers.</li><li>Notebook groups: folders for your subjects, with their own color and sticker.</li><li>Fill one side of a 3D shape, or all sides.</li><li>Tala has 9 poses now. Tap her on the home page to see them.</li><li>Looks: one-tap home styles, plus more banners, backgrounds and accent colors.</li><li>A new name and a new friend: Tala Notes, with Tala the tarsier. ⭐</li><li>A cleaner toolbar with a new Pages tab, and all 16 pens in one Pen type picker.</li><li>Solid or see-through highlighter.</li><li>Shape erasers: drag a rectangle, circle or loop to erase everything inside.</li><li>Pick: add or remove single items from a selection.</li><li>Faster scrolling and drawing.</li></ul>`) +
         card('Updates', isNative() && !/^https?:\/\/[^/]*github\.io/.test(location.href) ? `<p class="set-sub">You have version ${APP_VERSION}. New versions come through the Google Play Store. Turn on auto-update for Tala Notes in Play Store to always get the newest.</p>` : window.GN_APP ? `<p class="set-sub upd-msg">You have version ${APP_VERSION}. Check if a newer version is on your website.</p><div class="set-acts"><button class="btn primary" data-a="chkupd">${svg('rotate')}Check for updates</button></div>` : `<p class="set-sub">This copy always opens the newest version.</p>`) +
         card('Terms and privacy', `<p class="set-sub">How Tala Notes handles your notes and account.</p><div class="set-acts"><button class="btn" data-a="syTerms">${svg('file')}Read the Terms and Privacy Policy</button></div>`) +
         card('Guide', `<p class="set-sub">A tour of everything Tala Notes can do, as a notebook you can write in.</p><div class="set-acts"><button class="btn" data-a="guide">${svg('pages')}Add the Getting started notebook</button></div>`) +
@@ -11528,7 +11587,7 @@ body { background: var(--desk); }
 
     // 4 · engineering
     P = page(); H(P, 'Engineering drawings', '#d9480f');
-    B(P, 'The Engineering tab has beams with supports, loads, steel sections, dimensions, Trim and the beam designer. Tap Change supports to pick pin, roller, fixed or free ends, and add a middle support.');
+    B(P, 'The Engineering tab has beams with supports, loads, steel sections, dimensions, Trim and the beam analysis. Tap Change supports to pick pin, roller, fixed or free ends, and add a middle support.');
     const by = P.y + 260, bA = [180, by], bB = [980, by];
     beamParts('b_ss', bA, bB, { l: 'pin', m: 'none', r: 'roller' }).forEach(pt => S(P, { k: 'p', c: '#1c2230', w: pt.thin ? 2 : pt.heavy ? 7 : 4, pts: flat(pt.pts) }));
     beamParts('udl', [180, by - 150], [980, by - 30]).forEach(pt => S(P, { k: 'p', c: '#e5484d', w: 3, pts: flat(pt.pts) }));
@@ -11711,6 +11770,7 @@ body { background: var(--desk); }
   // ---------- remove an object from a picture: fills the painted area from the rest of the photo (runs on the device) ----------
   async function inpaintFill(img, W, H, hole, onStep) {
     // exemplar fill: fills from the outline inward, copying the best-matching piece of the photo each time (keeps lines and patterns going)
+    let holeN = 0; for (let i = 0; i < hole.length; i++) holeN += hole[i];
     const P = 4, N = W * H, im = new Float32Array(N * 3), m = new Uint8Array(hole), C = new Float32Array(N), src = new Int32Array(N).fill(-1);
     for (let i = 0, j = 0; i < N; i++, j += 4) { im[i * 3] = img[j]; im[i * 3 + 1] = img[j + 1]; im[i * 3 + 2] = img[j + 2]; C[i] = m[i] ? 0 : 1; }
     let total = 0; for (let i = 0; i < N; i++) total += m[i]; if (!total) return;
@@ -11719,7 +11779,7 @@ body { background: var(--desk); }
     const pad = Math.max(40, Math.max(bx1 - bx0, by1 - by0) * 1.5), wx0 = Math.max(P, Math.floor(bx0 - pad)), wx1 = Math.min(W - 1 - P, Math.ceil(bx1 + pad)), wy0 = Math.max(P, Math.floor(by0 - pad)), wy1 = Math.min(H - 1 - P, Math.ceil(by1 + pad));
     const rowRun = new Int32Array(N); for (let y = 0; y < H; y++) { let r = 0; for (let x = 0; x < W; x++) { const i = y * W + x; r = m[i] ? 0 : r + 1; rowRun[i] = r; } }
     const okSrc = c => { const x = c % W, y = (c / W) | 0; if (x < P || y < P || x >= W - P || y >= H - P) return false; for (let dy = -P; dy <= P; dy++) if (rowRun[(y + dy) * W + x + P] < 2 * P + 1) return false; return true; };
-    const cand = []; const step = Math.max(1, Math.ceil(Math.sqrt((wx1 - wx0 + 1) * (wy1 - wy0 + 1) / 22000)));
+    const cand = []; const step = Math.max(1, Math.ceil(Math.sqrt((wx1 - wx0 + 1) * (wy1 - wy0 + 1) / 7000)));
     for (let y = wy0; y <= wy1; y += step) for (let x = wx0; x <= wx1; x += step) { const c = y * W + x; if (okSrc(c)) cand.push(c); }
     if (!cand.length) return;
     const lum = i => im[i * 3] * 0.299 + im[i * 3 + 1] * 0.587 + im[i * 3 + 2] * 0.114;
@@ -11741,7 +11801,9 @@ body { background: var(--desk); }
       // best source: neighbors' sources first (keeps patterns lined up), then a scan
       let bs = -1, bd = Infinity; const x = bp % W, y = (bp / W) | 0;
       for (let dy = -P; dy <= P; dy += 2) for (let dx = -P; dx <= P; dx += 2) { const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue; const q = yy * W + xx, s0 = src[q]; if (s0 < 0) continue; const c = s0 - dy * W - dx; if (c < 0 || c >= N || !okSrc(c)) continue; const d = dist(bp, c, bd); if (d < bd) { bd = d; bs = c; } }
-      for (let i = 0; i < cand.length; i++) { const d = dist(bp, cand[i], bd); if (d < bd) { bd = d; bs = cand[i]; } }
+      // look closely around the spot first (keeps gradients like sky and shadows smooth), then across the picture
+      { const LR = Math.max(12, P * 4); for (let dy = -LR; dy <= LR; dy += 2) { const yy = y + dy; if (yy < P || yy >= H - P) continue; for (let dx = -LR; dx <= LR; dx += 2) { const xx = x + dx; if (xx < P || xx >= W - P) continue; const c = yy * W + xx; if (!okSrc(c)) continue; const d = dist(bp, c, bd); if (d < bd) { bd = d; bs = c; } } } }
+      for (let i = 0; i < cand.length; i++) { const d = dist(bp, cand[i], bd / 1.35) * 1.35; if (d < bd) { bd = d; bs = cand[i]; } }   // far-away pieces must fit clearly better
       if (step > 1 && bs >= 0) { const b0 = bs, sr = step - 1; for (let dy = -sr; dy <= sr; dy++) for (let dx = -sr; dx <= sr; dx++) { const c = b0 + dy * W + dx; if (c !== b0 && okSrc(c)) { const d = dist(bp, c, bd); if (d < bd) { bd = d; bs = c; } } } }
       if (bs < 0) { front.delete(bp); continue; }
       let cs = 0, cnt = 0; for (let dy = -P; dy <= P; dy++) for (let dx = -P; dx <= P; dx++) { const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue; cs += C[yy * W + xx]; cnt++; }
@@ -11791,7 +11853,7 @@ body { background: var(--desk); }
           // grow the painted area a little so edges of the object go too
           const hole = new Uint8Array(mark), gr = Math.max(1, Math.round(Math.max(W, H) / 400)); for (let pass = 0; pass < gr; pass++) { const h2 = new Uint8Array(hole); for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y * W + x; if (!hole[i] && (hole[i - 1] || hole[i + 1] || hole[i - W] || hole[i + W])) h2[i] = 1; } hole.set(h2); }
           // work on a smaller copy for speed, then paste the filled part back
-          const k = Math.min(1, 520 / Math.max(W, H)), sw = Math.max(8, Math.round(W * k)), sh = Math.max(8, Math.round(H * k));
+          const k = Math.min(1, 480 / Math.max(W, H)), sw = Math.max(8, Math.round(W * k)), sh = Math.max(8, Math.round(H * k));
           const sc = document.createElement('canvas'); sc.width = sw; sc.height = sh; const sg = sc.getContext('2d'); base.getContext('2d').putImageData(cur, 0, 0); sg.drawImage(base, 0, 0, sw, sh);
           const sd = sg.getImageData(0, 0, sw, sh), sm = new Uint8Array(sw * sh);
           for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) { const x0 = Math.floor(x / k), y0 = Math.floor(y / k), x1 = Math.min(W - 1, Math.ceil((x + 1) / k)), y1 = Math.min(H - 1, Math.ceil((y + 1) / k)); let any = 0; for (let yy = y0; yy <= y1 && !any; yy++) for (let xx = x0; xx <= x1; xx++) if (hole[yy * W + xx]) { any = 1; break; } sm[y * sw + x] = any; }
@@ -11816,11 +11878,12 @@ body { background: var(--desk); }
     imgCanvasOf(it, 1400).then(src => {
       if (!src) { toast("This picture couldn't be opened.", 2000); return; }
       const W = src.width, H = src.height, N = W * H, base = src.getContext('2d').getImageData(0, 0, W, H).data;
-      let mode = 'smart', tol = 48, soft = 1, taps = [], mask = null, brush = 'erase', bsz = 28;
+      const AI = (() => { try { return isNative() && Capacitor.isPluginAvailable && Capacitor.isPluginAvailable('SubjectSegment') ? natPlug('SubjectSegment') : null; } catch (e) { return null; } })();
+      let mode = AI ? 'ai' : 'smart', tol = 48, soft = 1, taps = [], mask = null, brush = 'erase', bsz = 28, aiMask = null, aiBusy = false;
       const hand = new Uint8Array(N);   // brush marks: 1 = remove, 2 = keep
       let smartCache = null;
       modal(`<div class="ex-head">${svg('magic')}<div><h2>Remove background</h2><p>Pick a way, then touch up with the brushes if anything is left over.</p></div></div>
-        <div class="seg rb-modes"><button data-m="smart">${svg('sparkle')}Smart</button><button data-m="auto">${svg('fit')}Plain edges</button><button data-m="paper">${svg('file')}White paper</button><button data-m="tap">${svg('eyedrop')}Tap a color</button></div>
+        <div class="seg rb-modes">${AI ? `<button data-m="ai">${svg('magic')}AI cutout</button>` : ''}<button data-m="smart">${svg('sparkle')}Smart</button><button data-m="auto">${svg('fit')}Plain edges</button><button data-m="paper">${svg('file')}White paper</button><button data-m="tap">${svg('eyedrop')}Tap a color</button></div>
         <div class="crop-stage rb-stage"><canvas class="rb-cv"></canvas></div>
         <p class="rb-tip"></p>
         <div class="rb-row"><div class="seg rb-brush"><button data-b="none">${svg('eyedrop')}Tap</button><button data-b="erase">${svg('eraser')}Erase brush</button><button data-b="keep">${svg('pen')}Keep brush</button></div></div>
@@ -11888,7 +11951,18 @@ body { background: var(--desk); }
         };
         const compute = () => {
           const A = new Uint8Array(N).fill(255);
-          if (mode === 'smart') finishSmart(A);
+          if (mode === 'ai') {
+            if (aiMask) A.set(aiMask);
+            else if (!aiBusy) {
+              aiBusy = true; const tip = m.querySelector('.rb-tip'); if (tip) tip.textContent = 'Finding the subject…';
+              AI.mask({ image: src.toDataURL('image/png') }).then(r => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = 'data:image/png;base64,' + r.mask; })).then(im => {
+                const c = document.createElement('canvas'); c.width = W; c.height = H; const g2 = c.getContext('2d'); g2.drawImage(im, 0, 0, W, H); const d = g2.getImageData(0, 0, W, H).data;
+                aiMask = new Uint8Array(N); for (let p_ = 0, i = 3; p_ < N; p_++, i += 4) aiMask[p_] = d[i];
+                aiBusy = false; paint(); later();
+              }).catch(e => { aiBusy = false; const msg = String(e && e.message || e); mode = 'smart'; paint(); later(); toast(/download|module|waiting/i.test(msg) ? 'The AI cutout is still downloading on your device. Using Smart for now; try AI again in a minute.' : "The AI cutout couldn't find a subject here. Using Smart instead.", 3600); });
+            }
+          }
+          else if (mode === 'smart') finishSmart(A);
           else if (mode === 'auto') { const st = []; const step = Math.max(1, Math.round(Math.max(W, H) / 220)); for (let x = 0; x < W; x += step) { st.push(x, (H - 1) * W + x); } for (let y = 0; y < H; y += step) { st.push(y * W, y * W + W - 1); } flood(A, st); }
           else if (mode === 'paper') { const lo = 255 - tol * 1.1, hi = 255 - tol * 0.35; for (let p = 0, i = 0; p < N; p++, i += 4) { const r = base[i], gg = base[i + 1], b = base[i + 2], l = 0.299 * r + 0.587 * gg + 0.114 * b, sat = Math.max(r, gg, b) - Math.min(r, gg, b); if (sat > 70) continue; if (l >= hi) A[p] = 0; else if (l > lo) A[p] = Math.round(255 * (hi - l) / (hi - lo)); } }
           if (taps.length) flood(A, taps);
@@ -11902,11 +11976,12 @@ body { background: var(--desk); }
           const t = document.createElement('canvas'); t.width = W; t.height = H; t.getContext('2d').putImageData(out, 0, 0); V.out = t;
           g.clearRect(0, 0, cv.width, cv.height); g.drawImage(t, 0, 0, cv.width, cv.height);
         };
-        const TIPS = { smart: 'Finds the main subject (a person, an object, a drawing) and removes what is around it. Use the brushes to fix any spot.', auto: 'Removes a plain background that touches the edges of the picture. Raise the strength if some is left.', paper: 'Makes white or light paper see-through and keeps the writing. Great for photos of notes.', tap: 'Tap any part of the background to remove that color. Tap more spots for more.' };
+        const TIPS = { ai: 'AI finds the main subject (a person, pet, object or drawing) on your device and removes the background. Touch up with the brushes.', smart: 'Finds the main subject (a person, an object, a drawing) and removes what is around it. Use the brushes to fix any spot.', auto: 'Removes a plain background that touches the edges of the picture. Raise the strength if some is left.', paper: 'Makes white or light paper see-through and keeps the writing. Great for photos of notes.', tap: 'Tap any part of the background to remove that color. Tap more spots for more.' };
         const paint = () => {
           m.querySelectorAll('[data-m]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === mode)));
           m.querySelectorAll('[data-b]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.b === brush)));
           m.querySelector('.rb-tip').textContent = brush === 'erase' ? 'Erase brush: paint over anything you want gone.' : brush === 'keep' ? 'Keep brush: paint over parts that should stay.' : TIPS[mode];
+          m.querySelector('.rb-tol').closest('label').hidden = mode === 'ai';
           m.querySelector('.rb-tol').value = tol; m.querySelector('.rb-tv').textContent = tol; m.querySelector('.rb-soft').value = soft; m.querySelector('.rb-sv').textContent = soft ? soft : 'Off';
           m.querySelector('.rb-bsz').value = bsz; m.querySelector('.rb-bv').textContent = bsz; m.querySelector('.rb-bsz-l').hidden = brush === 'none';
           m.querySelector('[data-undo]').hidden = !taps.length && !V.hist; m.querySelector('[data-clear]').hidden = !hand.some(v => v);
@@ -12041,7 +12116,7 @@ body { background: var(--desk); }
   }
 
 
-  // ======================= beam designer and solver =======================
+  // ======================= beam analysis and solver =======================
   // Units: everything is converted to kN and m inside the solver, and back for display.
   const BU = {
     len: { m: 1, cm: 0.01, mm: 0.001, ft: 0.3048, in: 0.0254 },
@@ -12294,7 +12369,7 @@ body { background: var(--desk); }
     let md = JSON.parse(JSON.stringify(mdIn || newBeamModel()));
     const num = (v, d = 0) => { const n = parseFloat(v); return isFinite(n) ? n : d; };
     let bdTab = ls.get('inkleaf:bdtab', 'beam');
-    modal(`<div class="bd-head">${svg('b_ss')}<div><h2>Beam designer</h2><p>Build any beam, add loads, and solve for reactions, shear and moment.</p></div></div>
+    modal(`<div class="bd-head">${svg('b_ss')}<div><h2>Beam analysis</h2><p>Build any beam, add loads, and solve for reactions, shear and moment.</p></div></div>
       <div class="bd-wrap"><div class="bd-form"></div><div class="bd-side"><canvas class="bd-cv"></canvas><div class="bd-res"></div></div></div>
       <div class="modal-actions"><button class="btn" data-x>Cancel</button><button class="btn primary" data-ok>${svg('plus')}${mdIn ? 'Update on page' : 'Put on page'}</button></div>`, (m, close) => {
       m.classList.add('bd-modal');
@@ -12375,7 +12450,7 @@ body { background: var(--desk); }
     });
   }
 
-  // ======================= truss solver: method of joints (stiffness method), tension and compression =======================
+  // ======================= truss analysis: method of joints (stiffness method), tension and compression =======================
   const TRUSS_T = [['pratt', 'Pratt'], ['howe', 'Howe'], ['warren', 'Warren'], ['warrenv', 'Warren with verticals'], ['kpost', 'King post'], ['qpost', 'Queen post'], ['fink', 'Fink (roof)'], ['roofh', 'Howe roof'], ['roofp', 'Pratt roof'], ['scissor', 'Scissor'], ['bow', 'Bowstring'], ['canti', 'Cantilever'], ['custom', 'Custom (draw your own)']];
   const TSUP_T = [['pin', 'Pin (hinge)'], ['roller', 'Roller (up/down)'], ['rollerx', 'Roller on a wall (horizontal)']];
   function trussGen(type, L, H, n) {
@@ -12464,6 +12539,38 @@ body { background: var(--desk); }
     }
     return P;
   }
+  // frames to draw: the shape of each quick frame (x right, y up) with its supports and hinges
+  function frameShape(kind, base) {
+    const b = base || 'fixed', P = { f_portal: { type: 'portal', L: 6, H: 4.5, bays: 1, stories: 1 }, f_bay2: { type: 'portal', L: 5, H: 4.5, bays: 2, stories: 1 }, f_story2: { type: 'portal', L: 6, H: 3.5, bays: 1, stories: 2 }, f_multi: { type: 'portal', L: 5, H: 3.5, bays: 2, stories: 2 }, f_gable: { type: 'gable', L: 8, H: 4, rise: 2.4 }, f_canti: { type: 'canti', L: 5, H: 5 } }[kind];
+    if (P) { const g = frameGen(Object.assign({ base: b }, P)); if (kind === 'f_canti' && b !== 'none') g.sups = [{ n: 0, t: 'fixed' }]; return Object.assign(g, { hinges: [], pre: P }); }
+    if (kind === 'f_3h') return { nodes: [{ x: 0, y: 0 }, { x: 0, y: 4.5 }, { x: 3, y: 4.5 }, { x: 6, y: 4.5 }, { x: 6, y: 0 }], mem: [[0, 1], [1, 2], [2, 3], [4, 3]], sups: [{ n: 0, t: 'pin' }, { n: 4, t: 'pin' }], hinges: [{ m: 1, e: 1 }, { m: 2, e: 0 }], node3: 2, pre: { type: 'custom', L: 6, H: 4.5 } };
+    return { nodes: [{ x: 0, y: 0 }, { x: 0, y: 4 }, { x: 4, y: 6.4 }, { x: 8, y: 4 }, { x: 8, y: 0 }], mem: [[0, 1], [1, 2], [2, 3], [4, 3]], sups: [{ n: 0, t: 'pin' }, { n: 4, t: 'pin' }], hinges: [{ m: 1, e: 1 }, { m: 2, e: 0 }], node3: 2, pre: { type: 'custom', L: 8, H: 4 } };
+  }
+  FRAMES.forEach(([k]) => { try { const g = frameShape(k, 'none'), xs = g.nodes.map(q => q.x), ys = g.nodes.map(q => q.y), sx = Math.max(...xs), sy = Math.max(...ys), sc = Math.min(18 / sx, 16 / sy), ox = 12 - sx * sc / 2, oy = 12 + sy * sc / 2;
+    ICONS[k] = g.mem.map(([a, b]) => { const A = g.nodes[a], B = g.nodes[b]; return `M${(ox + A.x * sc).toFixed(1)} ${(oy - A.y * sc).toFixed(1)}L${(ox + B.x * sc).toFixed(1)} ${(oy - B.y * sc).toFixed(1)}`; }).join(' ') + g.nodes.filter((q, i) => q.y < 1e-6 && !(k === 'f_canti' && i)).map(q => ` M${(ox + q.x * sc - 2.2).toFixed(1)} ${(oy + 0.2).toFixed(1)}h4.4`).join(''); } catch (e) {} });
+  function frameParts(kind, A, B) {
+    const sup = kind === 'f_3h' || kind === 'f_3hg' ? (T.frameSup === 'none' ? 'none' : 'pin') : (T.frameSup || 'fixed'), g = frameShape(kind, sup);
+    const x0 = Math.min(A[0], B[0]), x1 = Math.max(A[0], B[0]), y0 = Math.min(A[1], B[1]), y1 = Math.max(A[1], B[1]), W = Math.max(30, x1 - x0), s = clamp(W * 0.09, 12, 40);
+    const sh = sup === 'none' ? 0 : sup === 'pin' ? s * 1.15 : s * 0.45, H = Math.max(16, (y1 - y0) - sh), xs = g.nodes.map(q => q.x), ys = g.nodes.map(q => q.y), mx = Math.max(...xs) || 1, my = Math.max(...ys) || 1;
+    const pad = sup === 'none' ? 0 : s * 0.9, X = x => x0 + pad + x / mx * (W - 2 * pad), Y = y => y0 + H - y / my * H, P = [];
+    g.mem.forEach(([a, b]) => { const p = g.nodes[a], q = g.nodes[b]; P.push({ pts: [[X(p.x), Y(p.y)], [X(q.x), Y(q.y)]] }); });
+    if (T.frameJoints) { const r = clamp(W * 0.006, 2.2, 5); g.nodes.forEach((q, i) => { if (i !== g.node3) P.push({ pts: ellipsePts(X(q.x), Y(q.y), r, r), closed: true, dot: true }); }); }
+    if (g.node3 != null) { const q = g.nodes[g.node3], r = clamp(W * 0.012, 3.5, 9); P.push({ pts: ellipsePts(X(q.x), Y(q.y), r, r), closed: true, joint: true }); }
+    if (sup !== 'none') {
+      const hatch = (xa, xb, yy) => { for (let x = xa + s * 0.2; x <= xb + 0.1; x += s * 0.28) P.push({ pts: [[x, yy], [x - s * 0.25, yy + s * 0.28]], thin: true }); };
+      g.sups.forEach(q => { const nd = g.nodes[q.n], x = X(nd.x), y = Y(nd.y);
+        if (q.t === 'fixed') { P.push({ pts: [[x - s * 0.8, y], [x + s * 0.8, y]], heavy: true }); hatch(x - s * 0.8, x + s * 0.8, y); }
+        else { P.push({ pts: [[x, y], [x + s * 0.5, y + s * 0.8], [x - s * 0.5, y + s * 0.8], [x, y]], closed: true, fill: true }, { pts: [[x - s * 0.8, y + s * 0.8], [x + s * 0.8, y + s * 0.8]] }); hatch(x - s * 0.8, x + s * 0.8, y + s * 0.8); } });
+    }
+    return P;
+  }
+  function frameModelFor(kind) {
+    const sup = kind === 'f_3h' || kind === 'f_3hg' ? 'pin' : (T.frameSup === 'pin' ? 'pin' : 'fixed'), g = frameShape(kind, sup), md = newFrameModel('portal');
+    md.nodes = g.nodes.map(q => ({ x: q.x, y: q.y })); md.mem = g.mem.map(m => m.slice()); md.sups = g.sups.length ? g.sups.map(q => Object.assign({}, q)) : [{ n: 0, t: 'fixed' }]; md.props = g.mem.map(() => ({ k: 1 }));
+    (g.hinges || []).forEach(h => { md.props[h.m][h.e ? 'h1' : 'h0'] = true; });
+    md.pre = Object.assign({ type: 'custom', L: 6, H: 4, bays: 1, stories: 1, rise: 2, base: sup }, g.pre.type === 'custom' ? {} : g.pre); if (g.pre.type === 'custom') md.pre.type = 'custom';
+    Object.assign(md, frameDefaultLoads(md)); return md;
+  }
   function newTrussModel() {
     const g = trussGen('pratt', 12, 3, 6);
     const tops = g.nodes.map((q, i) => [q, i]).filter(([q]) => q.y > 1e-9).map(([, i]) => i);
@@ -12513,8 +12620,9 @@ body { background: var(--desk); }
     const ox = padL + ((w - padL - padR) - sx * kk) / 2;
     return { B, H, k: kk, X: x => ox + (x - x0) * kk, Y: y => padT + (y1 - y) * kk, x0, x1, y0, y1, padB };
   }
-  function trussH(md, w) { return Math.round(trussFrame(md, w).H); }
+  function trussH(md, w) { if (md && md.kind === 'frame') return frameH(md, w); return Math.round(trussFrame(md, w).H); }
   function drawTrussItem(ctx, it, dark, mdIn, solIn) {
+    if ((mdIn || it.md).kind === 'frame') return drawFrameItem(ctx, it, dark, mdIn, solIn);
     const md = mdIn || it.md, sol = solIn || trussSol(md), st = md.st, fr = trussFrame(md, it.w, it.h), B = fr.B, ox = it.x, oy = it.y;
     const X = x => ox + fr.X(x), Y = y => oy + fr.Y(y), ink = c => inkFor(c, dark), d = st.dec == null ? 2 : st.dec, fu = md.u.force, lu = md.u.len;
     ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -12584,7 +12692,7 @@ body { background: var(--desk); }
     let md = JSON.parse(JSON.stringify(mdIn || newTrussModel()));
     const num = (v, dflt = 0) => { const n = parseFloat(v); return isFinite(n) ? n : dflt; };
     let tab = ls.get('inkleaf:trtab', 'shape'), mode = 'move', pick = null, drag = null, sel = null;
-    modal(`<div class="bd-head">${svg('truss')}<div><h2>Truss solver</h2><p>Pick a truss or draw your own, add supports and loads, and get every member force: tension or compression.</p></div></div>
+    modal(`<div class="bd-head">${svg('truss')}<div><h2>Truss analysis</h2><p>Pick a truss or draw your own, add supports and loads, and get every member force: tension or compression.</p></div></div>
       <div class="bd-wrap"><div class="bd-form"></div><div class="bd-side"><div class="tr-tools seg"></div><canvas class="bd-cv tr-cv"></canvas><div class="tr-hint"></div><div class="bd-res"></div></div></div>
       <div class="modal-actions"><button class="btn" data-x>Cancel</button><button class="btn primary" data-ok>${svg('plus')}${mdIn ? 'Update on page' : 'Put on page'}</button></div>`, (m, close) => {
       m.classList.add('bd-modal');
@@ -12699,6 +12807,407 @@ body { background: var(--desk); }
       cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
       m.querySelector('[data-x]').onclick = close;
       m.querySelector('[data-ok]').onclick = () => { close(); onSave(md); };
+      paintForm(); paintTools(); requestAnimationFrame(results);
+    });
+  }
+
+  // ======================= frame analysis: 2D frames by the stiffness method (members carry axial force, shear and moment) =======================
+  const FRAME_T = [['portal', 'Portal frame'], ['gable', 'Gable frame'], ['canti', 'L-frame (cantilever)'], ['custom', 'Custom']];
+  const FSUP_T = [['fixed', 'Fixed'], ['pin', 'Pin'], ['roller', 'Roller (up/down)'], ['rollerx', 'Roller on a wall']];
+  function frameGen(pre) {
+    const type = pre.type || 'portal', L = Math.max(0.1, +pre.L || 6), H = Math.max(0.1, +pre.H || 4), b = Math.max(1, Math.min(6, Math.round(+pre.bays || 1))), s = Math.max(1, Math.min(6, Math.round(+pre.stories || 1))), rise = Math.max(0, +pre.rise || 0), base = pre.base === 'pin' ? 'pin' : 'fixed';
+    const nodes = [], mem = [], sups = [];
+    if (type === 'gable') {
+      nodes.push({ x: 0, y: 0 }, { x: 0, y: H }, { x: L / 2, y: H + (rise || H * 0.4) }, { x: L, y: H }, { x: L, y: 0 });
+      mem.push([0, 1], [1, 2], [2, 3], [4, 3]); sups.push({ n: 0, t: base }, { n: 4, t: base });
+    } else if (type === 'canti') {
+      nodes.push({ x: 0, y: 0 }, { x: 0, y: H }, { x: L, y: H }); mem.push([0, 1], [1, 2]); sups.push({ n: 0, t: 'fixed' });
+    } else {
+      const id = (i, j) => j * (b + 1) + i;
+      for (let j = 0; j <= s; j++) for (let i = 0; i <= b; i++) nodes.push({ x: +(i * L).toFixed(4), y: +(j * H).toFixed(4) });
+      for (let j = 1; j <= s; j++) { for (let i = 0; i <= b; i++) mem.push([id(i, j - 1), id(i, j)]); for (let i = 0; i < b; i++) mem.push([id(i, j), id(i + 1, j)]); }
+      for (let i = 0; i <= b; i++) sups.push({ n: id(i, 0), t: base });
+    }
+    return { nodes, mem, sups };
+  }
+  function frameDefaultLoads(md) {
+    const jl = [], ml = [];
+    md.mem.forEach(([a, b], i) => { const A = md.nodes[a], B = md.nodes[b]; if (A && B && Math.abs(B.x - A.x) > Math.abs(B.y - A.y) * 0.6) ml.push({ id: uid(), m: i, k: 'udl', w: 10, w2: 10, P: 0, a: 0, dir: 'down' }); });
+    const ys = md.nodes.map(q => q.y), y1 = Math.min(...ys.filter(y => y > 1e-9)); const tl = md.nodes.map((q, i) => [q, i]).filter(([q]) => Math.abs(q.y - y1) < 1e-6).sort((u, v) => u[0].x - v[0].x)[0];
+    if (tl && md.pre.type !== 'canti') jl.push({ id: uid(), n: tl[1], k: 'P', P: 20, dir: 'right', M: 0 });
+    if (md.pre.type === 'canti') { ml.length = 0; jl.push({ id: uid(), n: 2, k: 'P', P: 15, dir: 'down', M: 0 }); }
+    return { jl, ml };
+  }
+  function newFrameModel(type) {
+    const pre = { type: type || 'portal', L: 6, H: 4, bays: 1, stories: 1, rise: 2, base: 'fixed' }, g = frameGen(pre);
+    const md = { v: 1, kind: 'frame', u: { len: 'm', force: 'kN' }, pre, nodes: g.nodes, mem: g.mem, props: g.mem.map(() => ({ k: 1, h0: false, h1: false })), sups: g.sups, jl: [], ml: [],
+      st: { diag: 'M', vals: true, react: true, names: true, dims: true, defl: false, loads: true, dec: 2, fs: 1, lw: 1, ink: '#1c2230', load: '#e5484d', rea: '#2f9e66', dg: '#2f6fed', neg: '#e5484d' } };
+    Object.assign(md, frameDefaultLoads(md)); return md;
+  }
+  const FDIR = { down: [0, -1], up: [0, 1], right: [1, 0], left: [-1, 0] };
+  function frameMemberLoads(md, i, L, c, s) {   // loads on member i in its own axes: distributed pieces and point loads
+    const out = { dist: [], pts: [] };
+    (md.ml || []).forEach(l => {
+      if (+l.m !== i) return; const g = FDIR[l.dir] || FDIR.down;
+      const tr = (v, wv) => ({ a: (g[0] * c + g[1] * s) * v, t: (-g[0] * s + g[1] * c) * v });
+      if (l.k === 'pt') { const x = Math.max(0, Math.min(L, +l.a || 0)), q = tr(+l.P || 0); out.pts.push({ x, a: q.a, t: q.t }); }
+      else { const w1 = +l.w || 0, w2 = l.k === 'tri' ? (+l.w2 || 0) : w1, q1 = tr(w1), q2 = tr(w2); out.dist.push({ a1: q1.a, a2: q2.a, t1: q1.t, t2: q2.t }); }
+    });
+    return out;
+  }
+  const frameCache = new WeakMap();
+  function frameSol(md) { let s = frameCache.get(md); if (!s) { s = solveFrame(md); frameCache.set(md, s); } return s; }
+  function solveFrame(md) {
+    const N = md.nodes.length, D = N * 3;
+    const mem = md.mem.map((m, i) => ({ a: m[0], b: m[1], i })).filter(m => m.a < N && m.b < N && m.a !== m.b && md.nodes[m.a] && md.nodes[m.b]);
+    if (N < 2 || !mem.length) return { err: 'Add at least two joints and one member.' };
+    const K = Array.from({ length: D }, () => new Float64Array(D)), F = new Float64Array(D);
+    let Lsum = 0; mem.forEach(m => { const A = md.nodes[m.a], B = md.nodes[m.b]; Lsum += Math.hypot(B.x - A.x, B.y - A.y); }); const Lavg = Math.max(1e-6, Lsum / mem.length);
+    const info = [];
+    for (const m of mem) {
+      const A = md.nodes[m.a], B = md.nodes[m.b], dx = B.x - A.x, dy = B.y - A.y, L = Math.hypot(dx, dy);
+      if (L < 1e-9) return { err: `Joints ${tName(m.a)} and ${tName(m.b)} are at the same spot.` };
+      const c = dx / L, s = dy / L, pr = (md.props && md.props[m.i]) || {}, EI = Math.max(1e-6, +pr.k || 1), EA = EI * 1e6 / (Lavg * Lavg);
+      const a1 = EA / L, b1 = 12 * EI / L ** 3, b2 = 6 * EI / L ** 2, b3 = 4 * EI / L, b4 = 2 * EI / L;
+      let k = [[a1, 0, 0, -a1, 0, 0], [0, b1, b2, 0, -b1, b2], [0, b2, b3, 0, -b2, b4], [-a1, 0, 0, a1, 0, 0], [0, -b1, -b2, 0, b1, -b2], [0, b2, b4, 0, -b2, b3]];
+      // loads on the member as nodal loads (exact for cubic beams): integrate the load against the member's shape functions
+      const ld = frameMemberLoads(md, m.i, L, c, s); let Q = [0, 0, 0, 0, 0, 0];
+      const add = (xi, qa, qt, wgt) => { const N1 = 1 - 3 * xi * xi + 2 * xi ** 3, N2 = L * (xi - 2 * xi * xi + xi ** 3), N3 = 3 * xi * xi - 2 * xi ** 3, N4 = L * (-xi * xi + xi ** 3); Q[0] += (1 - xi) * qa * wgt; Q[1] += N1 * qt * wgt; Q[2] += N2 * qt * wgt; Q[3] += xi * qa * wgt; Q[4] += N3 * qt * wgt; Q[5] += N4 * qt * wgt; };
+      ld.dist.forEach(q => { const n = 64; for (let j = 0; j <= n; j++) { const xi = j / n, wgt = (j === 0 || j === n ? 1 : j % 2 ? 4 : 2) * L / (3 * n); add(xi, q.a1 + (q.a2 - q.a1) * xi, q.t1 + (q.t2 - q.t1) * xi, wgt); } });
+      ld.pts.forEach(q => add(q.x / L, q.a, q.t, 1));
+      // hinges at member ends: the end can't carry moment (condense that rotation out)
+      const rel = []; if (pr.h0) rel.push(2); if (pr.h1) rel.push(5);
+      for (const r of rel) { const kr = k[r][r]; if (Math.abs(kr) < 1e-12) continue; const kc = k.map(row => row.slice()), Qc = Q.slice(); for (let i2 = 0; i2 < 6; i2++) { for (let j = 0; j < 6; j++) kc[i2][j] = k[i2][j] - k[i2][r] * k[r][j] / kr; Qc[i2] = Q[i2] - k[i2][r] * Q[r] / kr; } k = kc; Q = Qc; }
+      const T = (v, inv) => inv ? [c * v[0] - s * v[1], s * v[0] + c * v[1], v[2], c * v[3] - s * v[4], s * v[3] + c * v[4], v[5]] : [c * v[0] + s * v[1], -s * v[0] + c * v[1], v[2], c * v[3] + s * v[4], -s * v[3] + c * v[4], v[5]];
+      const id = [3 * m.a, 3 * m.a + 1, 3 * m.a + 2, 3 * m.b, 3 * m.b + 1, 3 * m.b + 2];
+      // global stiffness: T' k T, column by column
+      for (let j = 0; j < 6; j++) { const e = [0, 0, 0, 0, 0, 0]; e[j] = 1; const ul = T(e), kl = k.map(row => row.reduce((t, v, q) => t + v * ul[q], 0)), kg = T(kl, true); for (let i2 = 0; i2 < 6; i2++) K[id[i2]][id[j]] += kg[i2]; }
+      const Qg = T(Q, true); for (let i2 = 0; i2 < 6; i2++) F[id[i2]] += Qg[i2];
+      info.push({ i: m.i, a: m.a, b: m.b, L, c, s, k, Q, T, id, ld, rel, EI });
+    }
+    (md.jl || []).forEach(l => { if (l.n == null || l.n >= N) return; if (l.k === 'M') { F[3 * l.n + 2] += +l.M || 0; return; } const g = FDIR[l.dir] || FDIR.down, P = +l.P || 0; F[3 * l.n] += g[0] * P; F[3 * l.n + 1] += g[1] * P; });
+    const fixed = new Set(); (md.sups || []).forEach(s => { if (s.n == null || s.n >= N) return; const b = 3 * s.n; if (s.t === 'fixed') { fixed.add(b); fixed.add(b + 1); fixed.add(b + 2); } else if (s.t === 'pin') { fixed.add(b); fixed.add(b + 1); } else if (s.t === 'roller') fixed.add(b + 1); else if (s.t === 'rollerx') fixed.add(b); });
+    // a joint where every member is hinged has a rotation nothing resists: hold it (it carries no moment anyway)
+    for (let n = 0; n < N; n++) { const d = 3 * n + 2; if (!fixed.has(d) && Math.abs(K[d][d]) < 1e-12) { let used = false; for (let j = 0; j < D; j++) if (j !== d && Math.abs(K[d][j]) > 1e-12) used = true; if (!used) K[d][d] = 1; } }
+    if (fixed.size < 3) return { err: 'The frame needs more supports: use a fixed support, or a pin and a roller (at least 3 reactions).' };
+    const free = []; for (let i = 0; i < D; i++) if (!fixed.has(i)) free.push(i);
+    const n = free.length, Am = free.map(i => Array.from(free, j => K[i][j]).concat([F[i]]));
+    let mx = 0; for (let i = 0; i < n; i++) mx = Math.max(mx, Math.abs(Am[i][i]));
+    for (let col = 0; col < n; col++) {
+      let p = col; for (let i = col + 1; i < n; i++) if (Math.abs(Am[i][col]) > Math.abs(Am[p][col])) p = i;
+      if (Math.abs(Am[p][col]) < 1e-10 * (mx || 1)) return { err: 'The frame is unstable: some part can move or turn freely. Check the supports and hinges.' };
+      [Am[col], Am[p]] = [Am[p], Am[col]];
+      for (let i = col + 1; i < n; i++) { const f = Am[i][col] / Am[col][col]; if (!f) continue; for (let j = col; j <= n; j++) Am[i][j] -= f * Am[col][j]; }
+    }
+    const x = new Float64Array(n); for (let i = n - 1; i >= 0; i--) { let sm = Am[i][n]; for (let j = i + 1; j < n; j++) sm -= Am[i][j] * x[j]; x[i] = sm / Am[i][i]; }
+    const u = new Float64Array(D); free.forEach((d, i) => u[d] = x[i]);
+    const R = {}; let fscale = 1e-12; F.forEach(v => fscale = Math.max(fscale, Math.abs(v)));
+    fixed.forEach(d => { let sm = -F[d]; for (let j = 0; j < D; j++) sm += K[d][j] * u[j]; R[d] = Math.abs(sm) < fscale * 1e-8 ? 0 : sm; });
+    // member end forces and the N, V, M diagrams along each member
+    const mems = info.map(m => {
+      const dl = m.T(m.id.map(d => u[d])), f = m.k.map((row, i) => row.reduce((t, v, q) => t + v * dl[q], 0) - m.Q[i]);
+      const L = m.L, cuts = [0, L]; m.ld.pts.forEach(q => cuts.push(q.x)); const nseg = 48; for (let j = 1; j < nseg; j++) cuts.push(L * j / nseg);
+      const xs = [...new Set(cuts.map(v => +v.toFixed(9)))].sort((p, q) => p - q);
+      const qa = xv => m.ld.dist.reduce((t, q) => t + q.a1 + (q.a2 - q.a1) * xv / L, 0), qt = xv => m.ld.dist.reduce((t, q) => t + q.t1 + (q.t2 - q.t1) * xv / L, 0);
+      const at = (xv, after) => {   // N (tension +), V, M (sagging +) at a section, from the start end
+        let Nn = -f[0], V = f[1], M = -f[2] + f[1] * xv; const n2 = 24;
+        if (xv > 0) for (let j = 0; j < n2; j++) { const s0 = xv * j / n2, s1 = xv * (j + 1) / n2, sm = (s0 + s1) / 2, h = s1 - s0; Nn -= qa(sm) * h; V += qt(sm) * h; M += qt(sm) * h * (xv - sm); }
+        m.ld.pts.forEach(q => { if (q.x < xv - 1e-9 || (after && Math.abs(q.x - xv) < 1e-9)) { Nn -= q.a; V += q.t; M += q.t * (xv - q.x); } });
+        return [Nn, V, M];
+      };
+      const S = []; xs.forEach(xv => { const pt = m.ld.pts.some(q => Math.abs(q.x - xv) < 1e-9); S.push([xv, ...at(xv, false)]); if (pt) S.push([xv, ...at(xv, true)]); });
+      const big = k => S.reduce((b, r) => Math.abs(r[k]) > Math.abs(b[k]) ? r : b, S[0]);
+      return { i: m.i, a: m.a, b: m.b, L, c: m.c, s: m.s, EI: m.EI, f, S, dl, maxN: big(1), maxV: big(2), maxM: big(3) };
+    });
+    let Mmax = 1e-12, Vmax = 1e-12, Nmax = 1e-12; mems.forEach(mm => mm.S.forEach(r => { Nmax = Math.max(Nmax, Math.abs(r[1])); Vmax = Math.max(Vmax, Math.abs(r[2])); Mmax = Math.max(Mmax, Math.abs(r[3])); }));
+    const clean = v => Math.abs(v) < Math.max(Nmax, Vmax, Mmax) * 1e-9 ? 0 : v; mems.forEach(mm => mm.S.forEach(r => { r[1] = clean(r[1]); r[2] = clean(r[2]); r[3] = clean(r[3]); }));
+    const nr = fixed.size, nh = (md.props || []).reduce((t, p) => t + (p && p.h0 ? 1 : 0) + (p && p.h1 ? 1 : 0), 0);
+    return { u, R, mems, Mmax, Vmax, Nmax, deg: 3 * mem.length + nr - 3 * N - nh, nr };
+  }
+  function frameFrame(md, w, h) {
+    const st = md.st, B = Math.max(9, w * 0.021) * (+st.fs || 1), xs = md.nodes.map(q => q.x), ys = md.nodes.map(q => q.y);
+    const x0 = xs.length ? Math.min(...xs) : 0, y0 = ys.length ? Math.min(...ys) : 0; let x1 = xs.length ? Math.max(...xs) : 6, y1 = ys.length ? Math.max(...ys) : 4;
+    const few = md.nodes.length < 3, P0 = md.pre || {};
+    if (x1 - x0 < 1e-6) x1 = x0 + (few ? (+P0.L || 6) : Math.max(2, (y1 - y0) * 0.6)); if (y1 - y0 < 1e-6) y1 = y0 + (few ? (+P0.H || 4) : Math.max(1, (x1 - x0) * 0.25));
+    const sx = x1 - x0, sy = y1 - y0;
+    const padL = B * 7.5, padR = B * (st.dims ? 13.6 : 7.5), padT = B * 7, padB = B * (st.react ? 9.6 : 4.4) + (st.dims ? B * 2.4 : 0) + (st.diag !== 'none' ? B * 1.6 : 0);
+    const k = (w - padL - padR) / sx, H = h != null ? h : padT + padB + sy * k;
+    const kk = h != null ? Math.min(k, Math.max(1e-6, (h - padT - padB)) / Math.max(1e-6, sy)) : k;
+    const ox = padL + ((w - padL - padR) - sx * kk) / 2;
+    return { B, H, k: kk, X: x => ox + (x - x0) * kk, Y: y => padT + (y1 - y) * kk, x0, x1, y0, y1 };
+  }
+  function frameH(md, w) { return Math.round(Math.min(w * 1.6, frameFrame(md, w).H)); }
+  const FDIAG = { M: ['Bending moment', 3], V: ['Shear force', 2], N: ['Axial force', 1] };
+  function drawFrameItem(ctx, it, dark, mdIn, solIn) {
+    const md = mdIn || it.md, sol = solIn || frameSol(md), st = md.st, fr = frameFrame(md, it.w, it.h), B = fr.B, ox = it.x, oy = it.y;
+    const X = x => ox + fr.X(x), Y = y => oy + fr.Y(y), ink = c => inkFor(c, dark), d = st.dec == null ? 2 : st.dec, fu = md.u.force, lu = md.u.len;
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const font = (wt, s) => { ctx.font = `${wt} ${s}px Figtree, sans-serif`; };
+    const text = (t, x, y, c, al = 'center', bl = 'middle', wt = 700, s = B, bg) => { font(wt, s); if (bg) { const tw = ctx.measureText(t).width; ctx.fillStyle = dark ? 'rgba(30,34,46,.88)' : 'rgba(255,255,255,.88)'; const lx = al === 'center' ? x - tw / 2 : al === 'right' ? x - tw : x; ctx.fillRect(lx - s * 0.25, y - s * 0.62, tw + s * 0.5, s * 1.24); } ctx.fillStyle = ink(c); ctx.textAlign = al; ctx.textBaseline = bl; ctx.fillText(t, x, y); };
+    const line = (P, c, lw, dash) => { ctx.strokeStyle = ink(c); ctx.lineWidth = lw; ctx.setLineDash(dash || []); ctx.beginPath(); P.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); ctx.setLineDash([]); };
+    const head = (x2, y2, a, c, h) => { ctx.fillStyle = ink(c); ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - h * Math.cos(a - 0.38), y2 - h * Math.sin(a - 0.38)); ctx.lineTo(x2 - h * Math.cos(a + 0.38), y2 - h * Math.sin(a + 0.38)); ctx.closePath(); ctx.fill(); };
+    const arrow = (x1, y1, x2, y2, c, lw) => { line([[x1, y1], [x2, y2]], c, lw); head(x2, y2, Math.atan2(y2 - y1, x2 - x1), c, B * 0.75); };
+    const curl = (px, py, r, ccw, c, lw) => { const a0 = ccw ? -0.3 : Math.PI + 0.3, a1 = ccw ? Math.PI * 1.25 : -Math.PI * 0.25; ctx.strokeStyle = ink(c); ctx.lineWidth = lw; ctx.beginPath(); ctx.arc(px, py, r, a0, a1, !ccw ? true : false); ctx.stroke(); const ex = px + r * Math.cos(a1), ey = py + r * Math.sin(a1), tg = a1 + (ccw ? Math.PI / 2 : -Math.PI / 2); head(ex + Math.cos(tg) * B * 0.2, ey + Math.sin(tg) * B * 0.2, tg, c, B * 0.7); };
+    const lw = Math.max(1.4, B * 0.24) * (+st.lw || 1), N = md.nodes.length;
+    const cx = md.nodes.reduce((s, q) => s + q.x, 0) / Math.max(1, N);
+    const S2 = (q) => [X(q.x), Y(q.y)];
+    // diagram (drawn under the frame)
+    const dk = FDIAG[st.diag], showD = dk && !sol.err;
+    if (showD) {
+      const col = dk[1], mx = col === 3 ? sol.Mmax : col === 2 ? sol.Vmax : sol.Nmax;
+      let span = Infinity; sol.mems.forEach(m => span = Math.min(span, m.L * fr.k)); const amp = Math.min(B * 4, Math.max(B * 1.2, span * 0.3)), sc = mx > 1e-9 ? amp / mx : 0;
+      sol.mems.forEach(m => {
+        const A = md.nodes[m.a], [ax, ay] = S2(A), ux = m.c, uy = -m.s, nx = col === 3 ? m.s : -m.s, ny = col === 3 ? m.c : -m.c; // M on the tension side
+        const P = m.S.map(r => [ax + ux * r[0] * fr.k + nx * r[col] * sc, ay + uy * r[0] * fr.k + ny * r[col] * sc]);
+        const base = (xv) => [ax + ux * xv * fr.k, ay + uy * xv * fr.k];
+        // fill positive and negative parts in their colors
+        for (let j = 0; j < m.S.length - 1; j++) {
+          const v0 = m.S[j][col], v1 = m.S[j + 1][col]; if (!v0 && !v1) continue;
+          const pos = (v0 + v1) >= 0; ctx.fillStyle = ink(pos ? st.dg : st.neg) + '33'; if (!/^#[0-9a-f]{6}$/i.test(ink(pos ? st.dg : st.neg))) ctx.globalAlpha = 0.2;
+          const b0 = base(m.S[j][0]), b1 = base(m.S[j + 1][0]); ctx.beginPath(); ctx.moveTo(b0[0], b0[1]); ctx.lineTo(P[j][0], P[j][1]); ctx.lineTo(P[j + 1][0], P[j + 1][1]); ctx.lineTo(b1[0], b1[1]); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+        }
+        for (let j = 0; j < m.S.length - 1; j++) { const v = m.S[j][col] + m.S[j + 1][col]; line([P[j], P[j + 1]], v >= 0 ? st.dg : st.neg, lw * 0.65); }
+        line([base(0), P[0]], st.dg, lw * 0.5); line([base(m.L), P[P.length - 1]], st.dg, lw * 0.5);
+        if (st.vals) {   // values at both ends and at the biggest point between
+          const n = m.S.length, e0 = m.S[0][col], e1 = m.S[n - 1][col], flat = m.S.every(r => Math.abs(r[col] - e0) < mx * 0.005), marks = flat ? [Math.floor(n / 2)] : [0, n - 1]; let iMx = -1, iMn = -1;
+          for (let i = 1; i < n - 1; i++) { if (iMx < 0 || m.S[i][col] > m.S[iMx][col]) iMx = i; if (iMn < 0 || m.S[i][col] < m.S[iMn][col]) iMn = i; }
+          if (!flat && iMx > 0 && m.S[iMx][col] > Math.max(e0, e1) + mx * 0.03 && Math.abs(m.S[iMx][col]) > mx * 0.05) marks.push(iMx);
+          if (!flat && iMn > 0 && m.S[iMn][col] < Math.min(e0, e1) - mx * 0.03 && Math.abs(m.S[iMn][col]) > mx * 0.05) marks.push(iMn);
+          const Lp = m.L * fr.k, inset = Math.min(B * 2.6, Lp * 0.28);
+          marks.forEach(i => { const v = m.S[i][col]; if (Math.abs(v) < mx * 1e-6) return; const sg = v >= 0 ? 1 : -1, sh = i === 0 ? inset : i === n - 1 ? -inset : 0, xv = m.S[i][0] + sh / fr.k, vv = sh ? v : v;
+            const bx = ax + ux * xv * fr.k, by = ay + uy * xv * fr.k, ex = bx + nx * vv * sc + nx * sg * B * 0.95, ey = by + ny * vv * sc + ny * sg * B * 0.95; text(fmtN(v, d), ex, ey, v >= 0 ? st.dg : st.neg, 'center', 'middle', 800, B * 0.8, true); });
+        }
+      });
+    }
+    // deflected shape (exaggerated)
+    if (st.defl && !sol.err) {
+      let um = 1e-12; sol.mems.forEach(m => { const mm = frameDeflect(m); m._df = mm; mm.forEach(p => um = Math.max(um, Math.hypot(p[1], p[2]))); });
+      const sc = B * 3 / um; sol.mems.forEach(m => { const [ax, ay] = S2(md.nodes[m.a]); line(m._df.map(p => { const gx = m.c * p[1] - m.s * p[2], gy = m.s * p[1] + m.c * p[2]; return [ax + m.c * p[0] * fr.k + gx * sc, ay - m.s * p[0] * fr.k - gy * sc]; }), '#9c36b5', lw * 0.6, [B * 0.5, B * 0.35]); });
+    }
+    // members
+    md.mem.forEach(([a, b]) => { const A = md.nodes[a], Bq = md.nodes[b]; if (A && Bq) line([S2(A), S2(Bq)], st.ink, lw * 1.25); });
+    // hinges
+    const hcnt = md.nodes.map(() => [0, 0]); md.mem.forEach(([a, b], i) => { const pr = (md.props || [])[i] || {}; if (hcnt[a]) { hcnt[a][0]++; if (pr.h0) hcnt[a][1]++; } if (hcnt[b]) { hcnt[b][0]++; if (pr.h1) hcnt[b][1]++; } });
+    const allH = n => hcnt[n] && hcnt[n][0] > 1 && hcnt[n][1] === hcnt[n][0];   // every member is hinged here: one pin at the joint
+    md.nodes.forEach((q, n) => { if (!allH(n)) return; const [px, py] = S2(q), r = Math.max(3, B * 0.42); ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fillStyle = dark ? '#1e222e' : '#ffffff'; ctx.fill(); ctx.strokeStyle = ink(st.ink); ctx.lineWidth = lw * 0.6; ctx.stroke(); });
+    md.mem.forEach(([a, b], i) => { const pr = Object.assign({}, (md.props || [])[i] || {}); if (allH(a)) pr.h0 = false; if (allH(b)) pr.h1 = false; const A = md.nodes[a], Bq = md.nodes[b]; if (!A || !Bq) return; const [ax, ay] = S2(A), [bx, by] = S2(Bq), L = Math.hypot(bx - ax, by - ay) || 1, r = Math.max(3, B * 0.38), off = r * 1.6;
+      [[pr.h0, ax + (bx - ax) / L * off, ay + (by - ay) / L * off], [pr.h1, bx - (bx - ax) / L * off, by - (by - ay) / L * off]].forEach(([h, hx, hy]) => { if (!h) return; ctx.beginPath(); ctx.arc(hx, hy, r, 0, 7); ctx.fillStyle = dark ? '#1e222e' : '#ffffff'; ctx.fill(); ctx.strokeStyle = ink(st.ink); ctx.lineWidth = lw * 0.6; ctx.stroke(); }); });
+    // supports
+    md.sups.forEach(s => {
+      const q = md.nodes[s.n]; if (!q) return; const [px, py] = S2(q), z = B * 1.25;
+      if (s.t === 'fixed') { line([[px - z * 1.3, py], [px + z * 1.3, py]], st.ink, lw * 0.9); for (let t = -1.2; t <= 1.1; t += 0.4) line([[px + t * z, py], [px + (t - 0.35) * z, py + z * 0.55]], st.ink, lw * 0.45); return; }
+      if (s.t === 'rollerx') {
+        const side = q.x <= cx ? -1 : 1, bx = px + side * z * 1.5;
+        line([[px, py], [bx, py - z * 0.8], [bx, py + z * 0.8], [px, py]], st.ink, lw * 0.6);
+        [-0.45, 0.45].forEach(t => { ctx.beginPath(); ctx.arc(bx + side * z * 0.25, py + t * z, z * 0.22, 0, 7); ctx.strokeStyle = ink(st.ink); ctx.lineWidth = lw * 0.5; ctx.stroke(); });
+        const gx = bx + side * z * 0.5; line([[gx, py - z * 1.1], [gx, py + z * 1.1]], st.ink, lw * 0.6);
+        for (let t = -1; t <= 0.8; t += 0.45) line([[gx, py + t * z], [gx + side * z * 0.4, py + (t + 0.35) * z]], st.ink, lw * 0.4);
+        return;
+      }
+      const by = py + z * 1.5; line([[px, py], [px - z * 0.9, by], [px + z * 0.9, by], [px, py]], st.ink, lw * 0.6);
+      let gy = by; if (s.t === 'roller') { [-0.45, 0.45].forEach(t => { ctx.beginPath(); ctx.arc(px + t * z, by + z * 0.25, z * 0.22, 0, 7); ctx.strokeStyle = ink(st.ink); ctx.lineWidth = lw * 0.5; ctx.stroke(); }); gy = by + z * 0.5; }
+      line([[px - z * 1.2, gy], [px + z * 1.2, gy]], st.ink, lw * 0.6);
+      for (let t = -1.1; t <= 1; t += 0.45) line([[px + t * z, gy], [px + (t - 0.35) * z, gy + z * 0.4]], st.ink, lw * 0.4);
+    });
+    // loads
+    if (st.loads !== false) {
+      (md.ml || []).forEach(l => {
+        const mm = md.mem[+l.m]; if (!mm) return; const A = md.nodes[mm[0]], Bq = md.nodes[mm[1]]; if (!A || !Bq) return;
+        const g = FDIR[l.dir] || FDIR.down, gx = g[0], gy = -g[1], [ax, ay] = S2(A), [bx, by] = S2(Bq);
+        if (l.k === 'pt') { if (!+l.P) return; const L = Math.hypot(Bq.x - A.x, Bq.y - A.y) || 1, t = clamp((+l.a || 0) / L, 0, 1), px = ax + (bx - ax) * t, py = ay + (by - ay) * t, len = B * 3.4, sg = +l.P < 0 ? -1 : 1;
+          if (sg > 0) arrow(px - gx * len, py - gy * len, px - gx * B * 0.35, py - gy * B * 0.35, st.load, lw * 0.6); else arrow(px - gx * B * 0.35, py - gy * B * 0.35, px - gx * len, py - gy * len, st.load, lw * 0.6);
+          text(`${fmtN(Math.abs(+l.P), d)} ${fu}`, px - gx * (len + B * 0.9), py - gy * (len + B * 0.9), st.load, Math.abs(gx) > 0.5 ? (gx > 0 ? 'right' : 'left') : 'center', 'middle', 800, B * 0.85); return; }
+        const w1 = +l.w || 0, w2 = l.k === 'tri' ? (+l.w2 || 0) : w1, wm = Math.max(Math.abs(w1), Math.abs(w2)); if (wm < 1e-12) return;
+        const hgt = t => B * (0.9 + 1.9 * Math.abs(w1 + (w2 - w1) * t) / wm), n = Math.max(3, Math.round(Math.hypot(bx - ax, by - ay) / (B * 2.2)));
+        const tops = []; for (let j = 0; j <= n; j++) { const t = j / n, px = ax + (bx - ax) * t, py = ay + (by - ay) * t, hh = hgt(t); tops.push([px - gx * hh, py - gy * hh]); if (Math.abs(w1 + (w2 - w1) * t) > wm * 0.04) arrow(px - gx * hh, py - gy * hh, px - gx * B * 0.3, py - gy * B * 0.3, st.load, lw * 0.45); }
+        line(tops, st.load, lw * 0.55);
+        const lab = l.k === 'tri' ? `${fmtN(w1, d)} → ${fmtN(w2, d)} ${fu}/${lu}` : `${fmtN(w1, d)} ${fu}/${lu}`, mid = tops[Math.round(n / 2)];
+        text(lab, mid[0] - gx * B * 0.95, mid[1] - gy * B * 0.95, st.load, Math.abs(gx) > 0.5 ? (gx > 0 ? 'right' : 'left') : 'center', 'middle', 800, B * 0.85);
+      });
+      (md.jl || []).forEach(l => {
+        const q = md.nodes[l.n]; if (!q) return; const [px, py] = S2(q);
+        if (l.k === 'M') { const M = +l.M || 0; if (!M) return; curl(px, py, B * 1.7, M > 0, st.load, lw * 0.6); text(`${fmtN(Math.abs(M), d)} ${fu}·${lu}`, px, py - B * 2.6, st.load, 'center', 'middle', 800, B * 0.85); return; }
+        if (!+l.P) return; const g = FDIR[l.dir] || FDIR.down, gx = g[0], gy = -g[1], len = B * 3.6, sg = +l.P < 0 ? -1 : 1, gap = B * 0.45;
+        if (sg > 0) arrow(px - gx * len, py - gy * len, px - gx * gap, py - gy * gap, st.load, lw * 0.65); else arrow(px - gx * gap, py - gy * gap, px - gx * len, py - gy * len, st.load, lw * 0.65);
+        text(`${fmtN(Math.abs(+l.P), d)} ${fu}`, px - gx * (len + B * 0.9), py - gy * (len + B * 0.9) - (Math.abs(gx) > 0.5 ? B * 0.1 : 0), st.load, Math.abs(gx) > 0.5 ? (gx > 0 ? 'right' : 'left') : 'center', 'middle', 800, B * 0.88);
+      });
+    }
+    // reactions: arrows at the support, the values listed under it
+    if (st.react && !sol.err) md.sups.forEach(s => {
+      const q = md.nodes[s.n]; if (!q) return; const [px, py] = S2(q), rx = sol.R[3 * s.n], ry = sol.R[3 * s.n + 1], rm = sol.R[3 * s.n + 2], len = B * 2.6, z = B * 1.25, side = q.x <= cx ? -1 : 1;
+      const yb = py + (s.t === 'fixed' ? z * 0.75 : z * (s.t === 'roller' ? 2.3 : 1.9)), rows = [];
+      if (ry != null && Math.abs(ry) > 0) { const up = ry > 0; arrow(px, up ? yb + len : yb, px, up ? yb : yb + len, st.rea, lw * 0.6); rows.push(`${tName(s.n)}y = ${fmtN(Math.abs(ry), d)} ${fu} ${up ? '↑' : '↓'}`); }
+      if (rx != null && Math.abs(rx) > 0) { const x1 = px + side * B * (s.t === 'rollerx' ? 3.4 : 1.7), x2 = x1 + side * len, right = rx > 0, yy = py + (s.t === 'rollerx' ? 0 : B * 0.55); arrow(right ? Math.min(x1, x2) : Math.max(x1, x2), yy, right ? Math.max(x1, x2) : Math.min(x1, x2), yy, st.rea, lw * 0.6); rows.push(`${tName(s.n)}x = ${fmtN(Math.abs(rx), d)} ${fu} ${right ? '→' : '←'}`); }
+      if (rm != null && Math.abs(rm) > 0) { curl(px, py, B * 1.45, rm > 0, st.rea, lw * 0.55); rows.push(`M${tName(s.n)} = ${fmtN(Math.abs(rm), d)} ${fu}·${lu} ${rm > 0 ? '↺' : '↻'}`); }
+      rows.forEach((t, i) => text(t, px, yb + len + B * (0.95 + i * 1.1), st.rea, 'center', 'middle', 800, B * 0.8));
+    });
+    // joints and names
+    md.nodes.forEach((q, i) => {
+      const [px, py] = S2(q); if (!md.sups.some(s => s.n === i && s.t === 'fixed') && !allH(i)) { ctx.beginPath(); ctx.arc(px, py, Math.max(2, B * 0.24), 0, 7); ctx.fillStyle = ink(st.ink); ctx.fill(); }
+      if (st.names) { const sup = md.sups.some(s => s.n === i), cy = md.nodes.reduce((t, p) => t + p.y, 0) / Math.max(1, N); let vx = q.x <= cx ? -1 : 1, vy = q.y >= cy ? -1 : 0.4; if (sup) { vx = q.x <= cx ? 1 : -1; vy = -1; } text(tName(i), px + vx * B * 0.95, py + vy * B * 0.95, st.ink, 'center', 'middle', 800, B * 0.92); }
+    });
+    // dimensions
+    if (st.dims) {
+      const yb = oy + fr.Y(fr.y0) + B * (st.react ? 10 : 4.6), xa = X(fr.x0), xb = X(fr.x1);
+      if (fr.x1 - fr.x0 > 1e-6 && md.nodes.length > 1) { line([[xa, yb], [xb, yb]], st.ink, lw * 0.4); [xa, xb].forEach(x => line([[x, yb - B * 0.6], [x, yb + B * 0.6]], st.ink, lw * 0.4)); text(`${fmtN(fr.x1 - fr.x0, d)} ${lu}`, (xa + xb) / 2, yb + B * 0.95, st.ink, 'center', 'middle', 700, B * 0.85); }
+      if (fr.y1 - fr.y0 > 1e-6 && new Set(md.nodes.map(q => q.y)).size > 1) { const xr = xb + B * (FDIAG[st.diag] ? 7.2 : 4.2), ya = Y(fr.y0), yt = Y(fr.y1); line([[xr, ya], [xr, yt]], st.ink, lw * 0.4); [ya, yt].forEach(y => line([[xr - B * 0.6, y], [xr + B * 0.6, y]], st.ink, lw * 0.4)); text(`${fmtN(fr.y1 - fr.y0, d)} ${lu}`, xr + B * 0.8, (ya + yt) / 2, st.ink, 'left', 'middle', 700, B * 0.85); }
+    }
+    if (showD) { const unit = dk[1] === 3 ? `${fu}·${lu}` : fu; text(`${dk[0]} (${unit})${dk[1] === 1 ? ' · + tension' : dk[1] === 3 ? ' · drawn on the tension side' : ''}`, ox + B * 1.2, oy + (it.h || fr.H) - B * 1.1, st.dg, 'left', 'middle', 800, B * 0.8); }
+    if (st.defl && !sol.err) text('- - deflected shape (exaggerated)', ox + it.w - B * 1.2, oy + (it.h || fr.H) - B * 1.1, '#9c36b5', 'right', 'middle', 700, B * 0.78);
+    if (sol.err) text(sol.err, ox + it.w / 2, oy + B * 1.2, st.load, 'center', 'middle', 700, B * 0.82);
+    ctx.restore();
+  }
+  // displacement along a member in its own axes: [x, axial, sideways] from the end movements and the bending (v'' = M / EI)
+  function frameDeflect(m) {
+    const n = m.S.length, EI = m.EI || 1, xs = [], M = [];
+    m.S.forEach(r => { xs.push(r[0]); M.push(r[3]); });
+    const th = [0], v = [0]; for (let i = 1; i < n; i++) { const h = xs[i] - xs[i - 1]; th.push(th[i - 1] + (M[i] + M[i - 1]) / 2 * h / EI); v.push(v[i - 1] + (th[i - 1] + th[i]) / 2 * h); }
+    const v1 = m.dl[1], v2 = m.dl[4], L = m.L, c1 = (v2 - v1 - v[n - 1]) / L;
+    return xs.map((x, i) => [x, m.dl[0] + (m.dl[3] - m.dl[0]) * x / L, v1 + v[i] + c1 * x]);
+  }
+  function frameDesigner(mdIn, onSave, fresh) {
+    let md = JSON.parse(JSON.stringify(mdIn || newFrameModel('portal')));
+    if (!md.props) md.props = md.mem.map(() => ({ k: 1 })); while (md.props.length < md.mem.length) md.props.push({ k: 1 });
+    const num = (v, dflt = 0) => { const n = parseFloat(v); return isFinite(n) ? n : dflt; };
+    let tab = ls.get('inkleaf:frtab', 'shape'), mode = 'move', pick = null, drag = null;
+    modal(`<div class="bd-head">${svg('frame')}<div><h2>Frame analysis</h2><p>Build a frame with rigid joints, add supports and loads, and get the reactions and the bending moment, shear and axial force in every member.</p></div></div>
+      <div class="bd-wrap"><div class="bd-form"></div><div class="bd-side"><div class="tr-tools seg"></div><div class="fr-dg seg"></div><canvas class="bd-cv tr-cv"></canvas><div class="tr-hint"></div><div class="bd-res"></div></div></div>
+      <div class="modal-actions"><button class="btn" data-x>Cancel</button><button class="btn" data-all title="Put the moment, shear and axial force pictures on the page, one under the other">Put all 3 diagrams</button><button class="btn primary" data-ok>${svg('plus')}${mdIn && !fresh ? 'Update on page' : 'Put on page'}</button></div>`, (m, close) => {
+      m.classList.add('bd-modal');
+      const form = m.querySelector('.bd-form'), cv = m.querySelector('.tr-cv'), res = m.querySelector('.bd-res'), tools = m.querySelector('.tr-tools'), hint = m.querySelector('.tr-hint'), dg = m.querySelector('.fr-dg');
+      if (mdIn && !fresh) m.querySelector('[data-all]').remove();
+      const inp = (path, v, w = 76) => `<input type="number" step="any" data-p="${path}" value="${v}" style="width:${w}px">`;
+      const selx = (path, v, list) => `<select data-p="${path}">${list.map(([k, l]) => `<option value="${k}" ${String(v) === String(k) ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+      const jl = () => md.nodes.map((q, i) => [i, tName(i)]), ml = () => md.mem.map(([a, b], i) => [i, tName(a) + tName(b)]);
+      const frTabsHTML = () => { const tabs = [['shape', 'Frame'], ['joints', `Joints (${md.nodes.length})`], ['mem', `Members (${md.mem.length})`], ['sup', `Supports (${md.sups.length})`], ['load', `Loads (${md.jl.length + md.ml.length})`], ['show', 'Display']]; return `<div class="bd-tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-bt="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>`; };
+      const DIRS = [['down', '↓ Down'], ['up', '↑ Up'], ['right', '→ Right'], ['left', '← Left']];
+      const paintForm = () => {
+        const lu = md.u.len, fu = md.u.force, P = md.pre;
+        form.innerHTML = `${frTabsHTML()}
+          <section data-tab="shape"><h3>Frame type</h3><div class="tr-types">${FRAME_T.map(([k, l]) => `<button class="chip" data-type="${k}" aria-pressed="${P.type === k}">${l}</button>`).join('')}</div>
+            ${P.type === 'custom' ? `<p class="bd-note">Draw your own: use the buttons above the picture. <b>+ Joint</b> and tap the picture, <b>+ Member</b> and tap two joints, <b>Move</b> to drag a joint, <b>Hinge</b> to tap near a member end and let it turn freely, <b>Delete</b> to remove a joint or member.</p><div class="bd-row"><label>Snap to every ${inp('pre.snap', P.snap || 0.5, 64)} ${lu}</label><button class="chip" data-clear="1">Start blank</button></div>`
+              : `<div class="bd-row"><label>${P.type === 'canti' ? 'Arm' : P.type === 'portal' ? 'Bay width' : 'Span'} ${inp('pre.L', P.L)} ${lu}</label><label>${P.type === 'portal' ? 'Story height' : 'Height'} ${inp('pre.H', P.H)} ${lu}</label>${P.type === 'gable' ? `<label>Roof rise ${inp('pre.rise', P.rise)} ${lu}</label>` : ''}</div>
+              ${P.type === 'portal' ? `<div class="bd-row"><label>Bays ${inp('pre.bays', P.bays, 56)}</label><label>Stories ${inp('pre.stories', P.stories, 56)}</label></div>` : ''}
+              ${P.type !== 'canti' ? `<div class="bd-row"><label>Column bases ${selx('pre.base', P.base, [['fixed', 'Fixed'], ['pin', 'Pinned']])}</label></div>` : ''}
+              <p class="bd-note">Changing the type or size rebuilds the frame and its loads. To change single joints, edit them in the Joints tab or switch to Custom.</p>`}
+            <h3>Units</h3><div class="bd-row"><label>Length ${selx('u.len', md.u.len, [['m', 'm'], ['mm', 'mm'], ['ft', 'ft'], ['in', 'in']])}</label><label>Force ${selx('u.force', md.u.force, [['kN', 'kN'], ['N', 'N'], ['kip', 'kip'], ['lb', 'lb']])}</label></div></section>
+          <section data-tab="joints"><h3>Joints</h3><p class="bd-note">x to the right, y up.</p>
+            ${md.nodes.map((q, i) => `<div class="bd-item"><b>${tName(i)}</b><label>x ${inp(`nodes.${i}.x`, q.x, 72)}</label><label>y ${inp(`nodes.${i}.y`, q.y, 72)} ${lu}</label><button class="bd-del" data-deln="${i}" aria-label="Remove joint">${svg('close')}</button></div>`).join('')}
+            <button class="chip" data-addn="1">+ Add a joint</button></section>
+          <section data-tab="mem"><h3>Members</h3><p class="bd-note"><b>Stiffness</b> is the member's EI compared with the others (1 = the same). A <b>hinge</b> lets that end turn freely, so it carries no moment there.</p>
+            ${md.mem.map(([a, b], i) => { const pr = md.props[i] || {}; return `<div class="bd-item"><b>${tName(a)}${tName(b)}</b><label>stiffness ${inp(`props.${i}.k`, pr.k == null ? 1 : pr.k, 56)}</label><button class="chip" data-hinge="${i}.0" aria-pressed="${!!pr.h0}">Hinge at ${tName(a)}</button><button class="chip" data-hinge="${i}.1" aria-pressed="${!!pr.h1}">Hinge at ${tName(b)}</button><button class="bd-del" data-delm="${i}" aria-label="Remove member">${svg('close')}</button></div>`; }).join('')}
+            <div class="bd-row"><label>Join ${selx('_ma', 0, jl())} to ${selx('_mb', Math.min(1, md.nodes.length - 1), jl())}</label><button class="chip" data-addm="1">+ Add member</button></div></section>
+          <section data-tab="sup"><h3>Supports</h3>
+            ${md.sups.map((s, i) => `<div class="bd-item">${selx(`sups.${i}.t`, s.t, FSUP_T)}<label>at joint ${selx(`sups.${i}.n`, s.n, jl())}</label><button class="bd-del" data-del="sups.${i}" aria-label="Remove support">${svg('close')}</button></div>`).join('')}
+            <button class="chip" data-adds="1">+ Add a support</button><p class="bd-note">Fixed holds both ways and stops turning (3 reactions). A pin holds both ways (2). A roller holds one way (1).</p></section>
+          <section data-tab="load"><h3>Loads on members</h3>
+            ${md.ml.map((l, i) => `<div class="bd-item"><label>on ${selx(`ml.${i}.m`, l.m, ml())}</label>${selx(`ml.${i}.k`, l.k, [['udl', 'Even (UDL)'], ['tri', 'Varying'], ['pt', 'Point load']])}
+              ${l.k === 'pt' ? `<label>P ${inp(`ml.${i}.P`, l.P, 62)} ${fu}</label><label>at ${inp(`ml.${i}.a`, l.a, 56)} ${lu} from ${tName((md.mem[l.m] || [0])[0])}</label>` : l.k === 'tri' ? `<label>from ${inp(`ml.${i}.w`, l.w, 56)}</label><label>to ${inp(`ml.${i}.w2`, l.w2, 56)} ${fu}/${lu}</label>` : `<label>w ${inp(`ml.${i}.w`, l.w, 62)} ${fu}/${lu}</label>`}
+              ${selx(`ml.${i}.dir`, l.dir, DIRS)}<button class="bd-del" data-del="ml.${i}" aria-label="Remove load">${svg('close')}</button></div>`).join('')}
+            <button class="chip" data-addml="1">+ Add a member load</button>
+            <h3>Loads at joints</h3>
+            ${md.jl.map((l, i) => `<div class="bd-item"><label>at ${selx(`jl.${i}.n`, l.n, jl())}</label>${selx(`jl.${i}.k`, l.k, [['P', 'Force'], ['M', 'Moment']])}
+              ${l.k === 'M' ? `<label>M ${inp(`jl.${i}.M`, l.M, 62)} ${fu}·${lu}</label><span class="bd-note">+ counterclockwise</span>` : `<label>P ${inp(`jl.${i}.P`, l.P, 62)} ${fu}</label>${selx(`jl.${i}.dir`, l.dir, DIRS)}`}
+              <button class="bd-del" data-del="jl.${i}" aria-label="Remove load">${svg('close')}</button></div>`).join('')}
+            <div class="chips"><button class="chip" data-addjl="1">+ Add a joint load</button><button class="chip" data-clrl="1">Remove all loads</button></div>
+            <p class="bd-note">Down, up, left and right are for the page, also on sloped members. A point load's place is measured along the member from its first joint.</p></section>
+          <section data-tab="show"><h3>Diagram on the page</h3><div class="chips">${[['M', 'Bending moment'], ['V', 'Shear force'], ['N', 'Axial force'], ['none', 'None']].map(([k, l]) => `<button class="chip" data-diag="${k}" aria-pressed="${md.st.diag === k}">${l}</button>`).join('')}</div>
+            <h3>Show</h3><div class="chips">${[['vals', 'Diagram values'], ['react', 'Reactions'], ['loads', 'Loads'], ['names', 'Joint letters'], ['dims', 'Sizes'], ['defl', 'Deflected shape']].map(([k, l]) => `<button class="chip" data-show="${k}" aria-pressed="${md.st[k] !== false && !!md.st[k]}">${l}</button>`).join('')}</div>
+            <div class="bd-cols">${[['dg', 'Diagram +'], ['neg', 'Diagram −'], ['load', 'Loads'], ['rea', 'Reactions'], ['ink', 'Frame']].map(([k, l]) => `<label class="bd-col"><input type="color" data-col="${k}" value="${md.st[k]}"><span>${l}</span></label>`).join('')}</div>
+            <div class="bd-row"><label>Text size ${selx('st.fs', md.st.fs, [[0.8, 'Small'], [1, 'Normal'], [1.25, 'Large'], [1.5, 'Extra large']])}</label><label>Decimals ${selx('st.dec', md.st.dec, [[0, '0'], [1, '1'], [2, '2'], [3, '3']])}</label><label>Lines ${selx('st.lw', md.st.lw, [[0.6, 'Thin'], [1, 'Normal'], [1.6, 'Thick']])}</label></div>
+            <p class="bd-note">Signs: the moment is drawn on the side of the member that is in tension. Axial force is + for tension, − for compression.</p></section>`;
+        form.querySelectorAll('section[data-tab]').forEach(sc => sc.classList.toggle('on', sc.dataset.tab === tab));
+      };
+      const paintTools = () => {
+        tools.innerHTML = [['move', 'Move'], ['node', '+ Joint'], ['mem', '+ Member'], ['hinge', 'Hinge'], ['del', 'Delete']].map(([k, l]) => `<button data-mode="${k}" aria-pressed="${mode === k}">${l}</button>`).join('');
+        dg.innerHTML = [['M', 'Moment'], ['V', 'Shear'], ['N', 'Axial'], ['none', 'Frame only']].map(([k, l]) => `<button data-dg="${k}" aria-pressed="${md.st.diag === k}">${l}</button>`).join('');
+        hint.textContent = mode === 'node' ? 'Tap the picture to add a joint.' : mode === 'mem' ? (pick == null ? 'Tap the first joint of the member.' : `Now tap the joint to join to ${tName(pick)}.`) : mode === 'del' ? 'Tap a joint or member to remove it.' : mode === 'hinge' ? 'Tap a member near one of its ends to add or remove a hinge there.' : md.pre.type === 'custom' ? 'Drag a joint to move it.' : 'Drag a joint to move it (this switches to Custom).';
+      };
+      let fr = null;
+      const draw = sol => {
+        const W = cv.clientWidth || 420, IW = 1000, H0 = frameH(md, IW), H = Math.max(180, Math.min(600, Math.round(W * H0 / IW))), dpr = Math.min(2, devicePixelRatio || 1), sc = W / IW;
+        cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+        const g = cv.getContext('2d'); g.setTransform(dpr * sc, 0, 0, dpr * sc, 0, 0); g.clearRect(0, 0, IW, H / sc);
+        fr = { f: frameFrame(md, IW, H / sc), sc };
+        drawFrameItem(g, { x: 0, y: 0, w: IW, h: H / sc }, isDarkUI(), md, sol);
+        if (pick != null && md.nodes[pick]) { const q = md.nodes[pick]; g.beginPath(); g.arc(fr.f.X(q.x), fr.f.Y(q.y), fr.f.B * 0.9, 0, 7); g.strokeStyle = '#2f6fed'; g.lineWidth = 4; g.stroke(); }
+      };
+      const results = () => {
+        const sol = solveFrame(md); frameCache.set(md, sol); draw(sol);
+        if (sol.err) { res.innerHTML = `<div class="bd-err">${esc(sol.err)}</div>`; return; }
+        const d = md.st.dec == null ? 2 : md.st.dec, fu = md.u.force, lu = md.u.len, mu = `${fu}·${lu}`, f = v => fmtN(v, d);
+        const R = (n, k) => sol.R[3 * n + k] != null ? f(sol.R[3 * n + k]) : '—';
+        res.innerHTML = `<div class="bd-kind">${sol.deg <= 0 ? 'Statically determinate' : `Statically indeterminate (degree ${sol.deg})`} · ${md.mem.length} members, ${sol.nr} reactions</div>
+          <p class="bd-note">Solved by the stiffness method${md.props.some(p => p && +p.k !== 1) ? ' with the stiffness you set for each member' : ' with the same EI for every member'}. Members don't stretch or shorten, as in hand methods.</p>
+          <table class="bd-tbl"><tr><th>Support</th><th>Horizontal (${fu})</th><th>Vertical (${fu})</th><th>Moment (${mu})</th></tr>${md.sups.filter(s => md.nodes[s.n]).map(s => `<tr><td>${(FSUP_T.find(t => t[0] === s.t) || ['', s.t])[1].split(' (')[0]} at ${tName(s.n)}</td><td>${R(s.n, 0)}</td><td>${R(s.n, 1)}</td><td>${R(s.n, 2)}</td></tr>`).join('')}</table>
+          <p class="bd-note">+ is right, up and counterclockwise.</p>
+          <div class="tr-scroll"><table class="bd-tbl"><tr><th>Member</th><th>Moment at ends (${mu})</th><th>Biggest moment</th><th>Biggest shear (${fu})</th><th>Axial (${fu})</th></tr>${sol.mems.map(mm => { const n = tName(mm.a) + tName(mm.b), S0 = mm.S[0], S1 = mm.S[mm.S.length - 1]; return `<tr><td><b>${n}</b></td><td>${tName(mm.a)}: ${f(S0[3])} · ${tName(mm.b)}: ${f(S1[3])}</td><td>${f(mm.maxM[3])} at ${fmtN(mm.maxM[0], 2)} ${lu}</td><td>${f(mm.maxV[2])}</td><td class="${mm.maxN[1] > 0 ? 'tr-t' : mm.maxN[1] < 0 ? 'tr-c' : ''}">${f(Math.abs(mm.maxN[1]))} ${mm.maxN[1] > 0 ? 'T' : mm.maxN[1] < 0 ? 'C' : ''}</td></tr>`; }).join('')}</table></div>
+          <p class="bd-note">Moments: + bends the member so the side to the right of ${'"'}first joint → second joint${'"'} is stretched (sagging for a beam drawn left to right).</p>`;
+      };
+      const rebuild = () => {
+        if (md.pre.type === 'custom') return;
+        const P = md.pre; P.L = Math.max(0.1, num(P.L, 6)); P.H = Math.max(0.1, num(P.H, 4)); P.bays = clamp(Math.round(num(P.bays, 1)), 1, 6); P.stories = clamp(Math.round(num(P.stories, 1)), 1, 6);
+        const w0 = (md.ml.find(l => l.k === 'udl') || {}).w, p0 = (md.jl.find(l => l.k === 'P' && (l.dir === 'right' || l.dir === 'left')) || {}).P;
+        const g = frameGen(P); md.nodes = g.nodes; md.mem = g.mem; md.sups = g.sups; md.props = g.mem.map(() => ({ k: 1 }));
+        const dl = frameDefaultLoads(md); md.jl = dl.jl; md.ml = dl.ml;
+        if (w0 != null) md.ml.forEach(l => { if (l.k === 'udl') { l.w = w0; l.w2 = w0; } }); if (p0 != null) md.jl.forEach(l => { if (l.dir === 'right') l.P = p0; });
+      };
+      const toCustom = () => { if (md.pre.type !== 'custom') { md.pre.type = 'custom'; paintForm(); } };
+      const delMem = i => { md.mem.splice(i, 1); md.props.splice(i, 1); md.ml = md.ml.filter(l => +l.m !== i).map(l => Object.assign(l, { m: +l.m > i ? +l.m - 1 : +l.m })); };
+      const delNode = i => { for (let k = md.mem.length - 1; k >= 0; k--) if (md.mem[k][0] === i || md.mem[k][1] === i) delMem(k); md.nodes.splice(i, 1); const fix = k => k > i ? k - 1 : k; md.mem = md.mem.map(mm => [fix(mm[0]), fix(mm[1])]); md.sups = md.sups.filter(s => s.n !== i).map(s => Object.assign(s, { n: fix(s.n) })); md.jl = md.jl.filter(l => l.n !== i).map(l => Object.assign(l, { n: fix(l.n) })); };
+      const addMem = (a, b) => { if (a === b || md.mem.some(q => (q[0] === a && q[1] === b) || (q[0] === b && q[1] === a))) return; md.mem.push([a, b]); md.props.push({ k: 1 }); };
+      const setPath = (p, v) => { const ks = p.split('.'); let o = md; for (let i = 0; i < ks.length - 1; i++) o = o[ks[i]]; o[ks[ks.length - 1]] = v; };
+      let rt = 0; const later = () => { clearTimeout(rt); rt = setTimeout(results, 90); };
+      form.addEventListener('input', e => {
+        const t = e.target; if (t.dataset.col) { md.st[t.dataset.col] = t.value; later(); return; }
+        const p = t.dataset.p; if (!p || p[0] === '_') return; let v = t.value;
+        if (t.type === 'number' || /^st\.(fs|dec|lw)$/.test(p) || /\.(n|m)$/.test(p)) v = num(v); setPath(p, v);
+        if (p.startsWith('pre.') && p !== 'pre.snap') rebuild();
+        if (p.startsWith('nodes.')) toCustom();
+        later();
+      });
+      form.addEventListener('change', e => { const p = e.target.dataset.p; if (!p) return; if (e.target.tagName === 'SELECT' && (p.startsWith('u.') || /\.(t|k|m)$/.test(p) || p.startsWith('pre.'))) { paintForm(); later(); } else if (p.startsWith('pre.')) { const tb = form.querySelector('.bd-tabs'), tmp = document.createElement('div'); tmp.innerHTML = frTabsHTML(); if (tb) tb.innerHTML = tmp.firstElementChild.innerHTML; } });
+      form.addEventListener('keydown', e => e.stopPropagation());
+      form.addEventListener('click', e => {
+        const tb = e.target.closest('[data-bt]'); if (tb) { tab = tb.dataset.bt; ls.set('inkleaf:frtab', tab); paintForm(); form.scrollTop = 0; return; }
+        const t = e.target.closest('[data-type],[data-clear],[data-deln],[data-addn],[data-delm],[data-addm],[data-del],[data-adds],[data-addml],[data-addjl],[data-clrl],[data-show],[data-diag],[data-hinge]'); if (!t) return; const dd = t.dataset;
+        if (dd.type) { md.pre.type = dd.type; if (dd.type !== 'custom') rebuild(); else { mode = 'node'; paintTools(); } }
+        else if (dd.clear) { md.nodes = []; md.mem = []; md.props = []; md.sups = []; md.jl = []; md.ml = []; mode = 'node'; paintTools(); }
+        else if (dd.deln != null) { delNode(+dd.deln); toCustom(); }
+        else if (dd.addn) { const last = md.nodes[md.nodes.length - 1] || { x: 0, y: 0 }; md.nodes.push({ x: +(last.x + 1).toFixed(3), y: last.y }); toCustom(); }
+        else if (dd.delm != null) { delMem(+dd.delm); toCustom(); }
+        else if (dd.addm) { addMem(+form.querySelector('[data-p="_ma"]').value, +form.querySelector('[data-p="_mb"]').value); toCustom(); }
+        else if (dd.hinge) { const [i, e2] = dd.hinge.split('.'), pr = md.props[+i] || (md.props[+i] = { k: 1 }), k = e2 === '0' ? 'h0' : 'h1'; pr[k] = !pr[k]; }
+        else if (dd.del) { const [arr, i] = dd.del.split('.'); md[arr].splice(+i, 1); }
+        else if (dd.adds) md.sups.push({ n: 0, t: 'pin' });
+        else if (dd.addml) { if (md.mem.length) md.ml.push({ id: uid(), m: 0, k: 'udl', w: 10, w2: 10, P: 10, a: 0, dir: 'down' }); }
+        else if (dd.addjl) { if (md.nodes.length) md.jl.push({ id: uid(), n: 0, k: 'P', P: 10, dir: 'right', M: 10 }); }
+        else if (dd.clrl) { md.jl = []; md.ml = []; }
+        else if (dd.show) md.st[dd.show] = !(md.st[dd.show] !== false && !!md.st[dd.show]);
+        else if (dd.diag) { md.st.diag = dd.diag; paintTools(); }
+        paintForm(); later();
+      });
+      tools.addEventListener('click', e => { const b = e.target.closest('[data-mode]'); if (!b) return; mode = b.dataset.mode; pick = null; paintTools(); results(); });
+      dg.addEventListener('click', e => { const b = e.target.closest('[data-dg]'); if (!b) return; md.st.diag = b.dataset.dg; paintTools(); if (tab === 'show') paintForm(); results(); });
+      const toModel = e => { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / fr.sc, y = (e.clientY - r.top) / fr.sc, f = fr.f; return { x, y, mx: f.x0 + (x - f.X(f.x0)) / f.k, my: f.y1 - (y - f.Y(f.y1)) / f.k }; };
+      const hitNode = p => { let best = -1, bd = fr.f.B * 1.4; md.nodes.forEach((q, i) => { const dd = Math.hypot(fr.f.X(q.x) - p.x, fr.f.Y(q.y) - p.y); if (dd < bd) { bd = dd; best = i; } }); return best; };
+      const hitMem = p => { let best = -1, bd = fr.f.B, bt = 0; md.mem.forEach(([a, b], i) => { const A = md.nodes[a], Bq = md.nodes[b]; if (!A || !Bq) return; const ax = fr.f.X(A.x), ay = fr.f.Y(A.y), bx = fr.f.X(Bq.x), by = fr.f.Y(Bq.y), L2 = (bx - ax) ** 2 + (by - ay) ** 2 || 1, t = clamp(((p.x - ax) * (bx - ax) + (p.y - ay) * (by - ay)) / L2, 0, 1), dd = Math.hypot(ax + t * (bx - ax) - p.x, ay + t * (by - ay) - p.y); if (dd < bd) { bd = dd; best = i; bt = t; } }); return [best, bt]; };
+      const snapV = v => { const s = num(md.pre.snap, 0.5) || 0; return s > 0 ? +(Math.round(v / s) * s).toFixed(4) : +v.toFixed(4); };
+      cv.addEventListener('pointerdown', e => {
+        if (!fr) return; e.preventDefault(); const p = toModel(e), n = hitNode(p);
+        if (mode === 'move') { if (n >= 0) { drag = { n, id: e.pointerId }; cv.setPointerCapture(e.pointerId); } return; }
+        if (mode === 'node') { if (n >= 0) return; let mx = snapV(p.mx), my = snapV(p.my); if (!md.nodes.length) { mx = 0; my = 0; } md.nodes.push({ x: mx, y: my }); toCustom(); paintForm(); results(); return; }
+        if (mode === 'mem') { if (n < 0) return; if (pick == null || pick === n) pick = n; else { addMem(pick, n); pick = n; toCustom(); paintForm(); } paintTools(); results(); return; }
+        if (mode === 'hinge') { const [k, t] = hitMem(p); if (k < 0) return; const pr = md.props[k] || (md.props[k] = { k: 1 }), key = t < 0.5 ? 'h0' : 'h1'; pr[key] = !pr[key]; paintForm(); results(); return; }
+        if (mode === 'del') { if (n >= 0) delNode(n); else { const [k] = hitMem(p); if (k >= 0) delMem(k); else return; } toCustom(); paintForm(); results(); }
+      });
+      let mvRaf = 0;
+      cv.addEventListener('pointermove', e => { if (!drag || e.pointerId !== drag.id) return; const p = toModel(e); toCustom(); md.nodes[drag.n] = { x: snapV(p.mx), y: snapV(p.my) }; drag.moved = true; if (!mvRaf) mvRaf = requestAnimationFrame(() => { mvRaf = 0; const sol = solveFrame(md); frameCache.set(md, sol); draw(sol); }); });
+      const endDrag = () => { if (!drag) return; drag = null; paintForm(); results(); };
+      cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+      m.querySelector('[data-x]').onclick = close;
+      m.querySelector('[data-ok]').onclick = () => { close(); onSave(md); };
+      const all = m.querySelector('[data-all]'); if (all) all.onclick = () => { close(); onSave(['M', 'V', 'N'].map(k => { const c = JSON.parse(JSON.stringify(md)); c.st.diag = k; if (k !== 'M') { c.st.dims = false; c.st.loads = false; c.st.react = false; } return c; })); };
       paintForm(); paintTools(); requestAnimationFrame(results);
     });
   }
@@ -13215,7 +13724,7 @@ body { background: var(--desk); }
     'Tap a pen in “My pens” twice to change it. Pens love attention too.',
     'The Fill bucket colors any closed shape. Coloring inside the lines finally pays off. 🪣',
     'Focus timer: 25 minutes of work, then a 5 minute break. Stretch, drink water, come back. 🍅',
-    'Beam designer works out reactions and diagrams. Use it to check your own solution. 📏',
+    'Beam analysis works out reactions and diagrams. Use it to check your own solution. 📏',
     'Group things with the Lasso so they move together, like a study group but useful.',
     'Back up all your notebooks now and then. Future you will send a thank-you card. 💌',
     'Pinch inside a PDF window to zoom just the PDF. Squinting is not a study technique. 🔍',
